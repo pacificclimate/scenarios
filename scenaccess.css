@@ -1,0 +1,325 @@
+DIV.heading { 
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  border-bottom: solid 1px;
+  color: #150f3c;
+  text-align: right;
+  margin-bottom: 2px;
+}
+
+IMG { 
+      background: url(/tools/loading.gif) no-repeat center center;
+ }
+
+DIV.update {
+  text-align: right;
+}
+
+TD.column1, TD.column3 { 
+  padding-left: 10px;
+  color: #656088;
+}
+
+#maps, #differencemaps, #dregion, #data, #metadata, #scattervar, #scatterts, #boxplotts, #suggest, #regioncontents, #mapscontents, #datacontents, #scatterplotscontents, #historical, #future {
+  display: none;
+}
+
+TABLE.spdatacontent { 
+  border: 1px solid black;
+}
+
+TABLE.layout TABLE.spdatacontent TH { 
+  color: #000000;
+  width: 120px;
+  padding: 1px;
+  border-bottom: 1px solid black;
+  text-align: center;
+}
+
+TABLE.layout TABLE.spdatacontent TD { 
+  color: #000000;
+  width: 120px;
+  padding: 1px;
+  border: 1px solid black;
+}
+
+#maps, #dregion { 
+  padding-left: 0px;
+  padding-right: 0px;
+  color: #000000;
+}
+
+.crosshaircursor {
+  cursor: crosshair;
+}
+
+#scatterts A, #scattervar A, #boxplotts A{ 
+  float: right;
+}
+
+TABLE.layout { 
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  border-collapse: collapse;
+}
+
+TABLE.layout TD {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  vertical-align: top;
+}
+
+TABLE.layout TD.display { 
+  border: 1px solid #000000;
+  vertical-align: top;
+  height: 400px;
+}
+
+#datadisplay DIV.selected {
+  display: inline;
+}
+
+DIV.controls { 
+  font-family: arial, helvetica, sans-serif;
+  font-size: 11px;
+  vertical-align: top;
+  padding-left: 0px;
+  width: 99px;
+  color: #000000;
+  float: right;
+}
+
+DIV.sidetabs { 
+  font-family: arial, helvetica, sans-serif;
+  font-size: 12pt;
+  vertical-align: top;
+  padding-right: 0px;
+  width: 21px;
+  color: #000000;
+               /*float: left;*/
+  clear: both;
+  margin-top: 27px;
+}
+
+DIV.sidetabs DIV { 
+  width: 20px;
+  text-align: center;
+  font-weight: bold;
+  padding: 0px;
+  /*padding: 2px 0px 2px 0px;*/
+  margin: 0px 0px 1px 0px;
+  color: #b0b0b0;
+  cursor: pointer;
+}
+
+DIV.sidetabs DIV.hdr { 
+  margin: 0px;
+  padding: 0px;
+  background: url(/tools/stt.png) top center no-repeat;
+  height: 10px;
+}
+
+DIV.sidetabs DIV.ftr { 
+  margin: 0px;
+  padding: 0px;
+  background: url(/tools/stb.png) bottom center no-repeat;
+  height: 10px;
+}
+
+DIV.sidetabs DIV.redtab { 
+  background-color: #d21321;
+  display: none;
+}
+DIV.sidetabs DIV.dkredtab { 
+  background-color: #830000;
+  display: none;
+}
+DIV.sidetabs DIV.dkbluetab { 
+  background-color: #150f3c;
+  display: none;
+}
+DIV.sidetabs DIV.ltbluetab { 
+  background-color: #636584;
+  display: none;
+}
+
+DIV.controls DIV.heading { 
+  font-size: 11px;
+  margin-bottom: 6px;
+  width: 99px;
+  color: #000000;
+}
+
+DIV.controls INPUT.submit, DIV.controls SELECT {
+  width: 99px;
+}
+
+DIV.controls INPUT, DIV.controls SELECT { 
+  font-family: arial, helvetica, sans-serif;
+  font-size: 11px;
+}
+
+DIV.controls INPUT.tf { 
+  border: 1px solid #000000;
+  margin-top: 2px;
+}
+
+TABLE.modelhdr TD, TABLE.metadatatable TD, TABLE.datatable TD { 
+  color: #000000;
+  background: #ffffff;
+  font-size: 10pt;
+  font-weight: normal;
+  text-align: center;
+  margin: 0px;
+  border: 0px;
+}
+
+TABLE.modelhdr TR TD { 
+  background: #c6caff;
+  border-bottom: 1px solid #ffffff;
+}
+
+TD.dataidentifier { 
+  text-align: left;
+}
+
+TABLE { 
+  border-spacing: 0px;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  border-style: none;
+}
+
+TABLE.datatable TR, TABLE.metadatatable TR, TABLE.modelhdr TR { 
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+}
+
+TABLE.datatable TH, TABLE.metadatatable TH, TABLE.modelhdr TH { 
+  text-align: center;
+  border: 0px none;
+  border-bottom: 1px solid #ffffff;
+  font-size: 11pt;
+  margin: 0px;
+  padding: 1px;
+  background: #636584;
+  color: #ffffff;
+  vertical-align: top;
+}
+
+TABLE.modelhdr { 
+  border: 0px none;
+  color: #000000;
+  margin: 0px;
+  padding: 0px;
+}
+
+TH SUP { 
+  font-size: 8px;
+}
+
+HR.wide { 
+  width: 100%;
+}
+
+option.selected { color: #d21321; }
+
+H1 {
+  color: #d21321;
+  font-family: arial, sans-serif;
+  font-size: 18px;
+}
+
+H2 { 
+  color: #150f3c;
+  font-family: arial, sans-serif;
+  font-size: 16px;
+}
+h3 { 
+  font-size: 14px;
+  color: #006699;/*themecolour5;*/
+
+  margin-top: 3px;
+}
+
+a:link { 
+ color: #005db6;/*themecolour5;*/
+}
+a:visited { 
+ color: #005db6;
+}                    
+a:hover { 
+ color: #3c9bf7;/*themecolour1;*/
+}
+
+BODY {
+  font-family: arial, helvetica, sans;
+  font-size: 12pt;
+  background-color: #ffffff;
+  text-align: justify
+}
+
+DIV.tabs { 
+  padding: 0px;
+  margin: 0px;
+  height: 27px;
+}
+
+DIV.tabs DIV { 
+  width: 150px;
+  height: 20px;
+  text-align: center;
+  font-weight: bold;
+  float: left;
+  padding: 2px 0px 0px 0px;
+  margin: 4px 2px 0px 0px;
+
+  color: #b0b0b0;
+  cursor: pointer;
+}
+
+DIV.selected { 
+  color: #ffffff;
+}
+
+DIV.tabs DIV.redtab { 
+  background: #d21321 url(/tools/tabtop-red.png) top center no-repeat;
+}
+DIV.tabs DIV.dkredtab { 
+  background: #830000 url(/tools/tabtop-dkred.png) top center no-repeat;
+}
+DIV.tabs DIV.dkbluetab { 
+  background: #150f3c url(/tools/tabtop-dkblue.png) top center no-repeat;
+}
+DIV.tabs DIV.ltbluetab { 
+  background: #636584 url(/tools/tabtop-ltblue.png) top center no-repeat;
+}
+
+DIV.mapheader {
+  text-align: center;
+  font-weight: bold;
+}
+
+DIV.suggest DIV.textbox { 
+  float: right;
+  text-align: right;
+  margin-right: 2px;
+}
+
+DIV.suggest DIV.result { 
+  color: #ff0000;
+}
+
+DIV.suggest DIV { 
+  float: left;
+  clear: right;
+}
+
+DIV.suggest BR {
+  clear: both;
+}

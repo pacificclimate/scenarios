@@ -1,0 +1,392 @@
+* { margin: 0; padding: 0; }
+
+#content ul, #content ol { margin-left: 0; padding-left: 1.7em; }
+
+/*
+#references p {
+    line-height: 110%;
+    padding-bottom: 0.8em;
+    font-size: 9pt;
+}
+*/
+
+a:link, a:visited { 
+    text-decoration: none;
+    color: #0c4e6c;
+}
+a:hover, a:active { 
+    text-decoration: underline;
+    color: #68a0ba; 
+}
+
+.indent { margin-left: 15px; }
+
+.tooltipped { text-decoration: none; border-bottom: 1px dotted #505050; }
+
+.superscript { vertical-align: top; font-size: smaller; }
+.subscript { vertical-align: bottom; font-size: 60%; }
+
+.hidden { display: none; }
+.visible { display: inline; }
+
+/* TODO clean up */
+#settings h3 {
+color: #093;
+}
+
+#content h3 {
+font-size: 13px;
+}
+
+body {
+overflow: auto;
+padding-top: 10px;
+background-color: white;
+padding: 0px;
+font-size: 11px;
+color: #505050;
+font-family: verdana, arial, sans-serif;
+text-align: center;
+}
+
+#centre {
+width: 900px;
+
+margin: 0 auto;
+padding: 10px 0px;
+
+text-align: left;
+}
+
+#title-left { /* need to set up size */ float: left; }
+
+#title-right { /* need to set up size */ float: right; }
+
+#title-left *, #title-right * {
+border: 0;
+}
+
+
+#navbarcontainer {
+clear: both;
+
+/* height: 28px; */
+padding-right: 40px;
+vertical-align: middle;
+}
+
+#navbar li {
+float: right;
+margin: 5px;
+/*margin-top: 6px;
+margin-bottom: 6px;
+margin-right: 6px;
+margin-left: 6px; */
+list-style-type: none;
+font-size: 12px;
+color: black;
+}
+
+/*  replaced with blanket a: behaviours above
+#navbar li a:link, a:visited { text-decoration: none; }
+#navbar li a:hover { text-decoration: underline; }
+*/
+
+#mainbox {
+clear: both;
+
+/* padding? */
+}
+
+#sidetabs {
+float: left;
+width: 121px;
+margin-top: 35px;
+}
+
+#sidetabs li {
+display: block;
+list-style-type: none;
+margin-bottom: 8px;
+
+color: white;
+
+font-size: 12px;
+/*font-weight: bold;*/
+height: 26px;
+padding-left: 14px;
+padding-top: 9px;
+}
+
+#sidetabs li.active { background: #00A42E url(/~phox/pi_demo/tabmask.png) no-repeat scroll left top; }
+#sidetabs li.inactive { background: #00364A url(/~phox/pi_demo/tabmask.png) no-repeat scroll left top;
+                        margin-right: 1px; cursor: pointer; }
+
+#tabbedbox {  /* VISIBLE BORDER */
+margin-left: 121px;  /* navigation */
+
+width: 777px;
+
+border: 1px solid #00A42E;  /* overridden by JS later */
+
+min-height: 550px;
+
+background-color: white;
+
+position: relative;
+}
+
+/* redundant now
+#innertabs.visible { display: inline; }
+#innertabs.hidden  { display: none;   }
+*/
+
+#innertabs div {
+float: left;
+margin: 1px 0px 0px 1px;
+width: 387px;
+padding-top: 5px;
+padding-bottom: 5px;
+text-align: center;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+}
+
+#innertabs div.active { background-color: #00A42E; color: #FFFFFF; }
+#innertabs div.inactive { background-color: #00364A; color: #909090; }
+
+
+#content { /* where stuff goes within the tabbed box, below the upper toggle */
+/* position: absolute;
+   top: 30px; */
+padding: 8px 25px 0px 25px;  /* FIXME these should probably be in #content > div, instead. */
+}
+
+#content div.heading {
+text-align: center;
+width: 100%;
+margin-bottom: /*25px*/ 15px;
+}
+
+div.summary {
+margin: 10px;
+/* text-align: right; */
+}
+
+/* perhaps do most of this for -all- tables */
+div.summary > table {
+width: 100%;
+border-collapse: collapse;
+border: 1px solid black;
+margin-bottom: 8px;
+}
+
+div.summary > table td, div.summary > table th {
+text-align: left;
+border-width: 1px;
+border-style: solid;
+border-color: #C0C0C0;
+padding: 7px 10px 7px 10px; /* TODO make these em */
+}
+
+
+/* including some formatting in these for now.  Should clean that up later as sematics are pretty bad */
+
+div.summary > table tr.ltblue > td, div.summary > table tr.ltblue > th {
+text-align: left;
+background-color: #D9E1E9;
+}
+
+div.summary > table tr.dkblue > td, div.summary > table tr.dkblue > th {
+text-align: center;
+background-color: #475D81;
+color: #FFFFFF;
+}
+
+div.summary > table tr.dkerblue > td, div.summary > table tr.dkerblue > th {
+font-size: 125%;
+font-weight: bold;
+text-align: center;
+background-color: #001D48;
+color: #FFFFFF;
+}
+
+
+
+#content div.contentcolumn { /* FIXME these are rows now */
+display: block;
+/* width: 188px; */
+width: 100%;
+
+/* margin: 20px 0px 10px 20px; */
+margin: 0px 0px 10px 0px;
+
+min-height: 160px; /* FIXME this might be the wrong #; This forces fitting of thumbs */
+}
+
+#content div.contentcolumn > div.thumbdiv { /* might want to class this later */ /* FIXME these float left now, no? */
+background: #FFFFFF url(loading.gif) no-repeat scroll center center;   /* TODO make a smaller spinner image that works well for both thumbs and zoomed */
+display: inline;
+float: left;
+width: 188px;
+height: 160px;
+cursor: pointer;
+margin-right: 10px;
+}
+
+/* note that these are separate divs, not states, which eliminates
+ * the need for caption visibility, fixed spacing/nested divs, etc.
+ */
+#content div.bg { /* background-gray-out wrapper */
+position:fixed;
+left:0px;
+top:0px;
+width:100%;
+height:100%;
+background: #282828;
+/* filter:alpha(Opacity=60); IE6, removed */
+opacity:0.6;
+-moz-opacity:0.6;
+-khtml-opacity:0.6;
+}
+
+#content div.zoomable { display: none; }  /* invisible control container */
+#content div.zoomed { /* default */ }
+
+/* internal div providing zoomed content */
+#content div.zoomwin {
+/*min-width: 960px;*/
+width: 900px;
+min-height: 592px;
+padding: 25px 0px 0px 0px;
+border: 1px solid black;
+background-color: white;
+position: fixed;
+top: 50%;
+left: 50%;
+margin-top: -309px;
+margin-left: -451px;
+/* margin-left: auto; */
+/* margin-right: auto; */
+
+text-align: center;
+}
+
+#content div.zoomwin div.closebutton {
+cursor: pointer;
+
+
+position: absolute;
+
+top: 0px;
+right: 0px;
+
+
+width: 890px;
+border: 0px solid white;
+padding: 0px 5px 2px 5px;
+
+
+text-align: right;
+/* background-color: #00A42E; */
+background-color: #00364A;
+
+color: white;
+font-weight: bold;
+}
+
+#content div.zoomwin div.closebutton span {
+font-size: 120%;
+}
+
+#content div.zoomwin td {
+overflow: hidden;  /* hack! */
+vertical-align: top;
+text-align: left;
+}
+#content div.zoomwin table.maptable {
+table-layout: fixed;
+}
+#content div.zoomwin table.maptable div {
+overflow: hidden;
+max-height: 430px;  /* hack!  also possibly change this to height? */
+max-width: 402px;
+}
+
+img.map {
+margin-left: -20px;
+width: 422px;
+height: 447px;
+}
+img.stickplot {
+margin-left: -5px;
+width: 87px;
+height: 485px;
+}
+
+div.zoomimg_scatter {
+overflow: hidden;
+height: 500px;
+width: 480px;
+}
+
+img.scatterplot {
+width: 480px;
+height: 520px;
+}
+
+#content div.zoomwin p {
+margin: 15px 15px 15px 8px;
+}
+
+#content div.zoomwin p {
+margin-left: 15px;
+margin-right: 15px;
+}
+
+div#settings input[type=radio] {
+margin-right: 6px;
+}
+
+#footer {
+margin-top: 5px;
+margin-left: auto;
+margin-right: auto;
+width: 900px;
+padding: 3px 0px;
+background-color: white;
+text-align: center;
+}
+
+h1 {
+color: #505050;
+font-size: 16px;
+}
+
+/*a:link {
+color: #7D575D;
+background: transparent;
+}
+
+a:visited a:hover {
+color: #FFFFFF;
+background: black;
+} */
+
+#notes ol li {
+    margin-bottom: 10px;
+}
+
+div#whiteout { /* background-gray-out wrapper */
+position:fixed;
+left:0px;
+top:0px;
+width:100%;
+height:100%;
+background: #FFFFFF;
+/* filter:alpha(Opacity=60); IE6, removed */
+opacity:0.6;
+-moz-opacity:0.6;
+-khtml-opacity:0.6;
+}

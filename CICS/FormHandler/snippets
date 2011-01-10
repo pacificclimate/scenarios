@@ -1,0 +1,422 @@
+
+# This should go in some generating code
+  # If this <whatever> is not available, return
+  if($dvar eq "timeperiod") {
+    if(!is_timeslice_available($post->{'expt'}, $idx, $exptdata)) {
+      return $output;
+    }
+  } elsif($dvar eq "variable") {
+    if(!is_var_available($post->{'expt'}, $idx, $exptdata)) {
+      return $output;
+    }
+  } elsif($dvar eq "expt") {
+    if(!is_var_available($idx, $post->{'variable'}, $exptdata)) {
+      return $output;
+    }
+  }
+
+
+
+# Creates links to timeseries data as HTML and returns the string
+# $post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, and $cl are standard variables which are documented in select.cgi
+# $points is the array of XY coordinates which make up the selection
+# $box is an array consisting of the X and Y coordinates of the grid box which is currently selected (currently the data point)
+# $coords is an array of the XY coordinate (as latitude) of the grid box
+# $selstr is the string used to describe the selection derived data files
+sub make_ts_links {
+  my($post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, $cl, $points, $box, $coords, $selstr) = @_;
+  my($modelname) = $exptdata->[$post->{'expt'}]->{'modelname'};
+  my($separator) = " | ";
+  my($body, $location, $errmsg) = ("", "", "");
+  my($need_trim) = 0;
+
+  # Make sure we're supposed to be outputting something...
+  if(defined($post->{'down_ts'})) {
+    $body .= "<div class=\"mdheader\">".$s->{'timeseries'}."</div>\n";
+
+    # Make sure we have a data point
+    if(defined($post->{'dpointx'})) {
+      my($datafilename, $i);
+      my(@timeseriess) = ( [ $s->{timeseries_data}, "" ], [ $s->{anomaly_timeseries}, "anom_" ] );
+
+      foreach(@timeseriess) {
+	my($tsdata) = $_;
+	# Show the coordinate of the data point (prettyified)
+	$body .= "<b>" . $tsdata->[0];
+	$body .= " (";
+	if($coords->[1] > 0) {
+	  $body .= $coords->[1] . " N, ";
+	} else {
+	  $body .= (-1 * $coords->[1]) . " S, ";
+	}
+	if($coords->[0] > 0) {
+	  $body .= $coords->[0] . " E";
+	} else {
+	  $body .= (-1 * $coords->[0]) . " W";
+	}
+	$body .= ")";
+	$body .= "</b>: \n";
+	
+	# Create links for each available data file (for normal data)
+	for($i = 0; $i <= $#{$dd->{'timeperiod'}}; $i++) {
+	  if($d->{'timeperiod'}->[$i] !~ /^\#/) {
+	    my($bx, $by) = @{$box};
+	    my($bxr, $byr);
+	    $bxr = sprintf("%02i", $bx + 1);
+	    $byr = sprintf("%02i", $by + 1);
+	    $datafilename = $modelname . "_";
+	    $datafilename .= $d->{'variable'}->[$post->{'variable'}] . "/";
+	    $datafilename .= $modelname . "_";
+	    $datafilename .= $exptdata->[$post->{'expt'}]->{'exptname'} . "_";
+	    $datafilename .= $dat->[3]->{'timeperiod'}->[$i] . "_";
+	    $datafilename .= $d->{'variable'}->[$post->{'variable'}] . "_";
+	    $datafilename .= $tsdata->[1];
+	    $datafilename .= "long" . $bxr . "_";
+	    $datafilename .= "lat" . $byr . ".dat";
+	
+	    if(stat($cd->{'timeseriesdir_local'}.$datafilename)) {
+	      $body .= "<a href=\"" . $cd->{'timeseriesdir_www'} . $datafilename."\">" . $dd->{'timeperiod'}->[$i]."</a>\n".$separator;
+	      $need_trim = 1;
+	    } else {
+	      $errmsg .= "Missing file " . $datafilename . "\n";
+	    }
+	  }
+	}
+	
+	# Clean up the output, post-filename-stickon
+	if($need_trim) {
+	  $body = substr($body, 0, length($body) - length($separator));
+	  $body .= "<br>";
+	  $need_trim = 0;
+	}
+      }
+    } else {
+      # As an alternative to all this, if there is no data point selected it will simply print out a message requesting the user selects a data point
+      $body .= $s->{'please_select_point'} . "<br>";
+    }
+  }
+
+  # Mail Trevor some nice error messages -- possibly LOTS of them.
+  if(length($errmsg)) {
+    SendMail($errmsg, "Scenarios error (select.cgi)", 'tmurdock@uvic.ca', 'tmurdock@uvic.ca');
+  }
+
+  return $body;
+}
+
+# Creates links to data as HTML and returns the string
+# $post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, and $cl are standard variables which are documented in select.cgi
+# $points is the array of XY coordinates which make up the selection
+# $box is an array consisting of the X and Y coordinates of the grid box which is currently selected (currently the data point)
+# $selstr is the string used to describe the selection derived data files
+sub make_data_links {
+  my($post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, $cl, $points, $box, $selstr) = @_;
+  my($separator) = " | ";
+  my($body, $errmsg, $ftype, $datafilename) = ( "", "", "", "" );
+  my($modelname) = $exptdata->[$post->{'expt'}]->{'modelname'};
+  my($oldplottype) = $post->{'plot_type'};
+  my($need_trim) = 0;
+  my(@datafmts) = ([ $s->{'georeferenced'}, "georef_" ], [ $s->{'scenarios_format'}, "" ]);
+
+  # Make sure we're supposed to do this
+  if(defined($post->{'down_data'})) {
+    $body .= "<div class=\"mdheader\">".$s->{'data_links'}."</div>\n";
+
+    $body .= "<b>".$modelname."</b>: ";
+
+    # Loop over each case here and provide basic data files
+    # FIXME LANG Needs to be multilingual (translation bug)
+    foreach((["Land-Sea Mask", "new_slmask"]), ["Latitude file", "lats"], ["Longitude file", "longs"]) {
+      $ftype = $_;
+      $datafilename = join("_", $cd->{'datapath'} . $cd->{'model'}->{$modelname} . $modelname, $ftype->[1] . "_" . $d->{'regions'}->[$post->{'region'}] . ".dat");
+
+      if(stat($datafilename)) {
+	$body .= '<a href="'.$datafilename.'">'.$ftype->[0]."</a>" . $separator . "\n";
+	$need_trim = 1;
+      } else {
+	$errmsg .= "Missing file " . $datafilename . "\n";
+      }
+    }
+
+    # Clean up
+    if($need_trim) {
+      $body = substr($body, 0, length($body) - length($separator));
+      $body .= "<br>";
+      $need_trim = 0;
+    }
+
+    # Display both georef and scenarios format data for this map
+    $body .= "<b>".$s->{'data_files'}."</b>: ";
+    foreach(@datafmts) {
+      $ftype = $_;
+
+      $datafilename = $cd->{'datapath'} . $cd->{'model'}->{$modelname} .
+	join("_", $cd->$ftype->[1], $modelname, $exptdata->[$post->{'expt'}]->{'exptname'}, $d->{'timeperiod'}->[$post->{'timeslice'}], $d->{'variable'}->[$post->{'variable'}], $d->{'regions'}->[$post->{'region'}] . ".dat");
+
+      if(stat($datafilename)) {
+	$body .= '<a href="'.$datafilename.'">'.$ftype->[0]."</a>\n";
+	$body .= $separator;
+	$need_trim = 1;
+      } else {
+	$errmsg .= "Missing file " . $datafilename . "\n";
+      }
+    }
+
+    # Again, clean up
+    if($need_trim) {
+      $body = substr($body, 0, length($body) - length($separator));
+      $need_trim = 0;
+    }
+    $body .= "<br>";
+
+    # If we have a region selected, make dynamic data available
+    if($#{$points} >= 2) {
+      # FIXME MESSES WITH POST DATA (should use description)
+
+      # Mask file
+      $body .= "<b>".$selstr."</b>: ";
+      $post->{'plot_type'} = 5;
+      $body .= "<a href=\"".$wrapper."?".mkgetstring($post)."\">".$s->{'region_mask'}."</a>";
+      $body .= $separator;
+
+      # Georef'd data
+      $post->{'plot_type'} = 6;
+      $body .= "<a href=\"".$wrapper."?".mkgetstring($post)."\">".$s->{'georef_region_data'}."</a>";
+
+      $body .= "<br>";
+    }
+  }
+
+  my(@zips) = ($s->{'zip_files_allexpt'}, $s->{'zip_files_allvar'}, $s->{'zip_files_allexptvar'});
+  my($plot) = 7;
+  foreach(@zips) {
+    my($label) = $_;
+
+    # Display both georef and scenarios format data for this map
+    $body .= "<b>".$label."</b>: ";
+    foreach(@datafmts) {
+      my($stuff) = $_;
+      $post->{'plot_type'} = $plot;
+      $body .= "<a href=\"".$wrapper."?".mkgetstring($post)."\">".$stuff->[0]."</a>";
+      $body .= $separator;
+      $need_trim = 1;
+      $plot++;
+    }
+
+    # Clean up
+    if($need_trim) {
+      $body = substr($body, 0, length($body) - length($separator));
+      $body .= "<br>";
+      $need_trim = 0;
+    }
+  }
+
+  # Send Trevor LOTS of mail when something goes wrong
+  if(length($errmsg)) {
+    SendMail($errmsg, "Scenarios error (select.cgi)", 'tmurdock@uvic.ca', 'tmurdock@uvic.ca');
+  }
+  
+  $post->{'plot_type'} = $oldplottype;
+
+  return $body;
+}
+
+# make_display_img creates all the HTML needed for a map image and metadata
+# It will also temporarily modify POST data if needed
+# $post, $wrapper, $expt, $exptdata, $str, $dat, $cfg, $s, $dd, $d, $cd, and $cl are simply standard variables that it needs on hand
+# $var is the variable to modify (if needed); $dvar is its name in the string daata arrays
+# $points are the XY coordinates which make up the selection
+# $idx is the value to set the variable specified by var to
+sub make_display_img {
+  my($post, $wrapper, $expt, $exptdata, $str, $dat, $cfg, $s, $dd, $d, $cd, $cl, $var, $dvar, $selstr, $points, $idx) = @_;
+  my($tmp, $tmp_sr_max, $tmp_sr_min, $output, $args, $arg, $i, $cachefile);
+  $output = "";
+
+  $tmp_sr_max = $post->{'srange_max'};
+  $tmp_sr_min = $post->{'srange_min'};
+  $tmp = $post->{$var};
+
+  # Check and see if we have a valid idx
+  if(is_numeric($idx)) {
+    $post->{$var} = $idx;
+
+    # If there is a change
+    if($tmp != $post->{$var}) {
+      # Then we modify the ranges
+      if($var == 'variable') {
+	( $post->{'srange_min'}, $post->{'srange_max'} ) = @{get_srange($post, $dat, $post->{'timeslice'}, $idx)};
+      } elsif($var == 'timeslice') {
+	( $post->{'srange_min'}, $post->{'srange_max'} ) = @{get_srange($post, $dat, $idx, $post->{'variable'})};
+      }
+    }
+  } else {
+    $idx = $tmp;
+  }
+
+  # If this <whatever> is not available, return
+  if($dvar eq "timeperiod") {
+    if(!is_timeslice_available($post->{'expt'}, $idx, $exptdata)) {
+      return $output;
+    }
+  } elsif($dvar eq "variable") {
+    if(!is_var_available($post->{'expt'}, $idx, $exptdata)) {
+      return $output;
+    }
+  } elsif($dvar eq "expt") {
+    if(!is_var_available($idx, $post->{'variable'}, $exptdata)) {
+      return $output;
+    }
+  }
+
+  # Lay things out nicely
+  $output .= "<hr noshade>\n";
+  $output .= "<center><b>".$expt->[$post->{'expt'}] . " - " . $dd->{'timeofyear'}[$post->{'timeofyear'}]." - " . $dd->{'variable'}[$post->{'variable'}];
+  if($post->{'timeslice'} > 0) {
+    $output .= " Change";
+  }
+  $output .= " - " . $dd->{'timeperiod'}[$post->{'timeslice'}] . "</b></center>\n";
+  
+  # Plot the latitudes image
+  $post->{'plot_type'} = 2;
+  $output .= "<img src=\"".$wrapper."?".mkgetstring($post)."\" alt=\"Latitudes for Map\">";
+  
+  # Plot the map
+  $post->{'plot_type'} = 0;
+  $output .= "<input type=\"image\" name=\"map\" src=\"".$wrapper."?".mkgetstring($post)."\" alt=\"Map of Selected Area\">";
+  
+  # Plot the legend
+  $post->{'plot_type'} = 1;
+  $output .= "<br><img src=\"".$wrapper."?".mkgetstring($post)."\" alt=\"Legend for Map\"><br>";
+  
+  # Show download link
+  $post->{'plot_type'} = 3;
+  $output .= "<div align=\"right\"><a href=\"".$wrapper."?".mkgetstring($post)."\">".$s->{'down_img'}."</a></div>";
+  
+  # Get ready to display metadata
+  $post->{'plot_type'} = 4;
+  $post->{'bgrid'} = cb_to_bool("grid", $post);
+  $post->{'bocean'} = cb_to_bool("ocean", $post);
+  $post->{'bstepwise'} = cb_to_bool("stepwise", $post);
+  
+  # Variables fetched from genimage
+  my($unit, $base_unit, $hash);
+  
+  # If there wasn't an error and we need to gen metadata, do the run
+  if(defined($post->{'show_metadata'}) ||
+     ($#{$points} >= 2 && defined($post->{'down_data'})) ||
+     (defined($post->{'down_ts'}) && defined($post->{'dpointx'}))) {
+
+    $cachefile = create_cachefile($post, $expt, $exptdata, $str, $dat, $cfg, $s, $dd, $d, $cd, $cl);
+
+    print STDERR $cachefile . "\n";
+
+    # Fetch the appropriate unit string
+    if($post->{'timeslice'} > 0) {
+      # Prediction
+      $unit = $dat->[4]->{'variable'}->[$post->{'variable'}];
+      if($dat->[13]->{'variable'}->[$post->{'variable'}] == 1) {
+	$base_unit = $dat->[3]->{'variable'}->[$post->{'variable'}];
+      }
+    } else {
+      # Baseline
+      $unit = $dat->[3]->{'variable'}->[$post->{'variable'}];
+    }
+
+    $hash = parse_textdata($cachefile);
+  }
+
+  # Add on links to timeseries data (if applicable; function filters)
+  $output .= make_ts_links($post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, $cl, $points, [ $hash->{box_x}, $hash->{box_y} ],  [ $hash->{dpointlon}, $hash->{dpointlat} ], $selstr);
+
+  # Add on links to data (if applicable; function filters)
+  $output .= make_data_links($post, $wrapper, $expt, $exptdata, $str, $dat, $s, $dd, $d, $cd, $cl, $points, [ $hash->{box_x}, $hash->{box_y} ], $selstr);
+
+  # Run this if we're showing metadata
+  if(defined($post->{'show_metadata'})) {
+    $output .= "<div class=\"mdheader\">".$s->{'metadata'}."</div>\n";
+
+    # If we have a data point... format and output all the info for it
+    if(defined($hash->{dpointdat})) {
+      $output .= "<b>" . $s->{'datapoint'} ."</b>: ";
+      $output .= "<b>" . $dd->{'variable'}[$post->{'variable'}] . "</b> = " . $hash->{dpointdat} . " " . $unit . " | ";
+      $output .= "<b>" . $s->{'coordslatlon'} . "</b> = (" . $hash->{dpointlat} . ", " . $hash->{dpointlon} . ")<br>\n";
+    }
+
+    # If we have a region selected, format and output all info for it
+    if(defined($hash->{selstddev}) && $hash->{selgridboxes} > 0) {
+      $output .= "<b>" . $selstr ."</b>: ";
+      $output .= "<b>" . $s->{'area'} . "</b> = " . $hash->{selarea} . " | ";
+      $output .= "<b>" . $s->{'numgridboxes'} . "</b> = " . $hash->{selgridboxes} . "<br>\n ";
+      
+      $output .= "<b>" . $selstr ."</b>: ";
+      $output .= "<b>" . $s->{'min'} . "</b> = " . $hash->{selmin} . " " . $unit . " | ";
+      $output .= "<b>" . $s->{'coordslatlon'} . "</b> = (" . $hash->{selminlat} . ", " . $hash->{selminlon} . ")<br>\n";
+      $output .= "<b>" . $selstr ."</b>: ";
+      $output .= "<b>" . $s->{'max'} . "</b> = " . $hash->{selmax} . " " . $unit . " | ";
+      $output .= "<b>" . $s->{'coordslatlon'} . "</b> = (" . $hash->{selmaxlat} . ", " . $hash->{selmaxlon} . ")<br>\n";
+      $output .= "<b>" . $selstr ."</b>: ";
+
+      $output .= "<b>" . $s->{'mean'} . "</b> = " . $hash->{selmean} . " " . $unit . " | ";
+      $output .= "<b>" . $s->{'median'} . "</b> = " . $hash->{selmedian} . " " . $unit . " | ";
+      $output .= "<b>" . $s->{'stddev'} . "</b> = " . $hash->{selstddev} . " " . $unit . "<br>\n";
+    }
+
+    # Output general map data
+    $output .= "<b>" . $s->{'map'} . "</b>: ";
+    $output .= "<b>" . $s->{'min'} . "</b> = " . $hash->{mapdatamin} . " " . $unit . " | ";
+    $output .= "<b>" . $s->{'coordslatlon'} . "</b> = (" . $hash->{mapdataminlat} . ", " . $hash->{mapdataminlon} . ")<br>\n";
+    $output .= "<b>" . $s->{'map'} . "</b>: ";
+    $output .= "<b>" . $s->{'max'} . "</b> = " . $hash->{mapdatamax} . " " . $unit . " | ";
+    $output .= "<b>" . $s->{'coordslatlon'} . "</b> = (" . $hash->{mapdatamaxlat} . ", " . $hash->{mapdatamaxlon} . ")<br>\n";
+    $output .= "<b>" . $s->{'map'} . "</b>: ";
+    
+    $output .= "<b>" . $s->{'range'} . "</b> = (" . $hash->{mapminlat} . ", " . $hash->{mapminlon};
+    $output .= " to " . $hash->{mapmaxlat} . ", " . $hash->{mapmaxlon} . ")<br>\n";
+  }
+
+  # Reset variables that were possibly altered
+  $post->{'srange_max'} = $tmp_sr_max;
+  $post->{'srange_min'} = $tmp_sr_min;
+  $post->{$var} = $tmp;
+
+  # And get out of here!
+  return $output;
+}
+
+# Adaptation of algorithm found at:
+# http://www.ecse.rpi.edu/Homepages/wrf/research/geom/pnpoly.html
+# Copyright (c) 1970-2003, Wm. Randolph Franklin
+sub is_inside {
+  my($p, $points) = @_;
+  my($numpoints) = $#{$points};
+  my($inside) = 0;
+  my($i, $j);
+  for($i = 0, $j = $numpoints - 1; $i < $numpoints; $j = $i++) {
+    if (((($points->[$i]->[1] <= $p->[1]) && ($p->[1] < $points->[$j]->[1])) ||
+	 (($points->[$j]->[1] <= $p->[1]) && ($p->[1] < $points->[$i]->[1]))) &&
+	($p->[0] < ($points->[$j]->[0] - $points->[$i]->[0]) * ($p->[1] - $points->[$i]->[1]) / ($points->[j]->[1] - $points->[$i]->[1]) + $points->[$i]->[0])) {
+      $inside = !$inside;
+    }
+  }
+  return $inside;
+}
+
+sub right_of_line {
+  my($p, @l) = @_;
+  my($slope);
+  use constant { INFINITY => 1000000000000000000000000000 };
+  if($l[1]->[0] == $l[0]->[0]) {
+    my($sm) = ($l[1]->[1] - $l[0]->[1]);
+    $slope = INFINITY * (($sm >= 0) ? (($sm > 0) ? 1 : 0): -1);
+  } else {
+    $slope = ($l[1]->[1] - $l[0]->[1]) / ($l[1]->[0] - $l[0]->[0]);
+  }
+
+  if($slope == 0) {
+    return ((($l[1]->[0] - $l[0]->[0]) * ($l[0]->[1] - $p->[1])) > 0);
+  } else if($slope == INFINITY || $slope == -INFINITY) {
+    return ((($l[0]->[0] - $p->[0]) * ($l[1]->[1] - $l[0]->[1])) < 0);
+  } else {
+    return ((((($p->[0] - $l[0]->[0]) * $slope) + $l[0]->[1] - $p->[1]) * ($l[1]->[1] - $l[0]->[1]) * ($l[1]->[0] - $l[0]->[0])) > 0);
+  }
+}
