@@ -291,34 +291,12 @@ sub parse_textdata {
 sub transpose_csv_hash { # convert column-major hashref-of-column-arrayrefs to row-major arrayref-of-row-hashrefs (no header row).  this -of course- assumes the CSV hash that comes in is rectangular, not jagged!!
   my($hash) = @_;
 
-#  return [ map  { my $row = $_ ; map +{ $_ => $hash->{$_}->[$row] }, keys(%{$hash}) } (0..$#{$hash->{(keys %{$hash})[0] }} ) ];
-
   return [
       map { 
           my $row = $_ ;
           +{ map { $_ => $hash->{$_}->[$row] } keys(%{$hash}) }
       } ( 0 .. $#{ $hash->{(keys %{$hash})[0]} } )
       ];
-
-
-  #FIXME cruft
-    # return [ 
-    #     map { 
-    #         my $row = $_ ; 
-    #         map +{ $_ => $hash->{$_}->[$row] }, keys(%{$hash}) 
-    #     } ( 0 .. $#{$hash->{ (keys %$hash)[0] }} ) 
-    #     ];
-
-
-
-# Get rid of this junk after testing...
-#  my $ret = [];
-
-#  my(@hashkeys) = 
-
-#  foreach $row (0..$#{$hash->{$hashkeys[0]}}) {
-#      push($ret, +{map +{ $_ => $hash->{$_}->[$row] } keys(%{$hash})});
-#  }
 }
 
 sub parse_csv { # generic CSV hashifier (column-major, using header row) for things like SCATTER_TIMESLICE_TEXT

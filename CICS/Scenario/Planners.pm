@@ -137,27 +137,12 @@ sub handler {
 				 $hash->{'dat'}[8]{'variable'} ];
 
 
-  ############################  DECTODO
+  ############################
   ## Variable speficiations ##
   ############################
-  # don't lose track of $hash->{'var'} = $lookup_by_symname->{'var'}->{$hash->{'symname'}}
   my $planners_vars_csv = parse_csv($hash->{cfg}->[2]->{'planners_vars_csv'});
   $planners_vars_csv->{'var'} = [ map { $lookup_by_symname->{'var'}->{$_} } @{$planners_vars_csv->{'symname'}} ];
   my $planners_vars = transpose_csv_hash($planners_vars_csv);
-
-  print STDERR "planners_vars_csv first line: (" . join(", ", map { $_ . " => " . $planners_vars->[0]->{$_} } (keys %{$planners_vars_csv})) . ")\n";
-#  my $testing_column_num = 2;
-#  print STDERR "planners_vars_csv column number $testing_column_num (" . (keys %{$planners_vars_csv})[$testing_column_num] . "): (" . join(", ", @{$planners_vars_csv->{(keys %{$planners_vars_csv})[$testing_column_num]}}) . ")\n";
-
-  #[              # TODO remove 'var' key as this is now redundant (or rather remove symname).  Also maybe start using long names from Data?
-      # {var => $lookup_by_symname->{'var'}->{'temp'}, symname => "temp",  uc_varname => "Temperature*",       units => "Degrees C",  change_units => "Degrees C", caveat => "* Temperature refers to the average of the nighttime low (minimum temperature) and the daytime high (maximum temperature)." },
-      # {var => $lookup_by_symname->{'var'}->{'prec'}, symname => "prec",  uc_varname => "Precipitation* (rain plus snow)",    units => "mm per day", change_units => "percent",   caveat => "* Precipitation (rain plus snow) refers to the total amount of water that results from rainfall plus the amount of water that would result from melting of fallen snow." },
-      # {var => $lookup_by_symname->{'var'}->{'pass'}, symname => "pass",  uc_varname => "Precipitation as Snow*", units => "mm", change_units => "percent",   caveat => "* 'Precipitation as Snow' is a derived variable, calculated from GCM projected total precipitation (rain and snow) as well as temperature.<br/><br/>Annual values of this derived variable have been coorected based on an emperical relationship between computed and observed values in BC. This correction is not yet available for seasonal values so the annual values may differ from the seasonal totals" },
-      # {var => $lookup_by_symname->{'var'}->{'dg05'}, symname => "dg05",  uc_varname => "Growing Degree Days*", units => "degree days", change_units => "degree days",   caveat => "* Growing Degree Days (GDDs) is a derived variable that indicates the amount of heat energy available for plant growth, useful for determining the growth potential of crops in a given area. It is calculated by multiplying the number of days that the mean daily temperature exceeded 5&deg;C by the number of degrees above that threshold. For example, if a given day saw an average temperature of 8&deg;C (3&deg;C above the 5&deg;C threshold), that day contributed 3 GDDs to the total. If a month had 15 such days, and the rest of the days had mean temperatures below the 5&deg;C threshold, that month would result in 45 GDDs.<br/><br/>Annual values of this derived variable have been coorected based on an emperical relationship between computed and observed values in BC. This correction is not yet available for seasonal values so the annual values may differ from the seasonal totals" },
-      # {var => $lookup_by_symname->{'var'}->{'dl18'}, symname => "dl18",  uc_varname => "Heating Degree Days*", units => "degree days", change_units => "degree days",   caveat => "* Heating Degree Days (HDDs) is a derived variable that can be useful for indicating energy demand (i.e. the need to heat homes, etc.). It is calculated by multiplying the number of days that the average (mean) daily temperature is below 18&deg;C by the number of degrees below that threshold. For example, if a given day saw an average (mean) temperature of 14&deg;C (4&deg;C below the 18&deg;C threshold), that day contributed 4 HDDs to the total. If a month had 15 such days, and the rest of the days had average (mean) temperatures above the 18&deg;C threshold, that month would result in 60 HDDs.<br/><br/>Annual values of this derived variable have been coorected based on an emperical relationship between computed and observed values in BC. This correction is not yet available for seasonal values so the annual values may differ from the seasonal totals" },
-      # {var => $lookup_by_symname->{'var'}->{'nffd'}, symname => "nffd",  uc_varname => "Frost Free Days*", units => "days", change_units => "days",   caveat => "* Frost-free days is a derived variable referring to the number of days that the minimum daily temperature stayed above 0&deg;C, useful for determining the suitability of growing certain crops in a given area.<br/><br/>Annual values of this derived variable have been coorected based on an emperical relationship between computed and observed values in BC. This correction is not yet available for seasonal values so the annual values may differ from the seasonal totals" },
-      # ];
-
 
   #############################################################
   ## Loop through vars, set up tabs, specs for zoomed images ##
