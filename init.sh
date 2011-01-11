@@ -4,11 +4,12 @@ sudo rm -rf cache/maps
 sudo rm -rf cache/data
 sudo rm -rf cache/zips
 
-mkdir cache/maps
-mkdir cache/data
-mkdir cache/zips
+mkdir -p cache/maps
+mkdir -p cache/data
+mkdir -p cache/zips
 
-sudo rm logs/access.log
+sudo rm -f logs/access.log
+mkdir -p logs
 touch logs/access.log
 
 sudo chown www-data:www-data cache/maps
