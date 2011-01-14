@@ -304,12 +304,12 @@ sub parse_csv { # generic CSV hashifier (column-major, using header row) for thi
   my($datastream, $i);
   my($hash) = {};
 
-  print STDERR "Cache file: " . $cachefile . "\n";
+#  print STDERR "Cache file: " . $cachefile . "\n";
 
   if(!open($datastream, $cachefile)) {  #FIXME we don't know that this will always be a 
-    return {error => "Error opening cache file", size_x => 384, size_y => 128, file => $cachefile};
+    return {error => "parse_csv: Error opening cache file", size_x => 384, size_y => 128, file => $cachefile};
   } else {
-    print STDERR "Opened CSV file for parsing: '" . $cachefile . "'\n";  #SNAFU
+    print STDERR "parse_csv: Opened CSV file for parsing: '" . $cachefile . "'\n";  #SNAFU
   }
 
   my($csvarr, @hashkeys, $csvhash);

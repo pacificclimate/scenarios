@@ -23,6 +23,8 @@ use Carp;
 $SIG{__WARN__} = \&Carp::cluck;
 $SIG{__DIE__} = \&Carp::cluck;
 
+use Data::Dumper;
+
 sub handler {
   my($r) = shift();
   my($q) = CGI->new($r->args());
