@@ -145,6 +145,7 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
   $dat[2]{'planners_desclist'} = $pfd . 'planners-desclist.csv';  # TODO unused right now, make it so!
   $dat[2]{'planners_tab_template'} = $pfd . 'planners-tab.tpl';
   $dat[2]{'planners_vars_csv'} = $pfd . 'planners-vars.csv';
+  $dat[2]{'planners_impacts_csv'} = $pfd . 'planners-impacts.csv';
 
   $dat[2]{'genimage'} = "/usr/local/bin/genimage";
   $dat[2]{'datapath'} = $pfw;

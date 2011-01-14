@@ -167,66 +167,34 @@ sub handler {
   $template_hash->{planners_content} = join(', ', map { "'" . $_ . "'" } @{$displayer->make_html_from_desclist($planners_descs)});
 
 
-  ###################  DECTODO
+  ###################
   ## Impacts Table ##
   ###################
 
   # Conditionals and resulting table rows -- TODO needs to be read from a file
-  my($summary_row_metadata) = [
-#    ["0.20<=ann_temp_10p & 1.00<=ann_temp_50p & 1.00<=ann_temp_90p" , "<td>Warmer annual temperature</td><td><ul><li>Glacier retreat (if applicable)</li><li>Changes in seasonality of streamflow</li><li>Increased evaporation</li></ul></td>"],
-#    ["0.50<=jja_temp_10p & 1.25<=jja_temp_50p & 1.25<=jja_temp_90p" , "<td>Summer warming</td><td><ul><li>Higher temperatures encourage the growth of unfavorable algae and bacteria, adversely impacting water quality"
-#                                                                    . "</li><li>Longer fire seasons may result in more interface fires that threaten communities and infrastructure</li></ul></td>"],
-#    ["0.50<=djf_temp_10p & 1.25<=djf_temp_50p & 1.25<=djf_temp_90p" , "<td>Winter warming</td><td><ul><li>Mid-winter thaw events may damage roads and cause ice jams and flooding with damage to infrastructure such as bridges</li></ul></td>"],
-#    ["0.00<=djf_prec_10p & 7.00<=djf_prec_50p & 15.0<=djf_prec_90p" , "<td>Considerably wetter conditions projected in winter</td>"
-#                                                                    . "<td>Higher winter streamflows and extreme precipitation events may damage infrastructure, cause flooding, or increase the risks of more severe or more frequent floods and landslides"
-#                                                                    . "</li><li>Increase in storm events a concern for infrastructure</li></ul></td>"],
-#    ["-5.0<=jja_prec_10p & 5.00<=jja_prec_50p & 10.0<=jja_prec_90p" , "<td>Most projections for wetter summer</td><td><ul><li>Increased consecutive days of rain could cause summer flooding in normally dry areas</li></ul></td>"],
-#    ["jja_prec_10p<=-10.0 & jja_prec_50p<=-1.0 & jja_prec_90p<=5.00" , "<td>Most projections for drier summer</td><td><ul><li>Increased drought</li><li>Possible declines in recharge rates for groundwater sources</li></ul></td>"],
-#    ["0.20<=jja_temp_10p & 1.00<=jja_temp_50p & 1.00<=jja_temp_90p & jja_prec_10p<=-10.0 & jja_prec_50p<=-1.0 & jja_prec_90p<=5.00" , "<td>Warmer, drier summers</td>"
-#                                                                    . "<td><ul><li>Possibility of more prolonged and intense droughts with lower water supply during periods of peak demand"
-#                                                                    . "</li><li>Reduced soil moisture and increased evaporation, increasing irrigation needs at the same time of year that streamflows are expected to decline"
-#                                                                    . "</li><li>Improved potential for high value crops, if sufficient water is available; warmer temperatures may favour weeds, insects and plant diseases</li></ul></td>"],
-    ["0.20<=ann_temp_10p & 1.00<=ann_temp_50p & 1.00<=ann_temp_90p" , "<td>Warmer annual temperature</td><td><ul><li>Glacier retreat (if applicable)</li><li>Changes in seasonality of streamflow</li><li>Increased evaporation"
-                                                                    ."</li><li>Longer fire seasons may result in more interface fires that threaten communities and infrastructure</li></ul></td>"],
-    ["0.50<=djf_temp_10p & 1.25<=djf_temp_50p & 1.25<=djf_temp_90p" , "<td>Winter warming</td><td><ul><li>Mid-winter thaw events may damage roads and cause ice jams and flooding with damage to infrastructure such as bridges</li></ul></td>"],
-    ["0.00<=djf_prec_10p & 7.00<=djf_prec_50p & 15.0<=djf_prec_90p" , "<td>Considerably wetter conditions projected in winter</td>"
-                                                                    . "<td><ul><li>Higher winter streamflows and extreme precipitation events may damage infrastructure, cause flooding, or increase the risks of more severe or more frequent floods and landslides"
-                                                                    . "</li><li>Increase in storm events a concern for infrastructure</li></ul></td>"],
-    ["-5.0<=jja_prec_10p & 5.00<=jja_prec_50p & 10.0<=jja_prec_90p" , "<td>Wetter summers</td><td><ul><li>Increased consecutive days of rain could cause summer flooding in normally dry areas</li></ul></td>"],
-    ["0.20<=jja_temp_10p & 1.00<=jja_temp_50p & 1.00<=jja_temp_90p & jja_prec_10p<=-10.0 & jja_prec_50p<=-1.0 & jja_prec_90p<=5.00" , "<td>Warmer, drier summers</td>"
-                                                                    . "<td><ul><li>Possibility of more prolonged and intense droughts with lower water supply during periods of peak demand"
-                                                                    . "</li><li>Reduced soil moisture and increased evaporation, increasing irrigation needs at the same time of year that streamflows are expected to decline"
-                                                                    . "</li><li>Higher temperatures encourage the growth of unfavorable algae and bacteria, adversely impacting water quality"
-                                                                    . "</li><li>Possible declines in recharge rates for groundwater sources"
-                                                                    . "</li><li>Improved potential for high value crops, if sufficient water is available; warmer temperatures may favour weeds, insects and plant diseases</li></ul></td>"],
-  ];
-
+  my $impacts_logic_csv = parse_csv($hash->{cfg}->[2]->{'planners_impacts_csv'});
+  my $impacts_logic = [ map {
+                          my $row = $_;
+                          [ map { $impacts_logic_csv->{$_}->[$row] } ("condition","text") ]
+                        } (0 .. $#{ (values %{$impacts_logic_csv})[0] })
+                      ];  # flip it to row-major -- should definitely change parsing code to read as row-major later and eliminate double-transposes
   ## Header Row
-  $template_hash->{'planners_summary_table'}  = "<table>\n";
-  $template_hash->{'planners_summary_table'} .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-  $template_hash->{'planners_summary_table'} .= '<tr class="dkblue"><th>Projections and Variability Effects</th><th>Potential Impacts</th></tr>' . "\n";
+  $template_hash->{'planners_impacts_table'}  = "<table>\n";
+  $template_hash->{'planners_impacts_table'} .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+  $template_hash->{'planners_impacts_table'} .= '<tr class="dkblue"><th>Projections and Variability Effects</th><th>Potential Impacts</th></tr>' . "\n";
 
   # Impacts Rows
   my $expression_success_count = 0;
-  foreach my $row (@$summary_row_metadata) {
+  foreach my $row (@$impacts_logic) { # test each impact condition
     if(test_expression($row->[0], $planners_plotdat_cache)) {
       $expression_success_count++;
-      $template_hash->{'planners_summary_table'} .= (($expression_success_count % 2) ? '<tr class="ltblue">' : '<tr>') . $row->[1] .  '</tr>' . "\n";
+      $template_hash->{'planners_impacts_table'} .= (($expression_success_count % 2) ? '<tr class="ltblue">' : '<tr>') . $row->[1] .  '</tr>' . "\n";
     }
   }
   if ($expression_success_count == 0) {
-    $template_hash->{'planners_summary_table'} .= '<tr><td style="text-align: center;">-</td><td style="text-align: center;">-</td><tr>' . "\n";
+    $template_hash->{'planners_impacts_table'} .= '<tr><td style="text-align: center;">-</td><td style="text-align: center;">-</td><tr>' . "\n";
   }
-  $template_hash->{'planners_summary_table'} .= "</table>\n";
-
-  ###################
-  ## Summary Table ##
-  ###################
-#  HARDCODED  $template_hash->{'planners_variable_table'}  = '<tr class="dkerblue"><th colspan="3">Climate Change Summary for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts'} . ' period</th></tr>';
-#  $template_hash->{'planners_variable_table'} .= '<tr class="dkblue"><th>Variable</th><th>Time of Year</th><th>Future Change for ' . $template_hash->{'var:ts'} .'</th></tr>';
-#  HARDCODED  $template_hash->{'planners_variable_table'} .= '<tr class="dkblue"><th>Variable</th><th>Time of Year</th><th>Projected change from 1961-1990 baseline</th></tr>';
-
-
+  $template_hash->{'planners_impacts_table'} .= "</table>\n";
 
 
 
