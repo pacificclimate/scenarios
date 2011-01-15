@@ -252,7 +252,7 @@ var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
     </div>
     
     <div id="footer">
-      &copy; 2010 Pacific Climate Impacts Consortium
+      &copy; 2011 Pacific Climate Impacts Consortium
     </div>
     
   </div> <!-- end centre -->
