@@ -161,6 +161,9 @@ sub new {
 
       # Fringe size
       $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0.1, width => 4, cssclass => 'tf'}));
+
+      # Disable region vertices
+      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'no-region-vertices', allow_empty => 1, value => 1}));      
   } else {
       # Experiment
       $form->addBit(CICS::FormHandler::Selectfield->new({name => 'expt', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{expt}, value_order => $self->{exptorder}}));
@@ -189,6 +192,9 @@ sub new {
 
       # Fringe size
       $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0.5, width => 4, cssclass => 'tf'}));
+
+      # Disable region vertices
+      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'no-region-vertices', allow_empty => 1, value => 0}));      
   }
 
   # Timeslice

@@ -412,6 +412,10 @@ sub make_cmdlist {
 	);
   }
 
+  if(defined($desc->{'no-region-vertices'}) && $desc->{'no-region-vertices'}) {
+    push(@stuff, "--no-region-vertices");
+  }
+
   foreach(@{str2coords($desc->{points})}) {
     push(@stuff, "--poly-point=".join(":", @{$_}));
   }
