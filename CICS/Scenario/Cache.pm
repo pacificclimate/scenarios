@@ -432,7 +432,7 @@ sub create_cache_filename {
 
   # Select appropriate extension, dir to put it in, and stuff to determine caching
   if($plot_type == TYPE_MAP) {
-    @parts = qw(zoom view_x view_y th var expt toy ts region ocean grid res rt points r_min r_max lang fringe_size baseline_expt);
+    @parts = qw(zoom view_x view_y th var expt toy ts region ocean grid res rt points r_min r_max lang fringe_size baseline_expt no-region-vertices);
     $extn = ".png";
     $dir = $self->{cd}->{'mcachedir'};
   } elsif($plot_type == TYPE_TEXT || $plot_type == TYPE_PLOTINFO) {
@@ -444,7 +444,7 @@ sub create_cache_filename {
     $extn = ".dat";
     $dir = $self->{cd}->{'dcachedir'};
   } elsif($plot_type == TYPE_REGIONONLY) {
-    @parts = qw(zoom view_x view_y expt region res points lang);
+    @parts = qw(zoom view_x view_y expt region res points lang no-region-vertices);
     $extn = ".png";
     $dir = $self->{cd}->{'mcachedir'};
   } elsif($plot_type == TYPE_SCATTER_TIMESLICE || $plot_type == TYPE_SCATTER_TIMESLICE_HIST || $plot_type == TYPE_BANDS_TIMESLICE || $plot_type == TYPE_BANDS_TIMESLICE_HIST || $plot_type == TYPE_SCATTER_TIMESLICE_TEXT || $plot_type == TYPE_BOXPLOT_TIMESLICE || $plot_type == TYPE_BOXPLOT_TIMESLICE_TEXT || $plot_type == TYPE_STICKPLOT) {
@@ -480,7 +480,7 @@ sub create_cache_filename {
       $dir = $self->{cd}->{'dcachedir'};
     }
   } elsif($plot_type == TYPE_MAP_DIFFERENCE) {
-    @parts = qw(zoom view_x view_y th var expt expt_d toy toy_d ts ts_d region ocean grid res rt points r_min r_max lang fringe_size baseline_expt);
+    @parts = qw(zoom view_x view_y th var expt expt_d toy toy_d ts ts_d region ocean grid res rt points r_min r_max lang fringe_size baseline_expt no-region-vertices);
     $extn = ".png";
     $dir = $self->{cd}->{'mcachedir'};
   } elsif($plot_type == TYPE_SCENARIO_DATA) {
