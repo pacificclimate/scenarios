@@ -490,6 +490,8 @@ sub load_gcminfo {
 	  my($year);
 	  for($year = $exptdata[$i]{'yearly_start'}; $year <= $exptdata[$i]{'yearly_end'}; $year++) {
 	      push(@{$exptdata[$i]{'data_yearlist'}}, $year . "_" . $year);
+	      push(@{$exptdata[$i]{"ts_abs"}}, 1);
+
 	  }
       }
 
@@ -857,7 +859,7 @@ sub make_descs_from_list {  #  TODO this is kind of redundant now, now isn't it.
 
 sub test_expression {
 # A few notes here:
-# -Input is unparenthesized CNF
+# -Input is unparenthesized CNF FIXME this was supposed to be DNF.... I think?
 #   -Negation not yet implemented but fairly trivial, making this logically complete WITHOUT inverting operators.
 # -Anything with at least one letter in it is assumed to be a var name.
 # -This will succeed on an empty test string.

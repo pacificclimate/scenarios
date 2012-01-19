@@ -134,7 +134,7 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
   $dat[2]{'datadir'} = "/home/bronaugh/data/nc/";
 
 } elsif ($host == 1) {
-  my($pfd) = "/home/data2/modperl/scenarios-windy/";
+  my($pfd) = "/home/data3/modperl/scenarios-windy/";
   my($pfw) = "/tools/";
   $dat[2]{'gcminfofile'} = $pfd . "134.csv";
   $dat[2]{'regionfile'} = $pfd . "regions.csv";

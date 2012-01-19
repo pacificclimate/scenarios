@@ -121,6 +121,7 @@ sub handler {
   $template_hash->{'var:region'} = $hash->{'mainform'}->{'prs'}->[$basedesc->{'pr'}];
 
   # Images for each tab
+  ## FIXME: Search for CRU instead of hard-coding location in list.
   my $planners_plots = [ [ {plot_type => TYPE_MAP, res => 3,         expt => 209, ts => 0, ts_d => 0, region => 5},
 			   {plot_type => TYPE_MAP, res => 3,         expt => 204, region => 5},
 			   {plot_type => TYPE_STICKPLOT,             expt => 11,  sset => 280, zoom => 0, baseline_expt => 217} ],

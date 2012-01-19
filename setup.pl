@@ -1,4 +1,4 @@
-use lib qw(/home/data2/modperl/scenarios-windy);
+use lib qw(/home/data3/modperl/scenarios-windy);
 
 # Go go coverage testing
 #use Devel::Cover;

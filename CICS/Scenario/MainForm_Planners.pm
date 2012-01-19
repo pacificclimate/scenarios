@@ -74,6 +74,10 @@ sub new {
 
 # TEMP 2010-06-01      @{$self->{dd}->{timeofyear}}[(0..11,17..19)] = "";
       @{$self->{dd}->{timeofyear}}[(17..19)] = "";
+      # No complex times of year
+      @{$self->{dd}->{timeofyear}}[(17..19)] = "";
+      # Per TQM 2011-08 removing monthly
+      @{$self->{dd}->{timeofyear}}[(0..11)] = "";
 
 
 
