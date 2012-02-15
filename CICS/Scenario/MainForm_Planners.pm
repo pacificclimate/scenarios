@@ -163,8 +163,8 @@ sub new {
       $form->addBit(CICS::FormHandler::Selectfield->new({name => 'region', allow_empty => 0, numeric => 1, value => 4, allowed_values => $self->{regionlist}}));   # Both of these were defaulted to 5 for some reason.
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldregion', allow_empty => 0, numeric => 1, value => 4, allowed_values => $self->{regionlist}}));
 
-      # Fringe size
-      $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0.1, width => 4, cssclass => 'tf'}));
+      # Fringe size  TODO for now this has to be 0 because genimage poly expansion code is broken. Used to be 0.1.
+      $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0, width => 4, cssclass => 'tf'}));
 
       # Disable region vertices
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'no-region-vertices', allow_empty => 1, value => 1}));      
@@ -194,8 +194,8 @@ sub new {
       $form->addBit(CICS::FormHandler::Selectfield->new({name => 'region', allow_empty => 0, numeric => 1, value => $region_default, allowed_values => $self->{regionlist}}));
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldregion', allow_empty => 0, numeric => 1, value => $region_default, allowed_values => $self->{regionlist}}));
 
-      # Fringe size
-      $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0.5, width => 4, cssclass => 'tf'}));
+      # Fringe size TODO for now this has to be 0 because genimage poly expansion code is broken.  Used to be 0.5.
+      $form->addBit(CICS::FormHandler::Textfield->new({name => 'fringe_size', allow_empty => 0, numeric => 1, value => 0, width => 4, cssclass => 'tf'}));
 
       # Disable region vertices
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'no-region-vertices', allow_empty => 1, value => 0}));      
