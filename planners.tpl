@@ -199,7 +199,7 @@ var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
             
             <%c_form:c_submit%><br/>
             
-            <%c_form:oldregion%>  <%c_form:oldvar%>  <%c_form:oldres%>  <%c_form:oldexpt%>  <%c_form:oldts%>  <%c_form:oldpr%>  <%c_form:points%>  <%c_form:dpoint%>  <%c_form:seltab%>
+            <%c_form:oldregion%>  <%c_form:oldvar%>  <%c_form:oldres%>  <%c_form:oldexpt%>  <%c_form:oldts%>  <%c_form:oldpr%>  <%c_form:dpoint%>  <%c_form:seltab%>
             <div style="display: none;">
               <%c_form:fringe_size%>  <%c_form:view_x%>  <%c_form:view_y%>  <%c_form:th%>  <%c_form:zoom%>  <!-- FIXME make these hidden and remove this div -->
             </div>

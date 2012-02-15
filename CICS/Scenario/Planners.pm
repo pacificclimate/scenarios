@@ -106,6 +106,8 @@ sub handler {
   #################
 
   my($basedesc) = {%{$descriptions->[0]}, region => 3, };  # something to mangle to set up all the other plots
+  # Testing to fix long URIs 2012/01/31 -- fixes it for IMAGE URIs; fix for page stage GET data is in page template (removal of points element from form)
+  delete $basedesc->{'points'};
 
   if($basedesc->{pr} != 0) { #FIXME HACK fixing gridbox coverage issues, for now...
     $basedesc->{ocean} = 1;
