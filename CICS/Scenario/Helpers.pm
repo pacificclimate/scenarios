@@ -858,53 +858,24 @@ sub make_descs_from_list {  #  TODO this is kind of redundant now, now isn't it.
 }
 
 sub test_expression {
-# A few notes here:
-# -Input is unparenthesized CNF FIXME this was supposed to be DNF.... I think?
-#   -Negation not yet implemented but fairly trivial, making this logically complete WITHOUT inverting operators.
-# -Anything with at least one letter in it is assumed to be a var name.
-# -This will succeed on an empty test string.
-  my(%ops) = (
-    '>'  => sub { $_[0] >  $_[1] },
-    '<'  => sub { $_[0] <  $_[1] },
-    '>=' => sub { $_[0] >= $_[1] },
-    '<=' => sub { $_[0] <= $_[1] },
-    '==' => sub { $_[0] == $_[1] },
-  );
+# Evaluates impact conditionals using eval()
+
+# Assumes 3 underscore-delimited segments in data specifiers; this needs to be changed later FIXME
 
   my ($test, $plotdat_cache) = @_;
 
-  print STDERR 'Testing: "' . $test . "\"\n";
+  print STDERR 'Testing: "' . $test . "\" => ";
 
-  $test =~ s/[ \t]//g;  # Allow for easier-to-read expressions with whitespcae.
+  # Pull values from cache or genimage
+  $test =~ s/([a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*){2})/get_plotdat($plotdat_cache, $1)/eg;
+  print STDERR '"' . $test . '" => ';
 
-  my(@conj) = split(/&/,$test);
+  # Eval it
+  my $returnme = eval $test;
+  print STDERR ( $returnme ? "TRUE\n" : "FALSE\n" );
 
-  foreach (@conj) {
-    my($fail) = 1;
-
-    my(@disj) = split(/\|/, $_);
-
-    foreach (@disj) {
-      if ($_ =~ /(.*?)([<>]=?)(.*)/) {  # Non-greedy so this can be extended with optional '!' op prefix                  
-                                              # Might still do !termOPterm though.                                              
-	my($lh, $op, $rh) = ($1, $2, $3);
-	$lh =~ s/(.*[a-zA-Z].*)/get_plotdat($plotdat_cache, $1)/e;
-	$rh =~ s/(.*[a-zA-Z].*)/get_plotdat($plotdat_cache, $1)/e;
-	print STDERR "Test is $lh $op $rh\n";    # DEBUG                                                                       
-	if (&{$ops{$op}}($lh, $rh)) {
-	  $fail = 0;
-	  last;
-	}
-      } else {
-                # OOPS.  Do something about it.  But this is not from user-supplied data, so meh.   FIXME should bail properly anyways...
-      }
-    } # disj loop
-    if ($fail) { return 0; }
-  } # conj loop
-return 1;
+  return $returnme;
 }
-
-
 
 sub get_plotdat {
   my($plotdat_cache, $key) = @_;  # TODO this is getting huge, perhaps turn the whole thing into an object?
