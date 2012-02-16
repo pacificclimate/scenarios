@@ -866,11 +866,11 @@ sub test_expression {
 
   print STDERR 'Testing: "' . $test . "\" => ";
 
-  # Pull values from cache or genimage
-  $test =~ s/([a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*){2})/get_plotdat($plotdat_cache, $1)/eg;
+  # Set up accesses to cache / genimage
+  $test =~ s/([a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*){2})/ get_plotdat($plotdat_cache, $1) /g;
   print STDERR '"' . $test . '" => ';
 
-  # Eval it
+  # Eval it (lazy eval now)
   my $returnme = eval $test;
   print STDERR ( $returnme ? "TRUE\n" : "FALSE\n" );
 
