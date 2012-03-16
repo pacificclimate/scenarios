@@ -25,6 +25,9 @@ $dat[3]{'timeofyear'} = # symbolic toy names
   [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "djf", "mam", "jja", "son", "ann" ];
 $dat[4]{'timeofyear'} =
   [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 12, -9999, -9999, -9999 ];  # FIXME 
+## ncWMS times of year
+$dat[5]{'timeofyear'} =
+    [ '01-16',  '02-16',  '03-16',  '04-16',  '05-16',  '06-16',  '07-16',  '08-16',  '09-16',  '10-16',  '11-16',  '12-16',  '01-15',  '04-15',  '07-15',  '10-15',  '07-01' ];
 
 # Idea for variables is: Write them here now, change them later if needed
 $dat[0]{'variable'} = 
@@ -207,6 +210,9 @@ $dat[0]{'timeslice'} = [ "1961-1990 Baseline", "2020s (2010-2039)", "2050s (2040
 $dat[1]{'timeslice'} = [ "Données de référence 1961-1990", "2020s", "2050s", "2080s", "Tout" ];
 $dat[2]{'timeslice'} = [ "1961_1990", "2020", "2050", "2080", [ 0..3 ] ];
 $dat[3]{'timeslice'} = [ "1961_1990", "2010_2039", "2040_2069", "2070_2099", [ 0..3 ] ];
+## ncWMS filename periods and time periods
+$dat[4]{'timeslice'} = [ "1961-1990", "2010-2039", "2040-2069", "2070-2099", [ 0..3 ] ];
+$dat[5]{'timeslice'} = [ "1975", "2025", "2055", "2075", [ 0..3 ] ];
 
 # FIXME - LANG
 # Map regions (this will be extended later)
