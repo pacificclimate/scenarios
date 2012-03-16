@@ -62,8 +62,8 @@ function doLoad() {
   setOnclicks(sidetabs, clickSideTab);
   setOnclicks(thumbs, zoomImg);
   /*   setOnclicks(zoomed, hideImg);  replacing w/ BG + close button*/
-  setOnclicks(bgs, hideImg); /* this needs to be a single element at some point... */
-  setOnclicks(closebuttons, hideImg);
+    setOnclicks(bgs, hideImg); /* this needs to be a single element at some point... */
+    setOnclicks(closebuttons, hideImg);
   detectExploder();
   detectPostageStamp();
 
@@ -78,7 +78,8 @@ function makeCallback(func, i) {
 function setOnclicks(idarray, func) {
     var i;
     for(i = 0; i < idarray.length; i++) {
-	document.getElementById(idarray[i]).onclick = makeCallback(func, i);
+	var elem = document.getElementById(idarray[i])
+	if(elem) { elem.onclick = makeCallback(func, i); }
     }
 }
 
@@ -133,12 +134,27 @@ function updateContentPane() {
 
 function zoomImg(foo) {
     //    document.body.style.overflow = 'hidden';
+    document.getElementById(zoomed[foo]).className = 'zoomed';
     if (zoomimghtmlshown[foo] != 1) {
 	document.getElementById(zoomimghtmlids[foo]).innerHTML = zoomimghtml[foo];
+	var fut = ol_params[foo + 1];
+	var past = ol_params[foo];
+	//init_map("ol_temp_hist", 'Bulkley-Nechako', 'climatebc-hist-pr-run1-1961-1990/pr', '1975-07-01T00:00:00Z', '0,0.0001157', "rainbow", new OpenLayers.Geometry.Point(1162843.9625, 417062.775), 0);
+	init_map(past[0], past[1], past[2], past[3], past[4], past[5], past[6], past[7]);
+	init_map(fut[0], fut[1], fut[2], fut[3], fut[4], fut[5], fut[6], fut[7]);
 	zoomimghtmlshown[foo] = 1;
     }
-    document.getElementById(zoomed[foo]).className = 'zoomed';
     zoomedwindow = foo;
+}
+
+function zoomImpact(foo) {
+    document.getElementById(foo).className = 'zoomed';
+    return false;
+}
+
+function hideImpact(foo) {
+    document.getElementById(foo).className = 'zoomable';
+    return false;
 }
 
 function hideImg(foo) {
@@ -154,7 +170,6 @@ function showImages(contentpaneindex) { // display all thumbs (FIXME and for now
 	document.getElementById(imgdivids[i]).innerHTML = thmimghtml[thmimghtmloffsets[contentpaneindex] + i];
     }
 }
-/* OLD */
 
 function printDebug(message) {
   document.getElementById('debug').innerHTML = message;

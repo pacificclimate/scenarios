@@ -1,3 +1,53 @@
+span.hydrology {
+    background-color: #000080;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.agriculture {
+    background-color: #653c00;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.biodiversity {
+    background-color: #408040;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.fisheries {
+    background-color: #8080FF;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.forestry {
+    background-color: #008000;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.infrastructure {
+    background-color: #404040;
+    color: #FFFFFF;
+    padding: 3px;
+}
+span.land_use_planning {
+    background-color: #70FFFF;
+    color: #000000;
+    padding: 3px;
+}
+
+.smallmap {
+    width: 367px;
+    height: 317px;
+    border: 1px solid #ccc;
+}
+
+div.olMapViewport {
+    background-image: url(water.jpg);
+}
+#slider-id {
+    width: 367px;
+    margin: 10px;
+}
+
 * { margin: 0; padding: 0; }
 
 #content ul, #content ol { margin-left: 0; padding-left: 1.7em; }
@@ -217,8 +267,6 @@ background-color: #001D48;
 color: #FFFFFF;
 }
 
-
-
 #content div.contentcolumn { /* FIXME these are rows now */
 display: block;
 /* width: 188px; */
@@ -256,8 +304,8 @@ opacity:0.6;
 -khtml-opacity:0.6;
 }
 
-#content div.zoomable { display: none; }  /* invisible control container */
-#content div.zoomed { /* default */ }
+#content div.zoomable {  display: none; }  /* invisible control container */
+#content div.zoomed { }
 
 /* internal div providing zoomed content */
 #content div.zoomwin {
@@ -312,11 +360,14 @@ text-align: left;
 }
 #content div.zoomwin table.maptable {
 table-layout: fixed;
+margin-left: 20px;
 }
-#content div.zoomwin table.maptable div {
-overflow: hidden;
-max-height: 430px;  /* hack!  also possibly change this to height? */
-max-width: 402px;
+#content div.zoomwin table.maptable div.olMap {
+/*overflow: hidden;*/
+max-height: 410px;  /* hack!  also possibly change this to height? */
+max-width: 395px;
+height: 410px;
+border: 1px solid black;
 }
 
 img.map {
