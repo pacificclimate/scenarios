@@ -39,6 +39,7 @@ sub renderField {
     } else {
 	@itemidx = 0 .. $#{$self->{allowed_values}};
     }
+    my($oldgroup) = "";
     foreach(@itemidx) {
       $key = $_;
       if(length($self->{allowed_values}->[$key])) {
@@ -47,6 +48,18 @@ sub renderField {
 	  $hash->{class} = "selected";
 	  $hash->{selected} = "selected";
 	}
+	if(defined($self->{group}) && is_arrayref($self->{group})) {
+	    if($oldgroup ne $self->{group}->[$key]) {
+		if($oldgroup ne "") {
+		    $text .= "</optgroup>\n";
+		}
+		if($self->{group}->[$key] ne "") {
+		    my($optgroup_hash) = { label => $self->{group}->[$key] };
+		    $text .= createXMLElement("optgroup", 0, $optgroup_hash);
+		}
+		$oldgroup = $self->{group}->[$key];
+	    }
+	}
 	if(substr($self->{allowed_values}->[$key], 0, 2) eq "--") {
 	    #$hash->{disabled} = "disabled";
 	}
@@ -54,8 +67,11 @@ sub renderField {
 	$text .= $self->{allowed_values}->[$key] . "</option>\n";
       }
     }
+    if($oldgroup ne "") {
+	$text .= "</optgroup>\n";
+    }
   }
-
+  
   $text .= "</select>\n";
 
   return $text;

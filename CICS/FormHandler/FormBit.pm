@@ -41,6 +41,9 @@ sub new {
   # Order of values
   set_if_empty($self, "value_order", undef);
   
+  # Group to put stuff in (same length as data)
+  set_if_empty($self, "group", undef);
+  
   # Text of last error message
   set_if_empty($self, "error_text", "");
   
@@ -82,6 +85,12 @@ sub maxlength {
 }
 sub allowed_values {
   return accessvar("allowed_values", is_arrayref, @_);
+}
+sub value_order {
+  return accessvar("value_order", is_arrayref, @_);
+}
+sub group {
+  return accessvar("group", is_hashref, @_);
 }
 sub error_text {
   return accessvar("error_text", undef, @_);
