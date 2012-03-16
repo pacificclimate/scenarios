@@ -3,6 +3,7 @@ package CICS::Scenario::Helpers;
 use strict;
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use POSIX qw(floor ceil);
+use Text::CSV_XS;
 
 use CICS::Helpers;
 use CICS::Scenario::Cache;  #need to know plot types for desc-mangling!
@@ -300,9 +301,16 @@ sub transpose_csv_hash { # convert column-major hashref-of-column-arrayrefs to r
 }
 
 sub parse_csv { # generic CSV hashifier (column-major, using header row) for things like SCATTER_TIMESLICE_TEXT
-  my($cachefile) = @_;
+  my($cachefile, $sep) = @_;
   my($datastream, $i);
   my($hash) = {};
+
+  if(!defined($sep)) {
+      $sep = ",";
+  }
+
+  my $csv = Text::CSV_XS->new ({ binary => 1, sep_char => $sep }) or
+      die "Cannot use CSV: ".Text::CSV_XS->error_diag ();
 
 #  print STDERR "Cache file: " . $cachefile . "\n";
 
@@ -313,32 +321,28 @@ sub parse_csv { # generic CSV hashifier (column-major, using header row) for thi
   }
 
   my($csvarr, @hashkeys, $csvhash);
+  my($splitpattern) = '("[^"]*"|[^' . $sep . ']+)';
 
-  while(<$datastream>) {
-    chomp;
-    #my(@fields) = ( $_ =~ /[^,]+/g );
-    # better:
-    my(@fields) = map { s/"(.*)"/$1/ ; $_ } ($_ =~ m/("[^"]*"|[^,]+)/g);
-
-    if(!is_arrayref($csvarr)) { # first row
-      # first row, store the column keys
-      @hashkeys = (@fields);
-      # init the corresponding arrayrefs
-      $csvarr = [];
-      foreach (0..$#fields) {
-	push(@$csvarr, []);
+  while(my $fields = $csv->getline($datastream) ) {
+      if(!is_arrayref($csvarr)) { # first row
+	  # first row, store the column keys
+	  @hashkeys = @{$fields};
+	  # init the corresponding arrayrefs
+	  $csvarr = [];
+	  foreach (0..$#{$fields}) {
+	      push(@$csvarr, []);
+	  }
+      } else {                    # data
+	  # append to each column array.
+	  if($#{$fields} != $#hashkeys) {
+	      die("CSV file '" . $cachefile . "' is jagged: " . $#hashkeys . " keys but contains row with " . $#{$fields} . " fields.");
+	  }
+	  foreach (0..$#{$fields}) {
+	      push(@{$csvarr->[$_]}, $fields->[$_]);
+	  }
       }
-    } else {                    # data
-      # append to each column array.
-      if($#fields != $#hashkeys) {
-	die("CSV file '" . $cachefile . "' is jagged: " . $#hashkeys . " keys but contains row with " . $#fields . " fields.");
-      }
-      foreach (0..$#fields) {
-	push(@{$csvarr->[$_]}, $fields[$_]);
-      }
-    }
   }
-
+  $csv->eof or $csv->error_diag ();
   close($datastream);
 
   # hashify it
