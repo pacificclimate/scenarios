@@ -64,7 +64,6 @@ sub lang {
 sub dat {
   my($lang) = accessvar("lang", undef, @_);
   my($self) = @_;
-  $self->fix_subrefs();
 #  return $lang;  # FIXME ?
   return accessvar("dat", undef, @_);
 }
@@ -518,6 +517,107 @@ sub make_error_img {
   return $output;
 }
 
+sub make_sector_span {
+    my($str) = @_;
+    my($origstr) = $str;
+    $str = lc($str);
+    $str =~ s/ /_/g;
+    return '<span class="' . $str . '">' . $origstr . '</span>';
+}
+
+sub make_planners_impacts_table {
+    my($self, $template_hash, $planners_plotdat_cache) = @_;
+    my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
+    my($expression_success_count) = 0;
+    my($result_html) = "";
+    my(%catmapper) = ("High Intensity Precipitation" => "high_intensity_precipitation", "Possible Flooding" => "possible_flooding", "Waterlogged Soil" => "waterlogged_soil", "Sea Level Rise / Storm Surge" => "sea_level_rise", "Reduced Water Supply" => "reduced_water_supply", "Longer Dry Season" => "longer_dry_season", "Increase in Temperature" => "increase_in_temperature", "Considerable Increase in Temperature" => "considerable_increase_in_temperature", "Change in Hydrologic Regime" => "change_in_hydrologic_regime", "Increase in Freeze/Thaw Cycles" => "increase_in_freeze_thaw_cycles", "Increase in Hot and Dry Conditions" => "increase_in_hot_and_dry_conditions", "Changes in Snowpack" => "changes_in_snowpack", "Change in Species Range" => "change_in_species_range", "Possible Change in Productivity" => "possible_change_in_productivity");
+
+    # Conditionals and resulting table rows -- TODO needs to be read from a file
+    my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
+
+    ## Header Row
+    $result_html = "<table>\n";
+    $result_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+    $result_html .= '<tr class="dkblue"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
+
+    my %cond_hash;
+    @cond_hash{@{$impacts_logic_csv->{id}}} = @{$impacts_logic_csv->{condition}};
+
+    my %category_hash;
+    foreach my $rowid (0..$#{$impacts_logic_csv->{id}}) {
+	my $category = $impacts_logic_csv->{category}->[$rowid];
+	if($category eq "") {
+	    next;
+	}
+	my $rule = resolve_rule_references(\%cond_hash, $impacts_logic_csv->{id}->[$rowid]);
+	print STDERR "id: " . $impacts_logic_csv->{id}->[$rowid] . ", rule: " . $rule . "\n";
+	if(test_expression($rule, $planners_plotdat_cache)) {
+	    my $dathash;
+	    if(exists($category_hash{$category})) {
+		$dathash = $category_hash{$category};
+	    } else {
+		$dathash = {};
+		$dathash->{sectors} = {};
+		$dathash->{category_text} = "";
+		$category_hash{$category} = $dathash;
+	    }
+	    $dathash->{sectors}->{$impacts_logic_csv->{sector}->[$rowid]} = 1;
+	    $dathash->{category_text} .= "<h3>" . $impacts_logic_csv->{text1}->[$rowid] . '</h3><div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	}
+    }
+
+    foreach my $cat (sort(keys(%category_hash))) {
+	$result_html .= '<tr><td style="text-align: center;"><a href="#" onclick="' . "zoomImpact('" . $catmapper{$cat} . "')\">" . $cat . '</a></td>';
+	$result_html .= '<td style="text-align: center;">' . join(", ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</td></tr>' . "\n";
+    }
+    $result_html .= "</table>\n";
+
+    foreach my $cat (keys(%catmapper)) {
+	my($innertext) = exists($category_hash{$cat}) ? '<h2>' . $cat . '</h2><div style="padding: 10px;">' . $category_hash{$cat}->{category_text} . "</div>\n" : "";
+	$result_html .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => $catmapper{$cat}, "category_text" => $innertext});
+    }
+
+    return $result_html;
+}
+
+sub make_map_creation_param_js {
+    my($self, $desc) = @_;
+    my(%curexpt) = %{$self->{exptdata}->[$desc->{expt}]};
+    my($scale_factor) = $self->{dat}->[18]{'variable'}->[$desc->{var}];
+    my($add_factor) = $self->{dat}->[19]{'variable'}->[$desc->{var}];
+    my($ncwms_varname) = $self->{dat}->[16]{variable}->[$desc->{var}];
+    my($ncwms_period) = $curexpt{ncwms_periods}->[$desc->{ts}];
+    my($ncwms_expt) = lc($curexpt{exptname});
+    my($ncwms_scen, $ncwms_run) = split(/-/, $ncwms_expt);
+
+    my($div_id) = '"ol_' . $self->{dat}->[2]{'variable'}[$_->{'var'}] . '_' . (($_->{'ts'} == 0) ? 'hist' : 'future') . '"';
+    my($region) = '"' . $self->{regions}->[$desc->{pr}]{name}->[0] . '"';
+    my($climate_overlay) = '"' . join("-", $curexpt{modelname}, $ncwms_scen, $ncwms_varname, $ncwms_run, $ncwms_period) . '/' . $ncwms_varname . '"';
+    my($climate_time) = '"' . $curexpt{'ncwms_centers'}[$desc->{ts}] . '-' . $self->{dat}->[5]{'timeofyear'}->[$desc->{toy}] . 'T00:00:00Z"';
+    my($climate_color_scale) = '"' . $self->{dat}[17]{variable}->[$desc->{var}] . '"';
+    my($climate_color_range) = '"' . (($desc->{r_min} * $scale_factor) + $add_factor) . "," . (($desc->{r_max} * $scale_factor) + $add_factor) . '"';
+    ## FIXME: NEED TO PROJECT THIS.
+    my($center_point) = 'new OpenLayers.LonLat(' . join(",", $desc->{view_x}, $desc->{view_y}) .')';
+    my($zoom_level) = $desc->{zoom};
+    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level) . ')';
+}
+
+sub make_ol_map_js_from_desclist {
+    my($self, $descs) = @_;
+    my($result) = [];
+
+    foreach(@$descs) {
+	if(is_arrayref($_)) {
+	    push(@{$result}, make_ol_map_js_from_desclist($self, $_));
+	} else {
+	    if($_->{plot_type} == TYPE_MAP) {
+		push(@{$result}, make_map_creation_param_js($self, $_));
+	    }
+	}
+    }
+    return(join(",", @{$result}));
+}
+
 sub make_html_from_desclist {  # WARNING do not use this with arrays for general purposes!
   my($self, $descs) = @_;
   my($wrapper) = $self->{cd}->{wrapper};
@@ -532,13 +632,11 @@ sub make_html_from_desclist {  # WARNING do not use this with arrays for general
       if(is_arrayref($_)) {
 	  print STDERR "Plot type keys are: " . join(",",keys(%img_class_hash)) . "\n";
 	  my $images = make_html_from_desclist($self,$_);
-	  push(@{$result}, '<table class="maptable"> <tr><th style="width: 402px;"><h3>Historical</h3></th><th style="width: 402px;"><h3>Projected</h3></th><th style="width: 82px;"><h3>Range</h3></th></tr> <tr>'
-	       . #join('', map( '<td style="max-width: 402px;"><div>'.$_.'</div></td>', @{make_html_from_desclist($self,$_)})) . '</tr> </table>')
-	         '<td style="width: 402px;"><div>'.$images->[0].'</div></td>' . '<td style="width: 402px;"><div>'.$images->[1].'</div></td style="width: 82px;">' . '<td><div>'.$images->[2].'</div></td>');  # Hideous
-#	  push(@{$result}, "<table> <tr><th><h3>Historical</h3></th><th><h3>Projected</h3></th><th><h3>Range</h3></th></tr> <tr><td><div>" . join("</div></td><td><div>", @{$images}) . "</div></td></tr></table>")
+	  push(@{$result}, $images->[0]);
       } else {
-#	  print STDERR "Plot type is $_->{plot_type}, $img_class_hash{$_->{plot_type}}\n";
-	  push(@{$result}, "<img src=\"".$wrapper."?".mkgetstring($_)."\" class=\"" . $img_class_hash{$_->{plot_type}} . "\" alt=\"\"/>");
+	  if($_->{plot_type} != TYPE_MAP) {
+	      push(@{$result}, "<div><img src=\"".$wrapper."?".mkgetstring($_)."\" class=\"" . $img_class_hash{$_->{plot_type}} . "\" alt=\"\"/></div>");
+	  }
       }
   }
 
