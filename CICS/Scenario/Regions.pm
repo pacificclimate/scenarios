@@ -7,7 +7,7 @@ use CICS::Helpers;
 
 use Exporter 'import';
 
-our(@EXPORT) = qw(str2coords coords2str loadRegions saveRegions getRegionList);
+our(@EXPORT) = qw(str2coords coords2str loadRegions saveRegions getRegionList getRegionGroupList);
 
 sub str2coords {
   my($string) = @_;
@@ -53,6 +53,8 @@ sub loadRegions {
   my($csv) = Text::CSV_XS->new();
   my($fd);
   if(open($fd, $filename)) {
+    my($header);
+    $header = readline($fd);
     while(<$fd>) {
       $_ =~ /^(.*)$/;
       my($line) = $1;
@@ -60,11 +62,15 @@ sub loadRegions {
       if($csv->parse($line)) {
 	my($region);
 	$region->{coords} = [];
-	my($threshold, $enname, $frname, @coords) = $csv->fields();
-	$region->{name} = [ $enname, $frname ];
+	my($threshold, $enname, $group, $glacier_frac, $coast_bool, $coords) = $csv->fields();
+	$region->{name} = [ $enname, $enname ];
 	$region->{threshold} = $threshold;
+	$region->{group} = $group;
+	$region->{glacierfraction} = $glacier_frac;
+	$region->{oncoast} = $coast_bool;
+	my(@coordlist) = split(/;/, $coords);
 	my(@bits);
-	foreach(@coords) {
+	foreach(@coordlist) {
 	  my(@otherbits) = split(/:/, $_);
 	  if($#otherbits == 1) {
 	    $otherbits[2] = 0;
@@ -73,12 +79,15 @@ sub loadRegions {
 	}
 	$region->{coords} = join(",", @bits);
 	push(@{$regions}, $region);
+      } else {
+	  print STDERR "Bad CSV line!\n";
       }
     }
     close($fd);
   } else {
     print STDERR "Couldn't open region file " . $filename ."!\n";
   }
+  
   return $regions;
 }
 
@@ -105,6 +114,15 @@ sub getRegionList {
   my(@list);
   foreach(@{$regions}) {
     push(@list, $_->{name}[$lang]);
+  }
+  return \@list;
+}
+
+sub getRegionGroupList {
+  my($regions) = @_;
+  my(@list);
+  foreach(@{$regions}) {
+    push(@list, $_->{group});
   }
   return \@list;
 }
