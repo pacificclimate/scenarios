@@ -136,16 +136,17 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
 } elsif ($host == 1) {
   my($pfd) = "/home/data3/modperl/scenarios-windy/";
   my($pfw) = "/tools/";
-  $dat[2]{'gcminfofile'} = $pfd . "134.csv";
-  $dat[2]{'regionfile'} = $pfd . "regions.csv";
+  $dat[2]{'gcminfofile'} = $pfd . "135.csv";
+  $dat[2]{'regionfile'} = $pfd . "regions-new.csv";
   $dat[2]{'template'} = $pfd . 'explorer.tpl';
 
-  $dat[2]{'planners_regionfile'} = $pfd . "planners-regions.csv";
+  $dat[2]{'planners_regionfile'} = $pfd . "planners-analysis-regions.csv";
+  $dat[2]{'planners_impacts_template'} = $pfd . 'impacts.tpl';
   $dat[2]{'planners_template'} = $pfd . 'planners.tpl';
   $dat[2]{'planners_desclist'} = $pfd . 'planners-desclist.csv';  # TODO unused right now, make it so!
   $dat[2]{'planners_tab_template'} = $pfd . 'planners-tab.tpl';
   $dat[2]{'planners_vars_csv'} = $pfd . 'planners-vars.csv';
-  $dat[2]{'planners_impacts_csv'} = $pfd . 'planners-impacts.csv';
+  $dat[2]{'planners_impacts_csv'} = $pfd . 'planners-impacts-v7.csv';
 
   $dat[2]{'genimage'} = "/usr/local/bin/genimage";
   $dat[2]{'datapath'} = $pfw;
