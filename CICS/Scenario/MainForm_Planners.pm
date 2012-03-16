@@ -36,7 +36,7 @@ sub new {
   my($self) = {};
 
   if(defined($in) && is_hashref($in)) {
-    foreach(qw(post cfg lang expt dat str exptmulti exptdata prs regions cache action)) {
+    foreach(qw(post cfg lang expt dat str exptmulti exptdata prs pr_group regions cache action)) {
       if(defined($in->{$_})) {
 	$self->{$_} = $in->{$_};
       }
@@ -81,7 +81,7 @@ sub new {
 
 
 
-      $self->{prs}->[0] = "British Columbia";
+      #$self->{prs}->[0] = "British Columbia";
 
       $self->{ts}[0] = "";
       $self->{ts}[4] = "";
@@ -151,7 +151,7 @@ sub new {
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldvar', allow_empty => 0, numeric => 1, value => -1, allowed_values => $self->{vars}}));
 
       # Predefined region
-      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'pr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}}));
+      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'pr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}, group => $self->{pr_group}}));
 
       # Old Predefined region
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldpr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}}));
@@ -182,7 +182,7 @@ sub new {
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldvar', allow_empty => 0, numeric => 1, value => -1, allowed_values => $self->{vars}}));
 
       # Predefined region
-      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'pr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}}));
+      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'pr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}, group => $self->{pr_group}}));
 
       # Old Predefined region
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldpr', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{prs}}));

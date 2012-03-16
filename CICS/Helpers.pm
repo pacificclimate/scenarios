@@ -25,10 +25,11 @@ sub clean_string {
   return $str;
 }
 
+## Tries to fetch stuff from plot data if requested (by tokens being prefixed by data:) in a template on demand...
 sub parseTemplateString {  # FIXME maybe fork this to planners version so nobody else trips on it
   my($str, $hash, $plotdat_cache) = @_;
 #  $str =~ s/<%([^%]*)%>/(defined($hash->{$1})?$hash->{$1}:"")/egs;
-  $str =~ s|<%([^%]*)%>|($1 =~ /^(data:.*)$/)?(CICS::Scenario::Helpers::get_plotdat($plotdat_cache, $1)):((defined($hash->{$1})?$hash->{$1}:""))|egs;
+  $str =~ s|<%([^%]*)%>|($1 =~ /^(data:.*)$/)?(CICS::Scenario::Helpers::get_ruledat($plotdat_cache, $1)):((defined($hash->{$1})?$hash->{$1}:""))|egs;
   return $str;
 }
 

@@ -75,6 +75,7 @@ sub handler {
     lang => $args->{lang},
     post => $args,
     prs => getRegionList($regions, $args->{lang}),
+    pr_group => getRegionGroupList($regions),
     regions => $regions,
     action => $r->uri
       };
@@ -107,7 +108,6 @@ sub handler {
 
   my($basedesc) = {%{$descriptions->[0]}, region => 3, };  # something to mangle to set up all the other plots
   # Testing to fix long URIs 2012/01/31 -- fixes it for IMAGE URIs; fix for page stage GET data is in page template (removal of points element from form)
-  delete $basedesc->{'points'};
 
   if($basedesc->{pr} != 0) { #FIXME HACK fixing gridbox coverage issues, for now...
     $basedesc->{ocean} = 1;
@@ -129,7 +129,7 @@ sub handler {
 			   {plot_type => TYPE_STICKPLOT,             expt => 11,  sset => 280, zoom => 0, baseline_expt => 217} ],
 			 {plot_type => TYPE_BANDS_TIMESLICE_HIST,  expt => 11, sset => 280, zoom => 0, baseline_expt => 217}    ];
 
-  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCATTER_TIMESLICE_TEXT, expt => 280, sset => 280, baseline_expt => 217});
+  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCENARIO_SET_METADATA, expt => 280, sset => 280, baseline_expt => 217});
 
   # Plot data (and resulting formatted data) caching, containing things like mam_prec_50p (and consequently data:mam_prec_50p in $template_hash)
   my $planners_plotdat = {};  # This ends up containing things (keys) like mam_prec_50p, etc., containing values (as opposed to formatted text of those values)
@@ -139,7 +139,8 @@ sub handler {
 				 $planners_plotdat,
 				 $template_hash,
 				 $lookup_by_symname,
-				 $hash->{'dat'}[8]{'variable'} ];
+				 $hash->{'dat'}[8]{'variable'},
+				 $regions ];
 
 
   ############################
@@ -153,7 +154,10 @@ sub handler {
   ## Loop through vars, set up tabs, specs for zoomed images ##
   #############################################################
   for my $var_hash (@{$planners_vars}) {  #TODO almost everything moves into here...
-    my $var_basedesc = { %{$basedesc}, var => $var_hash->{'var'} };
+    my(@range) = get_range($var_hash->{var}, $basedesc->{toy}, 0, $basedesc->{expt}, $hash->{dat}, $hash->{exptdata});
+    my $var_basedesc = { %{$basedesc}, var => $var_hash->{'var'}, r_min => $range[0], r_max => $range[1] };
+    delete $var_basedesc->{'points'};
+
     print STDERR "var_basedesc is for variable " . $var_basedesc->{var} . "\n";
 
     # Build dynamically-loaded image URL descs
@@ -168,39 +172,12 @@ sub handler {
 
   # Zoomed image tags
   $template_hash->{planners_content} = join(', ', map { "'" . $_ . "'" } @{$displayer->make_html_from_desclist($planners_descs)});
-
+  $template_hash->{ol_maps} = $displayer->make_ol_map_js_from_desclist($planners_descs);
 
   ###################
   ## Impacts Table ##
   ###################
-
-  # Conditionals and resulting table rows -- TODO needs to be read from a file
-  my $impacts_logic_csv = parse_csv($hash->{cfg}->[2]->{'planners_impacts_csv'});
-  my $impacts_logic = [ map {
-                          my $row = $_;
-                          [ map { $impacts_logic_csv->{$_}->[$row] } ("condition","text") ]
-                        } (0 .. $#{ (values %{$impacts_logic_csv})[0] })
-                      ];  # flip it to row-major -- should definitely change parsing code to read as row-major later and eliminate double-transposes
-  ## Header Row
-  $template_hash->{'planners_impacts_table'}  = "<table>\n";
-  $template_hash->{'planners_impacts_table'} .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-  $template_hash->{'planners_impacts_table'} .= '<tr class="dkblue"><th>Projections and Variability Effects</th><th>Potential Impacts</th></tr>' . "\n";
-
-  # Impacts Rows
-  my $expression_success_count = 0;
-  foreach my $row (@$impacts_logic) { # test each impact condition
-    if(test_expression($row->[0], $planners_plotdat_cache)) {
-      $expression_success_count++;
-      $template_hash->{'planners_impacts_table'} .= (($expression_success_count % 2) ? '<tr class="ltblue">' : '<tr>') . $row->[1] .  '</tr>' . "\n";
-    }
-  }
-  if ($expression_success_count == 0) {
-    $template_hash->{'planners_impacts_table'} .= '<tr><td style="text-align: center;">-</td><td style="text-align: center;">-</td><tr>' . "\n";
-  }
-  $template_hash->{'planners_impacts_table'} .= "</table>\n";
-
-
-
+  $template_hash->{planners_impacts_table} = $displayer->make_planners_impacts_table($template_hash, $planners_plotdat_cache);
 
 #NOT MUCH IN THIS SECTION IS NEEDED IN PLANNERS, BUT SOME IS    TODO:  GUTME/REPLACEME
 
