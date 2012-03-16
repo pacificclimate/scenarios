@@ -18,7 +18,8 @@ our(@EXPORT) = qw(
   get_available_index_list create_availability_list is_var_available is_timeslice_available
   is_available is_ts_absolute is_ts_future post_is_numeric make_random_name make_expt_list make_var_list
   remove_allvars make_zipfile suggest_region is_polygon csv2html weighted_pctile order
-  mod_desc_with_params make_descs_from_list test_expression get_range transpose_csv_hash parse_csv);
+  mod_desc_with_params make_descs_from_list test_expression get_range transpose_csv_hash parse_csv
+  resolve_rule_references);
 
 sub order { 
   my(@stuff) = @_;
@@ -871,17 +872,33 @@ sub make_descs_from_list {  #  TODO this is kind of redundant now, now isn't it.
   [ map { mod_desc_with_params($basedesc, $_) } @$params ];
 }
 
+sub resolve_rule_references {
+    my($cond_hash, $ruleid) = @_;
+
+    if(exists($cond_hash->{$ruleid})) {
+	my $ruletext = $cond_hash->{$ruleid}; 
+
+	## Insert a sentinel in here to avoid infinite looping.
+	$cond_hash->{$ruleid} = "rule_" . $ruleid;
+
+	$ruletext =~ s/(rule_([a-zA-Z0-9-]+))/ resolve_rule_references($cond_hash, $2) /ge;
+	$cond_hash->{$ruleid} = $ruletext;
+	return $ruletext;
+    } else {
+	print STDERR "No rule with id " . $ruleid . "\n";
+	return "rule_" . $ruleid;
+    }
+}
+
 sub test_expression {
 # Evaluates impact conditionals using eval()
-
-# Assumes 3 underscore-delimited segments in data specifiers; this needs to be changed later FIXME
 
   my ($test, $plotdat_cache) = @_;
 
   print STDERR 'Testing: "' . $test . "\" => ";
 
   # Set up accesses to cache / genimage
-  $test =~ s/([a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*){2})/ get_plotdat($plotdat_cache, $1) /g;
+  $test =~ s/([a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*(?:_[a-zA-Z0-9]*[a-zA-Z][a-zA-Z0-9]*){1,4})/ get_ruledat(\$plotdat_cache, "$1") /g;
   print STDERR '"' . $test . '" => ';
 
   # Eval it (lazy eval now)
@@ -891,11 +908,13 @@ sub test_expression {
   return $returnme;
 }
 
-sub get_plotdat {
+sub get_ruledat {
   my($plotdat_cache, $key) = @_;  # TODO this is getting huge, perhaps turn the whole thing into an object?
-  my($cache, $basedesc, $ts, $hash, $texthash, $lut, $precision) = @{$plotdat_cache};  # TODO this is getting huge, perhaps turn the whole thing into an object?
+  my($cache, $basedesc, $ts, $hash, $texthash, $lut, $precision, $regions) = @{$plotdat_cache};  # TODO this is getting huge, perhaps turn the whole thing into an object?
 
-  my $rows = {"10p" => "10th percentile ", "50p" => "Median ", "90p"  => "90th percentile "};
+  my $enspctilemap = {"e10p" => "10th percentile", "e25p" => "25th percentile", "e50p" => "Median", "e75p" => "75th percentile", "e90p"  => "90th percentile" };
+
+  my $spatpctilemap = {"s0p" => "min", "s50p" => "median", "s100p" => "max", "smean" => "mean", "sstddev"  => "sd"};
 
   if(defined($hash->{$key})) {
     return $hash->{$key};
@@ -909,28 +928,59 @@ sub get_plotdat {
       $data_key = 1;
   }
 
-  # TODO un-hardcode the order here?
-  my($toy, $var, $row) = split('_', $key);
+  ## Handle region-specific stuff...
+  if($key =~ /^region_/) {
+      my($junk, $region_key) = split('_', $key);
+      my($val) = $regions->[$basedesc->{pr}]{$region_key};
+      $hash->{$key} = $val;
+      $texthash->{$key} = sprintf("%*.2f", $val);
 
-  (defined($lut->{'var'}->{$var})) or die "Invalid var in plotdat key: '" . $key . "'";
-  (defined($lut->{'toy'}->{$toy})) or die "Invalid toy in plotdat key: '" . $key . "'";
-  (defined($rows->{$row})) or die "Invalid row (percentile) in plotdat key: '" . $key . "'";
+      if ($data_key) {
+	  return $texthash->{'data:' . $key};
+      } else {
+	  return $hash->{$key};
+      }
+  }
+
+  my($var, $toy, $ia_agg, $spat_agg, $enstime) = split('_', $key);
+  
+  ## Handle the singular interannual SD var
+  if($var eq "temp" && $ia_agg eq "iastddev") {
+      $var = "isdt";
+  }
 
   my $desc_params = {var => $lut->{'var'}->{$var}, toy => $lut->{'toy'}->{$toy}};
 
+  if($enstime eq "hist") {
+      $desc_params->{expt} = $desc_params->{sset} = $basedesc->{baseline_expt};
+      $desc_params->{ts} = 0;
+      $enspctilemap = { "hist" => "cru_ts_21 HIST-run1" };
+  }
+
+  (defined($lut->{'var'}->{$var})) or die "Invalid var (" . $var . ") in plotdat key: '" . $key . "'";
+  (defined($lut->{'toy'}->{$toy})) or die "Invalid toy (" . $toy . ") in plotdat key: '" . $key . "'";
+  (defined($enspctilemap->{$enstime})) or die "Invalid ensemble percentile (" . $enstime . ") in plotdat key: '" . $key . "'";
+
+
   my $csv_hash = parse_csv($cache->create_cachefile(mod_desc_with_params($basedesc, $desc_params)));
-  print STDERR "Retrieving plotdat item for var $var toy $toy\n";
+  print STDERR "Retrieving plotdat item for var $var, toy $toy, ia_agg $ia_agg, spat_agg $spat_agg, ensemble quantile $enstime\n";
   
   # Experiment-name-to-row (or percentile-to-row in our case) mapping
   my %exptkeys;
   @exptkeys{@{$csv_hash->{"Experiment"}}} = (0..(@{$csv_hash->{"Experiment"}} - 1));
 
-  # The monkeys can touch the obelisk, but they do not understand its presence...
-# old code from outside helpets  @{$hash}{map { join("_",@shortname_elements) . "_" . $_ } keys(%{$planners_plotdat_csv_rows})} = @{$csv_hash->{$timeslice}}[@exptkeys{values(%{$planners_plotdat_csv_rows})}];
+  ## Nuke the experiment entry now that we're done with it... makes later processing easier.
+  delete $csv_hash->{"Experiment"};
 
-  print STDERR "Added values to plotdat hash: " . join(", ", map{ "'" . $_ . "'" } @{$csv_hash->{$ts}}[@exptkeys{values(%{$rows})}]) . "\n";
-  @{$hash}{map { "${toy}_${var}_${_}" } keys(%{$rows})} = @{$csv_hash->{$ts}}[@exptkeys{values(%{$rows})}];
-  @{$texthash}{ map{ "data:${toy}_${var}_${_}" } keys(%{$rows}) } = map{ sprintf('%+.' . $precision->[$desc_params->{'var'}] . 'f', $_) } @{$csv_hash->{$ts}}[@exptkeys{values(%{$rows})}];  
+  ## Accumulate parameters to be used...
+  my(@hashkeys, @hashvals, $fmtstring);
+  @hashkeys = map { my($spatmethod) = $_; map { "${var}_${toy}_${ia_agg}_${spatmethod}_${_}" } keys(%{$enspctilemap}) } keys(%$spatpctilemap);
+  @hashvals = map { @{$csv_hash->{$_}}[@exptkeys{values(%{$enspctilemap})}] } values(%$spatpctilemap);
+  $fmtstring = '%+.' . $precision->[$desc_params->{'var'}] . 'f';
+  
+  ## Fill the hash.
+  @{$hash}{@hashkeys} = @hashvals;
+  @{$texthash}{map { "data:" . $_} @hashkeys } = map { sprintf($fmtstring, $_) } @hashvals;
  
   my $returnme;
   if ($data_key) {
