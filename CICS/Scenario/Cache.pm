@@ -10,10 +10,10 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 
 use Exporter 'import';
 
-our(@EXPORT) = qw(TYPE_MAP TYPE_TEXT TYPE_MASK TYPE_GEOREF TYPE_PLOTINFO TYPE_REGIONONLY TYPE_SCATTER_TIMESLICE TYPE_SCATTER_TIMESLICE_HIST TYPE_SCATTER_VARIABLE TYPE_SCATTER_TIMESLICE_TEXT TYPE_SCATTER_VARIABLE_TEXT TYPE_MAP_DIFFERENCE TYPE_SCENARIO_DATA TYPE_SLMASK_DATA TYPE_LATS_DATA TYPE_LONGS_DATA TYPE_BOXPLOT_TIMESLICE TYPE_BOXPLOT_TIMESLICE_TEXT TYPE_STICKPLOT TYPE_GEOTIFF TYPE_BANDS_TIMESLICE TYPE_BANDS_TIMESLICE_HIST TYPE_MAX_GENIMAGE       TYPE_ZIP_ALLEXPT_GEOREF TYPE_ZIP_ALLEXPT TYPE_ZIP_ALLVAR_GEOREF TYPE_ZIP_ALLVAR TYPE_ZIP_ALLEXPTVAR_GEOREF TYPE_ZIP_ALLEXPTVAR TYPE_METADATA_CSV MAX_PLOT_TYPE create_output_filename);
+our(@EXPORT) = qw(TYPE_MAP TYPE_TEXT TYPE_MASK TYPE_GEOREF TYPE_PLOTINFO TYPE_REGIONONLY TYPE_SCATTER_TIMESLICE TYPE_SCATTER_TIMESLICE_HIST TYPE_SCATTER_VARIABLE TYPE_SCATTER_TIMESLICE_TEXT TYPE_SCATTER_VARIABLE_TEXT TYPE_MAP_DIFFERENCE TYPE_SCENARIO_DATA TYPE_SLMASK_DATA TYPE_LATS_DATA TYPE_LONGS_DATA TYPE_BOXPLOT_TIMESLICE TYPE_BOXPLOT_TIMESLICE_TEXT TYPE_STICKPLOT TYPE_GEOTIFF TYPE_BANDS_TIMESLICE TYPE_BANDS_TIMESLICE_HIST TYPE_SCENARIO_SET_METADATA TYPE_MAX_GENIMAGE       TYPE_ZIP_ALLEXPT_GEOREF TYPE_ZIP_ALLEXPT TYPE_ZIP_ALLVAR_GEOREF TYPE_ZIP_ALLVAR TYPE_ZIP_ALLEXPTVAR_GEOREF TYPE_ZIP_ALLEXPTVAR TYPE_METADATA_CSV MAX_PLOT_TYPE create_output_filename);
 
 use constant {
-  TYPE_MAP => 0, TYPE_TEXT => 1, TYPE_MASK => 2, TYPE_GEOREF => 3, TYPE_PLOTINFO => 4, TYPE_REGIONONLY => 5, TYPE_SCATTER_TIMESLICE => 6, TYPE_SCATTER_TIMESLICE_HIST => 7, TYPE_SCATTER_VARIABLE => 8, TYPE_SCATTER_TIMESLICE_TEXT => 9, TYPE_SCATTER_VARIABLE_TEXT => 10, TYPE_MAP_DIFFERENCE => 11, TYPE_SCENARIO_DATA => 12, TYPE_SLMASK_DATA => 13, TYPE_LATS_DATA => 14, TYPE_LONGS_DATA => 15, TYPE_BOXPLOT_TIMESLICE => 16, TYPE_BOXPLOT_TIMESLICE_TEXT => 17, TYPE_STICKPLOT => 18, TYPE_GEOTIFF => 19, TYPE_BANDS_TIMESLICE => 20, TYPE_BANDS_TIMESLICE_HIST => 21, TYPE_MAX_GENIMAGE => 21, TYPE_ZIP_ALLEXPT_GEOREF => 22, TYPE_ZIP_ALLEXPT => 23, TYPE_ZIP_ALLVAR_GEOREF => 24, TYPE_ZIP_ALLVAR => 25, TYPE_ZIP_ALLEXPTVAR_GEOREF => 26, TYPE_ZIP_ALLEXPTVAR => 27, TYPE_METADATA_CSV => 28, MAX_PLOT_TYPE => 29
+  TYPE_MAP => 0, TYPE_TEXT => 1, TYPE_MASK => 2, TYPE_GEOREF => 3, TYPE_PLOTINFO => 4, TYPE_REGIONONLY => 5, TYPE_SCATTER_TIMESLICE => 6, TYPE_SCATTER_TIMESLICE_HIST => 7, TYPE_SCATTER_VARIABLE => 8, TYPE_SCATTER_TIMESLICE_TEXT => 9, TYPE_SCATTER_VARIABLE_TEXT => 10, TYPE_MAP_DIFFERENCE => 11, TYPE_SCENARIO_DATA => 12, TYPE_SLMASK_DATA => 13, TYPE_LATS_DATA => 14, TYPE_LONGS_DATA => 15, TYPE_BOXPLOT_TIMESLICE => 16, TYPE_BOXPLOT_TIMESLICE_TEXT => 17, TYPE_STICKPLOT => 18, TYPE_GEOTIFF => 19, TYPE_BANDS_TIMESLICE => 20, TYPE_BANDS_TIMESLICE_HIST => 21, TYPE_SCENARIO_SET_METADATA => 22, TYPE_MAX_GENIMAGE => 22, TYPE_ZIP_ALLEXPT_GEOREF => 23, TYPE_ZIP_ALLEXPT => 24, TYPE_ZIP_ALLVAR_GEOREF => 25, TYPE_ZIP_ALLVAR => 26, TYPE_ZIP_ALLEXPTVAR_GEOREF => 27, TYPE_ZIP_ALLEXPTVAR => 28, TYPE_METADATA_CSV => 29, MAX_PLOT_TYPE => 30
 };
 
 use constant {
@@ -146,6 +146,11 @@ sub create_output_filename {
 	     $d->{'variable'}->[$post->{'var2'}], $tslist[$post->{'ts'}],
 	     $d->{'region'}->[$post->{'region'}], $d->{sset}->[$post->{sset}],
 	     $d->{stype}->[$post->{st}], $d->{timeofyear}->[$post->{toy}] . ".csv");
+  } elsif($plot_type == TYPE_SCENARIO_SET_METADATA) {
+      @args = ("scenario_set", "metadata", $d->{'variable'}->[$post->{'var'}], 
+	       $d->{'variable'}->[$post->{'var2'}], $tslist[$post->{'ts'}],
+	       $d->{'region'}->[$post->{'region'}], $d->{sset}->[$post->{sset}],
+	       $d->{stype}->[$post->{st}], $d->{timeofyear}->[$post->{toy}] . ".csv");
   } elsif($plot_type == TYPE_ZIP_ALLEXPT_GEOREF || $plot_type == TYPE_ZIP_ALLEXPT) {
     # Zipped data of all experiment data for the variable and model
     if($plot_type == TYPE_ZIP_ALLEXPT_GEOREF) {
@@ -447,8 +452,8 @@ sub create_cache_filename {
     @parts = qw(zoom view_x view_y expt region res points lang no-region-vertices);
     $extn = ".png";
     $dir = $self->{cd}->{'mcachedir'};
-  } elsif($plot_type == TYPE_SCATTER_TIMESLICE || $plot_type == TYPE_SCATTER_TIMESLICE_HIST || $plot_type == TYPE_BANDS_TIMESLICE || $plot_type == TYPE_BANDS_TIMESLICE_HIST || $plot_type == TYPE_SCATTER_TIMESLICE_TEXT || $plot_type == TYPE_BOXPLOT_TIMESLICE || $plot_type == TYPE_BOXPLOT_TIMESLICE_TEXT || $plot_type == TYPE_STICKPLOT) {
-    if($plot_type == TYPE_STICKPLOT) {
+  } elsif($plot_type == TYPE_SCATTER_TIMESLICE || $plot_type == TYPE_SCATTER_TIMESLICE_HIST || $plot_type == TYPE_BANDS_TIMESLICE || $plot_type == TYPE_BANDS_TIMESLICE_HIST || $plot_type == TYPE_SCATTER_TIMESLICE_TEXT || $plot_type == TYPE_BOXPLOT_TIMESLICE || $plot_type == TYPE_BOXPLOT_TIMESLICE_TEXT || $plot_type == TYPE_STICKPLOT || $plot_type == TYPE_SCENARIO_SET_METADATA) {
+    if($plot_type == TYPE_STICKPLOT || $plot_type == TYPE_SCENARIO_SET_METADATA) {
       @parts = qw(zoom view_x view_y var expt toy ts region ocean lang pctile th points fringe_size baseline_expt);
     } else {
       @parts = qw(zoom view_x view_y var toy region ocean lang pctile th points fringe_size baseline_expt);
@@ -591,7 +596,7 @@ sub create_cachefile {
     $desc->{xrange_max} = $desc->{r_max};
     $desc->{yrange_min} = 0;
     $desc->{yrange_max} = 0;
-  } elsif($plot_type == TYPE_SCATTER_TIMESLICE || $plot_type == TYPE_SCATTER_TIMESLICE_HIST || $plot_type == TYPE_BANDS_TIMESLICE || $plot_type == TYPE_BANDS_TIMESLICE_HIST || $plot_type == TYPE_SCATTER_TIMESLICE_TEXT || $plot_type == TYPE_BOXPLOT_TIMESLICE || $plot_type == TYPE_BOXPLOT_TIMESLICE_TEXT || $plot_type == TYPE_STICKPLOT) {
+  } elsif($plot_type == TYPE_SCATTER_TIMESLICE || $plot_type == TYPE_SCATTER_TIMESLICE_HIST || $plot_type == TYPE_BANDS_TIMESLICE || $plot_type == TYPE_BANDS_TIMESLICE_HIST || $plot_type == TYPE_SCATTER_TIMESLICE_TEXT || $plot_type == TYPE_BOXPLOT_TIMESLICE || $plot_type == TYPE_BOXPLOT_TIMESLICE_TEXT || $plot_type == TYPE_SCENARIO_SET_METADATA || $plot_type == TYPE_STICKPLOT) {
     # Text to identify this graphic (printed in bottom left corner)
     $identify_text = $self->make_scatter_title($desc, TYPE_SCATTER_TIMESLICE);
 
