@@ -464,10 +464,20 @@ sub load_gcminfo {
       }
 
       # Create period name lists (per expt)
+      @{$exptdata[$i]{"ncwms_periods"}} = ($dat->[4]{"timeslice"}[0], @tpname, @{$dat->[4]{"timeslice"}}[1..3]);
+      @{$exptdata[$i]{"ncwms_centers"}} = ($dat->[5]{"timeslice"}[0], @tpname, @{$dat->[5]{"timeslice"}}[1..3]);
       @{$exptdata[$i]{"netcdf_periods"}} = ($dat->[2]{"timeslice"}[0], @tpname, @{$dat->[2]{"timeslice"}}[1..3]);
       @{$exptdata[$i]{"display_periods"}} = ($dat->[0]{"timeslice"}[0], @tpname, @{$dat->[0]{"timeslice"}}[1..3]);
       for($j = 0; $j < $#{$exptdata[$i]{"netcdf_periods"}}; $j++) {
 	  $exptdata[$i]{"netcdf_periods"}[$j] =~ s/-/_/g;
+	  # Compute centers for new periods
+	  if($exptdata[$i]{"ncwms_centers"}[$j] =~ /-/) {
+	      my($sum) = 0;
+	      my(@splitbits);
+	      @splitbits = split("-", $exptdata[$i]{"ncwms_centers"}[$j]);
+	      map {$sum += $_; } @splitbits;
+	      $exptdata[$i]{"ncwms_centers"}[$j] = $sum / ($#splitbits + 1);
+	  }
       }
       my($numperiods) = $#{$exptdata[$i]{"netcdf_periods"}};
       $exptdata[$i]{"netcdf_periods"}->[$numperiods + 1] = [0..$numperiods];
