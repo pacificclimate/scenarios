@@ -4,8 +4,8 @@
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
    <meta name="description" content="The Pacific Climate Impacts Consortium Regional Analysis Tool provides easy access to and tools to manipulate climate model data."/>
    <meta name="keywords" content="climate, long range, seasonal, prediction, weather, research, climate change, global warming, atmospheric, canada"/>
-   <meta name="AUTHOR" content="Paul Nienaber for the Pacific Climate Impacts Consortium"/>
-   <meta name="COPYRIGHT" content="(C) Pacific Climate Impacts Consortium 2006"/>
+   <meta name="AUTHOR" content="Paul Nienaber, David Bronaugh for the Pacific Climate Impacts Consortium"/>
+   <meta name="COPYRIGHT" content="(C) Pacific Climate Impacts Consortium 2012"/>
    <meta name="RESOURCE-TYPE" content="DOCUMENT"/>
    <meta name="LANGUAGE" content="EN"/>
    <meta name="RATING" content="GENERAL"/>
@@ -13,14 +13,26 @@
 
    <link rel="stylesheet" type="text/css" href="/tools/pi.css" />
    <script src="/tools/pi.js" type="text/javascript"></script>
-
+   <script type="text/javascript" src="lib/OpenLayers-2.11/OpenLayers.js"></script>
+   <script type="text/javascript" src="lib/proj4js/lib/proj4js-combined.js"></script>
+   <script type="text/javascript" src="lib/jquery-ui/js/jquery-1.7.1.min.js"></script>
+   <script type="text/javascript" src="lib/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
+   
+   <script type="text/javascript" src="map_element.js"></script>
+   
+   <link rel="stylesheet" href="lib/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css" type="text/css"/>
+   <link rel="stylesheet" type="text/css" href="lib/OpenLayers-2.11/theme/default/style.css"/> 
+   
    <script type="text/javascript">
 <!--
 
 /* one of each these per content div, aka two per tab ATM, WARNING note that all of these use the same offset right now */
 var thmimghtmloffsets = new Array(123,123, 123,123,                                 0,123, 0,123, 0,123, 0,123, 0,123, 0,123, 123,123, 123,123, 123,123); /* offsets into thmimghtml */
+
 var thmimghtmlids = new Array(     '','',   '','',  'thm_temp_h_map thm_temp_h_bar','',   'thm_prec_h_map thm_prec_h_bar','',   'thm_pass_h_map thm_pass_h_bar','', 'thm_dg05_h_map thm_dg05_h_bar','', 'thm_dl18_h_map thm_dl18_h_bar','', 'thm_nffd_h_map thm_nffd_h_bar','',   '','', '','', '','');
+
 var thmimghtmlshown = new Array(1,1, 1,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, /*1,1,*/ 1,1, 1,1, 1,1);
+
 /* and the actual array of markup - - TODO these should have sizes - - TODO these should be dynamic perhaps, or not? */
 var thmimghtml = new Array('<img src="/~phox/pi_demo/thumb_map2.png" alt="" />', '<img src="/~phox/pi_demo/thumb_graph.png" alt="" />', 
                            '<img src="/~phox/pi_demo/thumb_map2.png" alt="" />', '<img src="/~phox/pi_demo/thumb_graph.png" alt="" />', 
@@ -35,15 +47,16 @@ var zoomimghtmlids = new Array('zoomimg_temp_h_map','zoomimg_temp_h_bar',
 );
 var zoomimghtmlshown = new Array(0,0,                                       0,0, 0,0, 0,0, 0,0);
 var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
-
+var ol_params = new Array(<%ol_maps%>);
 -->
    </script>
 
    
-   <title>Pacific Climate Impacts Consortium Plan2Adapt ALPHA</title>
+   <title>Pacific Climate Impacts Consortium Plan2Adapt BETA</title>
 </head>
 
 <body onload="doLoad();" onkeydown="keyPress(event)">
+<!--<body onload="init_map('ol_temp_hist', 'Bulkley-Nechako', 'climatebc-hist-pr-run1-1961-1990/pr', '1975-07-01T00:00:00Z', '0,0.0001157', 'rainbow', new OpenLayers.Geometry.Point(1162843.9625, 417062.775), 0);">-->
 
 
   <div id="centre">
@@ -93,46 +106,44 @@ var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
               <div class="summary">
                 <table>
                   <tr class="dkerblue"><th colspan="4">Climate Change for <%var:region%> Region in <%var:ts_period%> Period</th></tr>
-                  <!--              <tr class="dkblue"><th>Climate Variable</th><th>Time of Year</th><th>Future Change for <%var:ts%></th></tr> -->
-
                   <tr class="dkblue"><th rowspan="2">Climate Variable</th><th rowspan="2">Time of Year</th><th colspan="2">Projected Change<br/>from 1961-1990 Baseline</th></tr>
                   <tr class="dkblue"><th>Ensemble Median</th><th>Range</th></tr>
 
                   <tr class="ltblue">
                     <td>Mean Temperature (&deg;C)</td>
-                    <td>Annual<!--<br /><br />Summer<br /><br />Winter--></td>
-                    <td><%data:ann_temp_50p%> &deg;C<!--<br /><br /><%data:jja_temp_50p%> &deg;C<br /><br /><%data:djf_temp_50p%> &deg;C--></td>
-                    <td><%data:ann_temp_10p%> &deg;C to <%data:ann_temp_90p%> &deg;C<!--<br /><br /><%data:jja_temp_10p%> &deg;C to <%data:jja_temp_90p%> &deg;C<br /><br /><%data:djf_temp_10p%> &deg;C to <%data:djf_temp_90p%> &deg;C--></td>
+                    <td>Annual</td>
+                    <td><%data:temp_ann_iamean_smean_e50p%> &deg;C</td>
+                    <td><%data:temp_ann_iamean_smean_e10p%> &deg;C to <%data:temp_ann_iamean_smean_e90p%> &deg;C</td>
                   </tr>
                   <tr>
                     <td>Precipitation (%)</td>
                     <td>Annual<br /><br />Summer<br /><br />Winter</td>
-                    <td><%data:ann_prec_50p%>%<br /><br /><%data:jja_prec_50p%>%<br /><br /><%data:djf_prec_50p%>%</td>
-                    <td><%data:ann_prec_10p%>% to <%data:ann_prec_90p%>%<br /><br /><%data:jja_prec_10p%>% to <%data:jja_prec_90p%>%<br /><br /><%data:djf_prec_10p%>% to <%data:djf_prec_90p%>%</td>
+                    <td><%data:prec_ann_iamean_smean_e50p%>%<br /><br /><%data:prec_jja_iamean_smean_e50p%>%<br /><br /><%data:prec_djf_iamean_smean_e50p%>%</td>
+                    <td><%data:prec_ann_iamean_smean_e10p%>% to <%data:prec_ann_iamean_smean_e90p%>%<br /><br /><%data:prec_jja_iamean_smean_e10p%>% to <%data:prec_jja_iamean_smean_e90p%>%<br /><br /><%data:prec_djf_iamean_smean_e10p%>% to <%data:prec_djf_iamean_smean_e90p%>%</td>
                   </tr>
                   <tr class="ltblue">
                     <td>Snowfall* (%)</td>
-                    <td><!--Annual<br /><br />-->Winter<br /><br />Spring</td>
-                    <td><!--<%data:ann_pass_50p%>%<br /><br />--><%data:djf_pass_50p%>%<br /><br /><%data:mam_pass_50p%>%</td>
-                    <td><!--<%data:ann_pass_10p%>% to <%data:ann_pass_90p%>%<br /><br />--><%data:djf_pass_10p%>% to <%data:djf_pass_90p%>%<br /><br /><%data:mam_pass_10p%>% to <%data:mam_pass_90p%>%</td>
+                    <td>Winter<br /><br />Spring</td>
+                    <td><%data:pass_djf_iamean_smean_e50p%>%<br /><br /><%data:pass_mam_iamean_smean_e50p%>%</td>
+                    <td><%data:pass_djf_iamean_smean_e10p%>% to <%data:pass_djf_iamean_smean_e90p%>%<br /><br /><%data:pass_mam_iamean_smean_e10p%>% to <%data:pass_mam_iamean_smean_e90p%>%</td>
                   </tr>
                   <tr>
                     <td>Growing Degree Days* (degree days)</td>
                     <td>Annual</td>
-                    <td><%data:ann_dg05_50p%> degree days</td>
-                    <td><%data:ann_dg05_10p%> to <%data:ann_dg05_90p%> degree days</td>
+                    <td><%data:dg05_ann_iamean_smean_e50p%> degree days</td>
+                    <td><%data:dg05_ann_iamean_smean_e10p%> to <%data:dg05_ann_iamean_smean_e90p%> degree days</td>
                   </tr>
                   <tr class="ltblue">
                     <td>Heating Degree Days* (degree days)</td>
                     <td>Annual</td>
-                    <td><%data:ann_dl18_50p%> degree days</td>
-                    <td><%data:ann_dl18_10p%> to <%data:ann_dl18_90p%> degree days</td>
+                    <td><%data:dl18_ann_iamean_smean_e50p%> degree days</td>
+                    <td><%data:dl18_ann_iamean_smean_e10p%> to <%data:dl18_ann_iamean_smean_e90p%> degree days</td>
                   </tr>
                   <tr>
                     <td>Frost-Free Days* (days)</td>
                     <td>Annual</td>
-                    <td><%data:ann_nffd_50p%> days</td>
-                    <td><%data:ann_nffd_10p%> to <%data:ann_nffd_90p%> days</td>
+                    <td><%data:nffd_ann_iamean_smean_e50p%> days</td>
+                    <td><%data:nffd_ann_iamean_smean_e10p%> to <%data:nffd_ann_iamean_smean_e90p%> days</td>
                   </tr>
                 </table> 
                 <!--            <table><%planners_variable_table%></table>  -->
@@ -257,7 +268,7 @@ var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
     
   </div> <!-- end centre -->
   
-<div style="z-index: 50;" id="whiteout" class="hidden"><!-- put centered div here --></div>  
+<!--<div style="z-index: 50;" id="whiteout" class="hidden"></div>  -->
 
 
 </body>

@@ -5,7 +5,13 @@
     Click on the thumbnail at left to view high-resolution maps showing <strong><%toy%></strong> <%lc_varname%> for the <strong><%region%></strong> region for both the historical baseline (1961-1990) period and the <strong><%ts_period%></strong> period. An accompanying range plot shows how the results illustrated in the projected future map compare to a PCIC standard set of Global Climate Model (GCM) projections (see 'Notes' tab for more information).
     <div class="zoomable" id="zoom_<%symname%>_h_map"><div class="bg" id="bg_<%symname%>_h_map"></div><div class="zoomwin">
       <div class="closebutton" id="close_<%symname%>_h_map">CLOSE&nbsp;<span>&times;</span></div>
-      <div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div>
+      <table class="maptable"> 
+	<tr><th style="width: 395px;"><h3>Historical</h3></th><th style="width: 395px;"><h3>Projected</h3></th><th style="width: 82px;"><h3>Range</h3></th></tr>
+	<tr>
+	  <td><div id="ol_<%symname%>_hist"></div></td><td><div id="ol_<%symname%>_future"></div></td>
+	  <td><div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div></td>
+	</tr>
+      </table>
       <p>
 The maps show <strong><%toy%></strong> <%lc_varname%> (<%units%>) for the <strong><%region%></strong> region. The historical map on the far left is based on observed and interpolated station data while the projected map shows how this picture will change by the <strong><%ts_period%></strong> period, based on a single GCM projection. The range plot at far right shows where the change reflected in the projected map (identified by the blue dot) compares to a PCIC standard set of GCM projections. Use this to determine whether the projection used can be considered high or low relative to other projections in the set. Note: some variables do not come directly from the climate models (see 'Notes' tab for more information).
       </p>
