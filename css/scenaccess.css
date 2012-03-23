@@ -9,7 +9,7 @@ DIV.heading {
 }
 
 IMG { 
-      background: url(/tools/loading.gif) no-repeat center center;
+      background: url(img/loading.gif) no-repeat center center;
  }
 
 DIV.update {
@@ -118,14 +118,14 @@ DIV.sidetabs DIV {
 DIV.sidetabs DIV.hdr { 
   margin: 0px;
   padding: 0px;
-  background: url(/tools/stt.png) top center no-repeat;
+  background: url(img/stt.png) top center no-repeat;
   height: 10px;
 }
 
 DIV.sidetabs DIV.ftr { 
   margin: 0px;
   padding: 0px;
-  background: url(/tools/stb.png) bottom center no-repeat;
+  background: url(img/stb.png) bottom center no-repeat;
   height: 10px;
 }
 
@@ -288,16 +288,16 @@ DIV.selected {
 }
 
 DIV.tabs DIV.redtab { 
-  background: #d21321 url(/tools/tabtop-red.png) top center no-repeat;
+  background: #d21321 url(img/tabtop-red.png) top center no-repeat;
 }
 DIV.tabs DIV.dkredtab { 
-  background: #830000 url(/tools/tabtop-dkred.png) top center no-repeat;
+  background: #830000 url(img/tabtop-dkred.png) top center no-repeat;
 }
 DIV.tabs DIV.dkbluetab { 
-  background: #150f3c url(/tools/tabtop-dkblue.png) top center no-repeat;
+  background: #150f3c url(img/tabtop-dkblue.png) top center no-repeat;
 }
 DIV.tabs DIV.ltbluetab { 
-  background: #636584 url(/tools/tabtop-ltblue.png) top center no-repeat;
+  background: #636584 url(img/tabtop-ltblue.png) top center no-repeat;
 }
 
 DIV.mapheader {

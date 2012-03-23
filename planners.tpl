@@ -11,14 +11,17 @@
    <meta name="RATING" content="GENERAL"/>
    <meta name="REVISIT-AFTER" content="14 DAYS"/>
 
-   <link rel="stylesheet" type="text/css" href="/tools/pi.css" />
-   <script src="/tools/pi.js" type="text/javascript"></script>
+   <link rel="stylesheet" type="text/css" href="css/pi.css" />
+   <script src="lib/pi.js" type="text/javascript"></script>
+   <script src="lib/raphael_legend.js" type="text/javascript"></script>
    <script type="text/javascript" src="lib/OpenLayers-2.11/OpenLayers.js"></script>
+   <script type="text/javascript" src="lib/OpacitySlider.js"></script>
+   <script type="text/javascript" src="lib/raphael-min.js"></script>
    <script type="text/javascript" src="lib/proj4js/lib/proj4js-combined.js"></script>
    <script type="text/javascript" src="lib/jquery-ui/js/jquery-1.7.1.min.js"></script>
    <script type="text/javascript" src="lib/jquery-ui/js/jquery-ui-1.8.17.custom.min.js"></script>
-   
-   <script type="text/javascript" src="map_element.js"></script>
+
+   <script type="text/javascript" src="lib/map_element.js"></script>
    
    <link rel="stylesheet" href="lib/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css" type="text/css"/>
    <link rel="stylesheet" type="text/css" href="lib/OpenLayers-2.11/theme/default/style.css"/> 
@@ -27,16 +30,21 @@
 <!--
 
 /* one of each these per content div, aka two per tab ATM, WARNING note that all of these use the same offset right now */
-var thmimghtmloffsets = new Array(123,123, 123,123,                                 0,123, 0,123, 0,123, 0,123, 0,123, 0,123, 123,123, 123,123, 123,123); /* offsets into thmimghtml */
+//var thmimghtmloffsets = new Array(123,123, 123,123,                                 0,123, 0,123, 0,123, 0,123, 0,123, 0,123, 123,123, 123,123, 123,123); /* offsets into thmimghtml */
+var thmimghtmloffsets = new Array(-1, -1, -1, -1, 0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 10); /* offsets into thmimghtml */
 
 var thmimghtmlids = new Array(     '','',   '','',  'thm_temp_h_map thm_temp_h_bar','',   'thm_prec_h_map thm_prec_h_bar','',   'thm_pass_h_map thm_pass_h_bar','', 'thm_dg05_h_map thm_dg05_h_bar','', 'thm_dl18_h_map thm_dl18_h_bar','', 'thm_nffd_h_map thm_nffd_h_bar','',   '','', '','', '','');
 
 var thmimghtmlshown = new Array(1,1, 1,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, /*1,1,*/ 1,1, 1,1, 1,1);
 
 /* and the actual array of markup - - TODO these should have sizes - - TODO these should be dynamic perhaps, or not? */
-var thmimghtml = new Array('<img src="/~phox/pi_demo/thumb_map2.png" alt="" />', '<img src="/~phox/pi_demo/thumb_graph.png" alt="" />', 
-                           '<img src="/~phox/pi_demo/thumb_map2.png" alt="" />', '<img src="/~phox/pi_demo/thumb_graph.png" alt="" />', 
-                           '<img src="/~phox/pi_demo/thumb_map2.png" alt="" />', '<img src="/~phox/pi_demo/thumb_graph.png" alt="" />');
+var thmimghtml = new Array('<img src="img/thumbs/thumb_temp_map.jpg" alt="" />', '<img src="img/thumbs/thumb_temp_graph.jpg" alt="" />', 
+                           '<img src="img/thumbs/thumb_prec_map.jpg" alt="" />', '<img src="img/thumbs/thumb_prec_graph.jpg" alt="" />', 
+                           '<img src="img/thumbs/thumb_pass_map.jpg" alt="" />', '<img src="img/thumbs/thumb_pass_graph.jpg" alt="" />', 
+                           '<img src="img/thumbs/thumb_dg05_map.jpg" alt="" />', '<img src="img/thumbs/thumb_dg05_graph.jpg" alt="" />', 
+                           '<img src="img/thumbs/thumb_dl18_map.jpg" alt="" />', '<img src="img/thumbs/thumb_dl18_graph.jpg" alt="" />', 
+                           '<img src="img/thumbs/thumb_nffd_map.jpg" alt="" />', '<img src="img/thumbs/thumb_nffd_graph.jpg" alt="" />');
+
 /* one of each these for every zoomed image div - - should probably be as many elements as there are in thmimghtml - -  FIXME is this going to stay as singles or become blocks like thumbs? */
 var zoomimghtmlids = new Array('zoomimg_temp_h_map','zoomimg_temp_h_bar',
                                'zoomimg_prec_h_map','zoomimg_prec_h_bar',
@@ -175,7 +183,7 @@ var ol_params = new Array(<%ol_maps%>);
               <tr>
                 
                 <td valign="top"> 
-                  <h3>Regional District <span class="navigationsub"> </span></h3> 
+                  <h3>Region <span class="navigationsub"> </span></h3> 
                   <div style="padding: 10px 0px 18px 10px;">
                     <%c_form:pr%>
                   </div>

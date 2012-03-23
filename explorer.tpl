@@ -12,7 +12,7 @@
    <meta name="RATING" content="GENERAL"/>
    <meta name="REVISIT-AFTER" content="14 DAYS"/>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-   <link rel="stylesheet" href="/tools/scenaccess.css" type="text/css"/>
+   <link rel="stylesheet" href="css/scenaccess.css" type="text/css"/>
    <style type="text/css">
      
 .footer{
@@ -51,7 +51,7 @@ TD.column4 {
 	 
        -->
    </script>
-   <script src="/tools/explorer.js" type="text/javascript"></script>
+   <script src="lib/explorer.js" type="text/javascript"></script>
    
    <title>PCIC Regional Analysis Tool (BETA)</title>
 </head>

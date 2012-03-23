@@ -9,9 +9,11 @@
 	<tr><th style="width: 395px;"><h3>Historical</h3></th><th style="width: 395px;"><h3>Projected</h3></th><th style="width: 82px;"><h3>Range</h3></th></tr>
 	<tr>
 	  <td><div id="ol_<%symname%>_hist"></div></td><td><div id="ol_<%symname%>_future"></div></td>
-	  <td><div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div></td>
+	  <td rowspan="2"><div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div></td>
 	</tr>
+	<tr><td colspan="2" style="text-align: center;"><div id="legend_<%symname%>" class="legend" height="75px" width="660px"></div></td></tr>
       </table>
+      
       <p>
 The maps show <strong><%toy%></strong> <%lc_varname%> (<%units%>) for the <strong><%region%></strong> region. The historical map on the far left is based on observed and interpolated station data while the projected map shows how this picture will change by the <strong><%ts_period%></strong> period, based on a single GCM projection. The range plot at far right shows where the change reflected in the projected map (identified by the blue dot) compares to a PCIC standard set of GCM projections. Use this to determine whether the projection used can be considered high or low relative to other projections in the set. Note: some variables do not come directly from the climate models (see 'Notes' tab for more information).
       </p>
