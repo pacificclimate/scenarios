@@ -45,7 +45,8 @@ $dat[0]{'variable'} =
     "Degree-Days Above 5",     "Degree-Days Below 18",
     "Degree-Days Above 18",    "Number of Frost-Free Days",
     "Snowfall",                "Interannual SD of Temperature",
-    "T & P",                   "All Variables"
+    "Interannual SD of Precipitation", "T & P",
+    "All Variables"
   ];
 
 $dat[1]{'variable'} = 
@@ -63,7 +64,8 @@ $dat[1]{'variable'} =
     "Degree-Days Above 5",     "Degree-Days Below 18",
     "Degree-Days Above 18",    "Number of Frost-Free Days",
     "Snowfall",                "Interannual SD of Temperature",
-    "T & P",                   "All Variables"
+    "Interannual SD of Precipitation", "T & P",
+    "All Variables"
   ];
 
 # Filename stuff
@@ -71,7 +73,7 @@ $dat[2]{'variable'} =
   [ "temp", "prec", "tmax", "tmin", "shum", "irad", "tcld", "wind", 
     "evap", "soil", "mslp", "snow", "sice", "vapp", "rhum", "ditr", 
     "surt", "somm", "snod", "h500", "melt", "dl00", "dg05", "dl18",
-    "dg18", "nffd", "pass", "isdt", [0..1], [0..20]
+    "dg18", "nffd", "pass", "isdt", "isdp", [0..1], [0..29]
   ];
 
 # FIXME - LANG -- BIG!
@@ -80,7 +82,7 @@ $dat[3]{'variable'} =
   [ '°C','mm/day','°C','°C','kg/kg','W/m^2','Fraction','m/s',
     'mm/day','capacity frac.','hPa','kg/m^2','kg/m^2','hPa','Percent','°C',
     '°C', 'mm','m','m','mm/day', 'degree-days', 'degree-days', 'degree-days',
-    'degree-day', 'days', 'mm', '°C'
+    'degree-day', 'days', 'mm', '°C', 'mm/day'
   ];
 
 # FIXME - LANG -- BIG!
@@ -89,7 +91,7 @@ $dat[4]{'variable'} =
   [ '°C','Percent','°C','°C','kg/kg','W/m^2','Percent','Percent',
     'mm/day','capacity frac.','hPa','kg/m^2','kg/m^2','hPa','Percent','°C',
     '°C','mm','m','m','mm/day', 'degree-days', 'degree-days', 'degree-days',
-    'degree-day', 'days', 'Percent', '°C'
+    'degree-day', 'days', 'Percent', '°C', 'mm/day'
 
   ];
 # Baseline legend range default
@@ -99,55 +101,59 @@ $dat[4]{'variable'} =
 #    [-30, 30], [0, 0.5], [0, 5], [5000, 6000], [0, 2], [0, 5000], [0, 5000], [0, 5000], [0, 5000], [0, 365], [0, 2000]
 #  ];
 $dat[5]{'variable'} = 
-  [ [-15, 20], [0, 10], [-30, 30], [-30, 30], [0, 0.020], [0, 400], [0, 1], [0, 11],
+  [ [-20, 20], [0, 20], [-30, 30], [-30, 30], [0, 0.020], [0, 400], [0, 1], [0, 11],
     [0, 5], [0, 1], [990, 1020], [0, 250], [0, 2500], [0, 30], [60, 100], [0, 20],
-    [-30, 30], [0, 0.5], [0, 5], [5000, 6000], [0, 2], [0, 5000], [0, 5000], [0, 5000], [0, 5000], [0, 365], [0, 2000], [0, 5]
+    [-30, 30], [0, 0.5], [0, 5], [5000, 6000], [0, 2], [0, 5000], [0, 5000], [0, 8000], 
+    [0, 5000], [0, 365], [0, 3500], [0, 5], [0, 5]
   ];
 # Prediction legend range default
 $dat[6]{'variable'} = 
   [ [-1, 9], [-25, 25], [-1, 9], [-1, 9], [-0.5, 2], [-15, 25], [-15, 35], [-25, 25],
     [-0.5, 1], [-0.2, 0.3], [-5, 5], [-60, 10], [-2500, 100], [-1, 4], [-4, 4], [-8, 2],
-    [-1, 9], [-0.2, 0], [-4, 1], [0, 150], [-0.8, 0.2], [0, 5000], [0, 5000], [0, 5000], [0, 5000], [0, 365], [-25, 25 ], [0, 5]
+    [-1, 9], [-0.2, 0], [-4, 1], [0, 150], [-0.8, 0.2], [0, 5000], [0, 5000], [0, 8000], 
+    [0, 5000], [0, 365], [-25, 25 ], [0, 5], [0, 5]
   ];
 # Baseline decimal places
 $dat[7]{'variable'} = 
   [ 2, 2, 0, 0, 4, 0, 1, 0, 
     1, 1, 0, 0, 0, 0, 0, 0, 
     0, 2, 1, 0, 1, 0, 0, 0,
-    0, 0, 0, 2
+    0, 0, 0, 2, 3
   ];
 # Prediction decimal places
 $dat[8]{'variable'} = 
   [ 1, 0, 1, 1, 5, 0, 0, 1, 
     2, 2, 1, 2, 0, 1, 1, 1, 
     1, 3, 1, 0, 1, 0, 0, 0,
-    0, 0, 0, 2
+    0, 0, 0, 2, 3
   ];
 # Reverse (range)
 $dat[9]{'variable'} = 
   [ 0, 1, 0, 0, 1, 0, 1, 0,
     0, 0, 0, 0, 0, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 0
+    0, 1, 1, 0, 0
   ];
 # Plot over ocean override (-1 for no override)
 $dat[10]{'variable'} = 
   [ -1, -1, -1, -1, -1, -1, -1, -1,
     -1,  0, -1, -1,  2, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1,
-    -1, -1, -1, -1
+    -1, -1, -1, -1, -1
   ];
 # Baseline legend dynamic range default (unused?)
 $dat[11]{'variable'} = 
   [   6,   1,   6,   6,   0.002,  40, 0.1,   1,
       0.5, 0.1,   3,  25, 250,   3,   4,   2,
-      6,0.05, 0.5, 100, 0.2, 0, 0, 0, 0, 0, 0, 6
+      6, 0.05, 0.5, 100, 0.2, 0, 0, 0, 
+      0, 0, 0, 6, 6
   ];
 # Prediction legend dynamic range default (unused?)
 $dat[12]{'variable'} = 
   [  1,   5,   1,   1,0.25,   0.002,   5,    5,
      0.15,0.05,   1,   7, 250, 0.5,  0.8,   1,
-     1,0.02, 0.5,  15, 0.1, 0, 0, 0, 0, 0, 0, 6
+     1,0.02, 0.5,  15, 0.1, 0, 0, 0, 
+     0, 0, 0, 6, 6
   ];
 
 # Percentage of baseline boolean (Prediction only)
@@ -155,7 +161,7 @@ $dat[13]{'variable'} =
   [ 0, 1, 0, 0, 0, 0, 1, 1,
     0, 0, 0, 0, 0, 0, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0
+    0, 0, 1, 0, 0
   ];
 
 # Cumulative (therefore non-annual range is a *fraction* of annual)  FIXME need to abstract getting range so everything uses it properly
@@ -163,14 +169,14 @@ $dat[14]{'variable'} =
   [ 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 1, 1, 1,
-    1, 1, 1, 0
+    1, 1, 1, 0, 0
   ];
 # "Fudge Factor"
 $dat[15]{'variable'} = 
   [ 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 1, 0.37, 0.63,
-    1, 1.01, 0.50, 0
+    1, 1.01, 0.50, 0, 0
   ];
 
 # ncWMS layer variable name
@@ -178,15 +184,15 @@ $dat[16]{'variable'} =
   [ "tas", "pr", "tasmax", "tasmin", "shum", "irad", "tcld", "wind", 
     "evap", "soil", "mslp", "snow", "sice", "vapp", "rhum", "ditr", 
     "surt", "somm", "snod", "h500", "melt", "dl00", "dg05", "dl18",
-    "dg18", "nffd", "pass", "isdt"
+    "dg18", "nffd", "pass", "isdt", "isdp"
   ];
 
 # ncWMS color pallette name
 $dat[17]{'variable'} = 
-  [ "darkred_blue", "green_brown", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
+  [ "blue_darkred", "brown_green", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
     "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
-    "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "darkred_blue", "lightblue_darkblue", 
-    "rainbow", "blue_brown", "brown_blue", "green_brown"
+    "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "blue_darkred", "lightblue_darkblue", 
+    "rainbow", "blue_brown", "brown_blue", "brown_green", "brown_green"
   ];
 
 # ncWMS scale factor
@@ -194,7 +200,7 @@ $dat[18]{'variable'} =
   [ 1,1/86400,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,
-    1,1,1,1
+    1,1,1,1,1
   ];
 
 # ncWMS add factor
@@ -202,7 +208,7 @@ $dat[19]{'variable'} =
   [ 273.15,0,273.15,273.15,0,0,0,0,
     0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,
-    0,0,0,0
+    0,0,0,0,0
   ];
 
 # Time periods aka timeslices

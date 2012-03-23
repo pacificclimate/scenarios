@@ -136,7 +136,7 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
 } elsif ($host == 1) {
   my($pfd) = "/home/data3/modperl/scenarios-windy/";
   my($pfw) = "/tools/";
-  $dat[2]{'gcminfofile'} = $pfd . "135.csv";
+  $dat[2]{'gcminfofile'} = $pfd . "136.csv";
   $dat[2]{'regionfile'} = $pfd . "regions-new.csv";
   $dat[2]{'template'} = $pfd . 'explorer.tpl';
 
