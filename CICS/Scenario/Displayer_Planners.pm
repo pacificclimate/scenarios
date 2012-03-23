@@ -568,7 +568,7 @@ sub make_planners_impacts_table {
 
     foreach my $cat (sort(keys(%category_hash))) {
 	$result_html .= '<tr><td style="text-align: center;"><a href="#" onclick="' . "zoomImpact('" . $catmapper{$cat} . "')\">" . $cat . '</a></td>';
-	$result_html .= '<td style="text-align: center;">' . join(", ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</td></tr>' . "\n";
+	$result_html .= '<td style="text-align: center;">' . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</td></tr>' . "\n";
     }
     $result_html .= "</table>\n";
 
@@ -589,8 +589,12 @@ sub make_map_creation_param_js {
     my($ncwms_period) = $curexpt{ncwms_periods}->[$desc->{ts}];
     my($ncwms_expt) = lc($curexpt{exptname});
     my($ncwms_scen, $ncwms_run) = split(/-/, $ncwms_expt);
+    my($varname) = $self->{dat}->[2]{'variable'}[$desc->{'var'}];
+    my($canvas_id) = '"legend_' . $varname . '"';
+    my($dec_places) = $self->{dat}->[7]{'variable'}[$desc->{'var'}];
+    my($vardesc_txt) = '"' . $self->{dat}->[0]{'variable'}[$desc->{'var'}] . ' (' . $self->{dat}->[3]{'variable'}[$desc->{'var'}] . ')"';
 
-    my($div_id) = '"ol_' . $self->{dat}->[2]{'variable'}[$_->{'var'}] . '_' . (($_->{'ts'} == 0) ? 'hist' : 'future') . '"';
+    my($div_id) = '"ol_' . $varname . '_' . (($desc->{'ts'} == 0) ? 'hist' : 'future') . '"';
     my($region) = '"' . $self->{regions}->[$desc->{pr}]{name}->[0] . '"';
     my($climate_overlay) = '"' . join("-", $curexpt{modelname}, $ncwms_scen, $ncwms_varname, $ncwms_run, $ncwms_period) . '/' . $ncwms_varname . '"';
     my($climate_time) = '"' . $curexpt{'ncwms_centers'}[$desc->{ts}] . '-' . $self->{dat}->[5]{'timeofyear'}->[$desc->{toy}] . 'T00:00:00Z"';
@@ -599,7 +603,7 @@ sub make_map_creation_param_js {
     ## FIXME: NEED TO PROJECT THIS.
     my($center_point) = 'new OpenLayers.LonLat(' . join(",", $desc->{view_x}, $desc->{view_y}) .')';
     my($zoom_level) = $desc->{zoom};
-    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level) . ')';
+    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level, $canvas_id, $desc->{r_min}, $desc->{r_max}, $dec_places, $vardesc_txt) . ')';
 }
 
 sub make_ol_map_js_from_desclist {

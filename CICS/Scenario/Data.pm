@@ -218,7 +218,7 @@ $dat[2]{'timeslice'} = [ "1961_1990", "2020", "2050", "2080", [ 0..3 ] ];
 $dat[3]{'timeslice'} = [ "1961_1990", "2010_2039", "2040_2069", "2070_2099", [ 0..3 ] ];
 ## ncWMS filename periods and time periods
 $dat[4]{'timeslice'} = [ "1961-1990", "2010-2039", "2040-2069", "2070-2099", [ 0..3 ] ];
-$dat[5]{'timeslice'} = [ "1975", "2025", "2055", "2075", [ 0..3 ] ];
+$dat[5]{'timeslice'} = [ "1975", "2025", "2055", "2085", [ 0..3 ] ];
 
 # FIXME - LANG
 # Map regions (this will be extended later)

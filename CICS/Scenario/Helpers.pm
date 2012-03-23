@@ -944,12 +944,17 @@ sub get_ruledat {
 
   my($var, $toy, $ia_agg, $spat_agg, $enstime) = split('_', $key);
   
-  ## Handle the singular interannual SD var
-  if($var eq "temp" && $ia_agg eq "iastddev") {
-      $var = "isdt";
+  ## Handle the interannual SD vars
+  my($data_var) = $var;
+  if($data_var eq "temp" && $ia_agg eq "iastddev") {
+      $data_var = "isdt";
+  } elsif($data_var eq "prec" && $ia_agg eq "iastddev") {
+      $data_var = "isdp";
+  } elsif($ia_agg eq "iastddev") {
+      die "Can't get interannual SD data for " . $data_var;
   }
 
-  my $desc_params = {var => $lut->{'var'}->{$var}, toy => $lut->{'toy'}->{$toy}};
+  my $desc_params = {var => $lut->{'var'}->{$data_var}, toy => $lut->{'toy'}->{$toy}};
 
   if($enstime eq "hist") {
       $desc_params->{expt} = $desc_params->{sset} = $basedesc->{baseline_expt};
@@ -957,13 +962,13 @@ sub get_ruledat {
       $enspctilemap = { "hist" => "cru_ts_21 HIST-run1" };
   }
 
-  (defined($lut->{'var'}->{$var})) or die "Invalid var (" . $var . ") in plotdat key: '" . $key . "'";
+  (defined($lut->{'var'}->{$data_var})) or die "Invalid var (" . $data_var . ") in plotdat key: '" . $key . "'";
   (defined($lut->{'toy'}->{$toy})) or die "Invalid toy (" . $toy . ") in plotdat key: '" . $key . "'";
   (defined($enspctilemap->{$enstime})) or die "Invalid ensemble percentile (" . $enstime . ") in plotdat key: '" . $key . "'";
 
 
   my $csv_hash = parse_csv($cache->create_cachefile(mod_desc_with_params($basedesc, $desc_params)));
-  print STDERR "Retrieving plotdat item for var $var, toy $toy, ia_agg $ia_agg, spat_agg $spat_agg, ensemble quantile $enstime\n";
+  print STDERR "Retrieving plotdat item for var $var (data_var $data_var), toy $toy, ia_agg $ia_agg, spat_agg $spat_agg, ensemble quantile $enstime\n";
   
   # Experiment-name-to-row (or percentile-to-row in our case) mapping
   my %exptkeys;
