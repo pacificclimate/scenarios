@@ -53,7 +53,7 @@ var zoomimghtmlids = new Array('zoomimg_temp_h_map','zoomimg_temp_h_bar',
                                'zoomimg_dl18_h_map','zoomimg_dl18_h_bar',
                                'zoomimg_nffd_h_map','zoomimg_nffd_h_bar'
 );
-var zoomimghtmlshown = new Array(0,0,                                       0,0, 0,0, 0,0, 0,0);
+var zoomimghtmlshown = new Array(0,0, 0,0, 0,0, 0,0, 0,0, 0,0);
 var zoomimghtml = new Array(<%planners_content%>); /* TODO sizes */
 var ol_params = new Array(<%ol_maps%>);
 -->
@@ -64,9 +64,6 @@ var ol_params = new Array(<%ol_maps%>);
 </head>
 
 <body onload="doLoad();" onkeydown="keyPress(event)">
-<!--<body onload="init_map('ol_temp_hist', 'Bulkley-Nechako', 'climatebc-hist-pr-run1-1961-1990/pr', '1975-07-01T00:00:00Z', '0,0.0001157', 'rainbow', new OpenLayers.Geometry.Point(1162843.9625, 417062.775), 0);">-->
-
-
   <div id="centre">
     <div id="title-left"><a href="http://www.pacificclimate.org/"><img src="img/pcic_logo.png" alt="Pacific Climate Impacts Consortium" /></a></div>
     <div id="title-right"><a href="http://www.plan2adapt.ca/"><img src="img/p2a.png" alt="Plan2Adapt" /></a></div>
