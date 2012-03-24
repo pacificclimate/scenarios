@@ -45,7 +45,7 @@ span.land_use_planning {
 }
 
 div.olMapViewport {
-    background-image: url(water.jpg);
+    background-image: url(img/water.jpg);
 }
 #slider-id {
     width: 367px;
@@ -177,8 +177,8 @@ padding-left: 14px;
 padding-top: 9px;
 }
 
-#sidetabs li.active { background: #00A42E url(/~phox/pi_demo/tabmask.png) no-repeat scroll left top; }
-#sidetabs li.inactive { background: #00364A url(/~phox/pi_demo/tabmask.png) no-repeat scroll left top;
+#sidetabs li.active { background: #00A42E url(img/tabmask.png) no-repeat scroll left top; }
+#sidetabs li.inactive { background: #00364A url(img/tabmask.png) no-repeat scroll left top;
                         margin-right: 1px; cursor: pointer; }
 
 #tabbedbox {  /* VISIBLE BORDER */
@@ -283,7 +283,7 @@ min-height: 160px; /* FIXME this might be the wrong #; This forces fitting of th
 }
 
 #content div.contentcolumn > div.thumbdiv { /* might want to class this later */ /* FIXME these float left now, no? */
-background: #FFFFFF url(loading.gif) no-repeat scroll center center;   /* TODO make a smaller spinner image that works well for both thumbs and zoomed */
+background: #FFFFFF url(img/loading.gif) no-repeat scroll center center;   /* TODO make a smaller spinner image that works well for both thumbs and zoomed */
 display: inline;
 float: left;
 width: 188px;
