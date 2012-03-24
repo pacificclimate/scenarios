@@ -68,8 +68,8 @@ var ol_params = new Array(<%ol_maps%>);
 
 
   <div id="centre">
-    <div id="title-left"><a href="http://www.pacificclimate.org/"><img src="/~phox/pi_demo/pcic_logo.png" alt="Pacific Climate Impacts Consortium" /></a></div>
-    <div id="title-right"><a href="http://www.plan2adapt.ca/"><img src="/~phox/pi_demo/p2a.png" alt="Plan2Adapt" /></a></div>
+    <div id="title-left"><a href="http://www.pacificclimate.org/"><img src="img/pcic_logo.png" alt="Pacific Climate Impacts Consortium" /></a></div>
+    <div id="title-right"><a href="http://www.plan2adapt.ca/"><img src="img/p2a.png" alt="Plan2Adapt" /></a></div>
 
     <div id="navbarcontainer">
       <ul id="navbar">
