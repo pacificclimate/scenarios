@@ -429,7 +429,10 @@ sub new {
 	my($temp_pd) = CICS::Scenario::Helpers::parse_textdata($self->{cache}->create_cachefile($temp_pd_desc , TYPE_TEXT));
 
 	my($windowwidth, $windowheight) = ($temp_pd->{'mapmaxlon'} - $temp_pd->{'mapminlon'}, $temp_pd->{'mapmaxlat'} - $temp_pd->{'mapminlat'}); # in native units, not necessarily degrees.
-
+	if(defined(($self->{post}->{planners}))) {
+	    $windowwidth = (1878413.1812478 - 134672.1812478);
+	    $windowheight = (2011984.852247 - 192814.852247);
+	} 
 	my($minregiony, $maxregiony, $minregionx, $maxregionx) = (9999999999,-9999999999,9999999999,-9999999999);
 
 	my $proj4;
