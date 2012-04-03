@@ -15,6 +15,8 @@ use Digest::MD5 ();
 use POSIX ();
 use Text::CSV_XS ();
 use Geo::Proj4 ();
+use Language::Functional ();
+use HTML::Entities ();
 
 use Apache2::Const ();
 use APR::URI ();

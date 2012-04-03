@@ -142,6 +142,7 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
 
   $dat[2]{'planners_regionfile'} = $pfd . "planners-analysis-regions.csv";
   $dat[2]{'planners_impacts_template'} = $pfd . 'impacts.tpl';
+  $dat[2]{'planners_rules_template'} = $pfd . 'rules.tpl';
   $dat[2]{'planners_template'} = $pfd . 'planners.tpl';
   $dat[2]{'planners_desclist'} = $pfd . 'planners-desclist.csv';  # TODO unused right now, make it so!
   $dat[2]{'planners_tab_template'} = $pfd . 'planners-tab.tpl';

@@ -163,6 +163,9 @@ var ol_params = new Array(<%ol_maps%>);
               <div class="heading"><h1>Summary of Potential Impacts</h1></div>
               <div class="summary">
                 <%planners_impacts_table%>
+		<%planners_impacts_pretty%>
+
+		<p>To see the impacts rules, <a href="#" onClick="zoomImpact('raw_impacts')">click here.</a></p>
                 <p><span class="warningtext">Warning: DO NOT USE OR REPRODUCE THE CONTENTS OF THIS TABLE. The current table is created using rules to relate projected climate change to impacts. The thresholds and rules are arbitrary. This table is for demonstration purposes only and will be replaced by new rules developed through a more rigorous process involving climate impacts experts.</span></p>
                 <br />
                 <p>The table above shows potential impacts resulting from climate change for the <strong><%var:region%></strong> region by the <strong><%var:ts_period%></strong> period. It is important to note that these are <strong>potential</strong> impacts only, based on the amount of projected climate change. An appropriate regional adaptation expert should be consulted prior to making use of this information in order to further determine its local relevance and completeness.</p>

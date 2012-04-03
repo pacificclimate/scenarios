@@ -5,6 +5,8 @@ use CICS::Helpers;
 use CICS::Scenario::Cache;
 use CICS::Scenario::Helpers;
 use File::Slurp;
+use Language::Functional qw(all);
+use HTML::Entities qw(encode_entities);
 
 sub new {
   my($class, $in) = @_;
@@ -523,6 +525,72 @@ sub make_sector_span {
     $str = lc($str);
     $str =~ s/ /_/g;
     return '<span class="' . $str . '">' . $origstr . '</span>';
+}
+
+sub anchorify {
+    my($str) = @_;
+    $str =~ tr/a-zA-Z0-9_/_/c;
+    return($str);
+}
+
+
+sub make_pretty_impacts_data {
+    my($self) = @_;
+    my($result_html) = "";
+    my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
+    my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
+
+    ## Header Row
+    $result_html = "<table>\n";
+    $result_html .= '<tr class="dkblue"><th>ID</th><th>Condition</th><th>Category</th><th>Sector</th><th>Impact</th><th>Management Implications</th></tr>' . "\n";
+
+    foreach my $rowid (0..$#{$impacts_logic_csv->{id}}) {
+	## Condition munger...
+	my($cond) = encode_entities($impacts_logic_csv->{condition}->[$rowid]);
+
+	## Map <= and >= to appropriate entities
+	$cond =~ s/&lt;=/&le;/g;
+	$cond =~ s/&gt;=/&ge;/g;
+	
+	## Tag percentage change fields as percent
+	$cond =~ s/prec_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p/prec_$1_iamean_$2_e$3p_percent/g;
+
+	## Tag anomalies as anomalies
+	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p([^_])/$1_$2_iamean_$3_e$4p_anom$5/g;
+	
+	## Show non-percentage fields as that, not a bunch of math.
+	$cond =~ s/\(([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_percent\s*\/\s*100\)\s*\*\s*\1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
+	$cond =~ s/prec_([a-z]+)_iamean_([a-z0-9]+)_hist\s*\*\s*\(1\s*\+\s*\(prec_\1_iamean_\2_e([0-9]+)p_percent\s*\/\s*100\)\)/prec_$1_iamean_$2_e$3p/g;
+	
+	## Show fields where we are summing together historical and future as absolute
+	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_anom \+ \1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
+	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_hist \+ \1_\2_iamean_\3_e([0-9]+)p_anom/$1_$2_iamean_$3_e$4p/g;
+
+	## Get rid of extra parens
+	$cond =~ s/\(([a-z0-9_]*)\)/$1/g;
+
+	## Get rid of redundant parameters
+	$cond =~ s/iamean_//g;
+	$cond =~ s/smean_//g;
+
+	## Change operators to more readable forms
+	$cond =~ s/&amp;&amp;/AND/g;
+	$cond =~ s/\|\|/OR/g;
+	$cond =~ s/!\(/NOT\(/g;
+	$cond =~ s/!([a-z0-9_]+)/NOT\($1\)/g;
+
+	## Map division and equality
+	$cond =~ s/\//&divide;/g;
+	$cond =~ s/==/=/g;
+
+	## Link rules together
+	$cond =~ s/(rule_[a-z0-9-]+)/'<a href="#' . anchorify($1) . '">' . $1 . '<\/a>'/eg;
+
+	$result_html .= '<tr><td><a name="rule_' . anchorify($impacts_logic_csv->{id}->[$rowid]) . '"></a>' . join("</td><td>", $impacts_logic_csv->{id}->[$rowid], $cond, encode_entities($impacts_logic_csv->{category}->[$rowid]), encode_entities($impacts_logic_csv->{sector}->[$rowid]), encode_entities($impacts_logic_csv->{text1}->[$rowid]), $impacts_logic_csv->{text2}->[$rowid]) . "</td></tr>\n";
+    }
+
+    $result_html .= "</table>\n";
+    return(parseTemplate($self->{cfg}->[2]->{planners_rules_template}, {"rules_id" => "raw_impacts", "rules_table" => $result_html}));
 }
 
 sub make_planners_impacts_table {
