@@ -649,8 +649,8 @@ sub make_planners_impacts_table {
 }
 
 sub make_map_creation_param_js {
-    my($self, $desc) = @_;
-    my(%curexpt) = %{$self->{exptdata}->[$desc->{expt}]};
+    my($self, $desc, $expt) = @_;
+    my(%curexpt) = %{$self->{exptdata}->[($desc->{ts} == 0 ? $desc->{expt} : $expt)]};
     my($scale_factor) = $self->{dat}->[18]{'variable'}->[$desc->{var}];
     my($add_factor) = $self->{dat}->[19]{'variable'}->[$desc->{var}];
     my($ncwms_varname) = $self->{dat}->[16]{variable}->[$desc->{var}];
@@ -662,6 +662,32 @@ sub make_map_creation_param_js {
     my($dec_places) = $self->{dat}->[7]{'variable'}[$desc->{'var'}];
     my($vardesc_txt) = '"' . $self->{dat}->[0]{'variable'}[$desc->{'var'}] . ' (' . $self->{dat}->[3]{'variable'}[$desc->{'var'}] . ')"';
 
+    ## Fetch metadata file for this data, slurp it in, give an anom range.
+    my($minrange, $maxrange) = (1000000, -1000000);
+    if($desc->{ts} != 0) {
+	my($metadata_csv) = parse_csv($self->{cache}->create_cachefile($desc, TYPE_SCENARIO_SET_METADATA));
+	my(@means);
+	my($exptdat) = $self->{exptdata}->[$desc->{expt}];
+	my($exptname) = $exptdat->{modelname} . " " . $exptdat->{exptname};
+	my($exptmean);
+	print STDERR "Expt name: " . $exptname;
+	foreach my $rowid (0..$#{$metadata_csv->{Experiment}}) {
+	    my($meanval) = $metadata_csv->{mean}->[$rowid];
+	    if($meanval < $minrange) {
+		$minrange = $meanval;
+	    }
+	    if($meanval > $maxrange) {
+		$maxrange = $meanval;
+	    }
+	    if($metadata_csv->{Experiment}->[$rowid] eq $exptname) {
+		$exptmean = $meanval;
+	    }
+	}
+	print STDERR "; Mean: " . $exptmean . "\n";
+	$minrange -= $exptmean;
+	$maxrange -= $exptmean;
+    }
+
     my($div_id) = '"ol_' . $varname . '_' . (($desc->{'ts'} == 0) ? 'hist' : 'future') . '"';
     my($region) = '"' . $self->{regions}->[$desc->{pr}]{name}->[0] . '"';
     my($climate_overlay) = '"' . join("-", $curexpt{modelname}, $ncwms_scen, $ncwms_varname, $ncwms_run, $ncwms_period) . '/' . $ncwms_varname . '"';
@@ -671,19 +697,19 @@ sub make_map_creation_param_js {
     ## FIXME: NEED TO PROJECT THIS.
     my($center_point) = 'new OpenLayers.LonLat(' . join(",", $desc->{view_x}, $desc->{view_y}) .')';
     my($zoom_level) = $desc->{zoom};
-    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level, $canvas_id, $desc->{r_min}, $desc->{r_max}, $dec_places, $vardesc_txt) . ')';
+    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level, $canvas_id, $desc->{r_min}, $desc->{r_max}, $dec_places, $vardesc_txt, $minrange, $maxrange) . ')';
 }
 
 sub make_ol_map_js_from_desclist {
-    my($self, $descs) = @_;
+    my($self, $descs, $expt) = @_;
     my($result) = [];
 
     foreach(@$descs) {
 	if(is_arrayref($_)) {
-	    push(@{$result}, make_ol_map_js_from_desclist($self, $_));
+	    push(@{$result}, make_ol_map_js_from_desclist($self, $_, $expt));
 	} else {
 	    if($_->{plot_type} == TYPE_MAP) {
-		push(@{$result}, make_map_creation_param_js($self, $_));
+		push(@{$result}, make_map_creation_param_js($self, $_, $expt));
 	    }
 	}
     }

@@ -118,7 +118,7 @@ sub new {
   # Get first available var
   if(!defined($self->{post}->{var}) || !length($self->{vars}->[$self->{post}->{var}])) {
       if(defined($self->{post}->{planners})) {  #FIXME kill this crap for planners
-	  $self->{post}->{var} = 21;
+	  $self->{post}->{var} = 0;
       } else {
 	  for($i = 0; $i <= $#{$self->{vars}}; $i++) {
 	      if(length($self->{vars}->[$i])) {
@@ -139,13 +139,13 @@ sub new {
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => "planners", allow_empty => 0, numeric => 1, value => 1, allowed_values => [0, 1]}));
 
       # Experiment
-      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'expt', allow_empty => 0, numeric => 1, value => 203, allowed_values => $self->{expt}}));
+      $form->addBit(CICS::FormHandler::Selectfield->new({name => 'expt', allow_empty => 0, numeric => 1, value => 11, allowed_values => $self->{expt}}));
 
       # Old Experiment
-      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldexpt', allow_empty => 0, numeric => 1, value => 203, allowed_values => $self->{expt}}));
+      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldexpt', allow_empty => 0, numeric => 1, value => 11, allowed_values => $self->{expt}}));
 
       # Variable    FIXME planners does not have variable!
-      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'var', allow_empty => 0, numeric => 1, value => 20, allowed_values => $self->{vars}}));
+      $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'var', allow_empty => 0, numeric => 1, value => 0, allowed_values => $self->{vars}}));
 
       # Old Variable    FIXME planners does not have variable!
       $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'oldvar', allow_empty => 0, numeric => 1, value => -1, allowed_values => $self->{vars}}));
@@ -305,9 +305,8 @@ sub new {
   # Add in scatter plot scenario set
   $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'sset', allow_empty => 1, numeric => 1, value => $hash->{expt}, allowed_values => $self->{expt}}));
 
-  my($temp_pd_filename) = $self->{cache}->create_cachefile($self->get_first_desc($hash), TYPE_TEXT);
-  print STDERR "temp_pd_filename is $temp_pd_filename\n";
-  my($temp_pd) = CICS::Scenario::Helpers::parse_textdata($temp_pd_filename);
+  my $temp_pd_desc = { %{$self->get_first_desc($hash)}, plot_type => TYPE_TEXT, expt => 209, ts => 0, ts_d => 0, region => 5, zoom => 0};  #FIXME hardcoded for Planners; need a more elegant solution to getting correct projection here.
+  my($temp_pd) = CICS::Scenario::Helpers::parse_textdata($self->{cache}->create_cachefile($temp_pd_desc , TYPE_TEXT));
 
   # x (lon) and y (lat) center coordinates for zoomed window centre, if different from window centre  FIXME allowed_range not implemented yet!!  FIXME need to deal with other projections here...
   $form->addBit(CICS::FormHandler::Hiddenfield->new({name => 'view_x', numeric => 1,
@@ -425,9 +424,6 @@ sub new {
         $self->{post}->{'zoom'} = 0; 
 # PI      } elsif ($hash->{pr} != $#{$self->{regions}}) { # we have changed to a predefined (as opposed to custom) region, so autozoom.
       } else { # we have changed to a predefined (as opposed to custom) region, so autozoom.
-	my $temp_pd_desc = { %{$self->get_first_desc($hash)}, plot_type => TYPE_TEXT, expt => 209, ts => 0, ts_d => 0, region => 5, zoom => 0};  #FIXME hardcoded for Planners; need a more elegant solution to getting correct projection here.
-	my($temp_pd) = CICS::Scenario::Helpers::parse_textdata($self->{cache}->create_cachefile($temp_pd_desc , TYPE_TEXT));
-
 	my($windowwidth, $windowheight) = ($temp_pd->{'mapmaxlon'} - $temp_pd->{'mapminlon'}, $temp_pd->{'mapmaxlat'} - $temp_pd->{'mapminlat'}); # in native units, not necessarily degrees.
 	if(defined(($self->{post}->{planners}))) {
 	    $windowwidth = (1878413.1812478 - 134672.1812478);

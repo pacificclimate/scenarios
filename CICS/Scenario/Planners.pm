@@ -125,11 +125,11 @@ sub handler {
   # Images for each tab
   ## FIXME: Search for CRU instead of hard-coding location in list.
   my $planners_plots = [ [ {plot_type => TYPE_MAP, res => 3,         expt => 209, ts => 0, ts_d => 0, region => 5},
-			   {plot_type => TYPE_MAP, res => 3,         expt => 204, region => 5},
-			   {plot_type => TYPE_STICKPLOT,             expt => 11,  sset => 280, zoom => 0, baseline_expt => 217} ],
+			   {plot_type => TYPE_MAP, res => 3,         expt => 11, sset => 280, baseline_expt => 217 },
+			   {plot_type => TYPE_STICKPLOT,             expt => 11, sset => 280, baseline_expt => 217} ],
 			 {plot_type => TYPE_BANDS_TIMESLICE_HIST,  expt => 11, sset => 280, zoom => 0, baseline_expt => 217}    ];
 
-  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCENARIO_SET_METADATA, expt => 280, sset => 280, baseline_expt => 217});
+  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCENARIO_SET_METADATA, expt => 11, sset => 280, baseline_expt => 217});
 
   # Plot data (and resulting formatted data) caching, containing things like mam_prec_50p (and consequently data:mam_prec_50p in $template_hash)
   my $planners_plotdat = {};  # This ends up containing things (keys) like mam_prec_50p, etc., containing values (as opposed to formatted text of those values)
@@ -156,7 +156,7 @@ sub handler {
   for my $var_hash (@{$planners_vars}) {  #TODO almost everything moves into here...
     my(@range) = get_range($var_hash->{var}, $basedesc->{toy}, 0, $basedesc->{expt}, $hash->{dat}, $hash->{exptdata});
     my $var_basedesc = { %{$basedesc}, var => $var_hash->{'var'}, r_min => $range[0], r_max => $range[1] };
-    delete $var_basedesc->{'points'};
+    ##delete $var_basedesc->{'points'};
 
     print STDERR "var_basedesc is for variable " . $var_basedesc->{var} . "\n";
 
@@ -172,7 +172,7 @@ sub handler {
 
   # Zoomed image tags
   $template_hash->{planners_content} = join(', ', map { "'" . $_ . "'" } @{$displayer->make_html_from_desclist($planners_descs)});
-  $template_hash->{ol_maps} = $displayer->make_ol_map_js_from_desclist($planners_descs);
+  $template_hash->{ol_maps} = $displayer->make_ol_map_js_from_desclist($planners_descs, 204);
 
   ###################
   ## Impacts Table ##
