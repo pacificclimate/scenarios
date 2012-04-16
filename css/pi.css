@@ -4,7 +4,8 @@
 }
 
 #raw_impacts table td {
-    padding-top: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 #raw_impacts table {
@@ -15,40 +16,92 @@ div.legend {
     text-align: center;
 }
 
-pan.hydrology {
-    background-color: #000080;
-    color: #FFFFFF;
-    padding: 3px;
+/*
+#impacts div.summary table td {
+    padding: 0px;
+    margin: 0px;
 }
-span.agriculture {
-    background-color: #653c00;
-    color: #FFFFFF;
-    padding: 3px;
+*/
+
+div.zoomwin div + div {
+    padding-left: 10px;
+    padding-right: 10px;
 }
-span.biodiversity {
-    background-color: #408040;
-    color: #FFFFFF;
-    padding: 3px;
+
+div.categorytext {
+    padding: 10px;
 }
-span.fisheries {
-    background-color: #8080FF;
-    color: #FFFFFF;
-    padding: 3px;
+
+#raw_impacts tr:nth-child(even) {
+    background-color: #d9e1e9;
 }
-span.forestry {
-    background-color: #008000;
+
+#raw_impacts table th {
+    background-color: #475D81;
     color: #FFFFFF;
-    padding: 3px;
+    padding-bottom: 3px;
 }
-span.infrastructure {
-    background-color: #404040;
-    color: #FFFFFF;
-    padding: 3px;
+
+#raw_impacts table {
+width: 100%;
+border-collapse: collapse;
+border: 1px solid black;
+margin-bottom: 8px;
 }
-span.land_use_planning {
-    background-color: #70FFFF;
-    color: #000000;
-    padding: 3px;
+
+#raw_impacts table td, $raw_impacts table th {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+#impactstable tr.category {
+    display: table-row;
+}
+
+#impactstable tr.sector {
+    display: none;
+}
+
+#impactstable img {
+    border: none;
+}
+
+#impactstable tr.category:nth-child(even), #impactstable tr.sector:nth-child(even) {
+    background-color: #d9e1e9;
+}
+
+
+#impactstable tr.category td, #impactstable tr.sector td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    padding-left: 10px;
+}
+
+#impactstable tr.category td + td, #impactstable tr.sector td + td {
+    padding: 2px;
+    text-align: center;
+}
+
+#impactstable tr.category td + td a:hover, #impactstable tr.sector td + td a:hover {
+    text-decoration: none;
+}
+
+#impactstable tr.sector td span, #impactstable tr.category td span {
+    vertical-align: 40%;
+}
+
+/*
+#impactstable tr.sector td + td, #impactstable tr.category td + td {
+    vertical-align: 40%;
+}
+*/
+
+div.categorytext h3 span {
+    vertical-align: 40%;
+}
+div.zoomwin h2 span {
+    vertical-align: 40%;
 }
 
 .smallmap {
@@ -262,6 +315,9 @@ border-color: #C0C0C0;
 padding: 7px 10px 7px 10px; /* TODO make these em */
 }
 
+div.summary > table th a {
+    color: #FFFFFF;
+}
 
 /* including some formatting in these for now.  Should clean that up later as sematics are pretty bad */
 
@@ -522,7 +578,7 @@ div.olPopupContent {
 
 .olControlOpacitySliderElement {
     padding: 10px 18px 10px 10px;
-    background-color: darkblue;
+    background-color: #000080;
     opacity:0.75;
     -moz-border-radius: 1em 0 0 0;
     -webkit-border-top-left-radius: 10px;
@@ -567,7 +623,7 @@ div.olPopupContent {
     padding-left: 10px;
     padding-bottom: 5px;
     padding-right: 75px;
-    background-color: darkblue;
+    background-color: #000080;
     width: 100%;
     height: 100%;
 }

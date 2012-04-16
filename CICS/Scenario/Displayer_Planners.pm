@@ -519,12 +519,34 @@ sub make_error_img {
   return $output;
 }
 
-sub make_sector_span {
+sub get_sector_internal_name {
     my($str) = @_;
-    my($origstr) = $str;
     $str = lc($str);
     $str =~ s/ /_/g;
-    return '<span class="' . $str . '">' . $origstr . '</span>';
+    return($str);
+}
+
+sub make_sector_span {
+    my($str) = @_;
+    my($internal_str) = get_sector_internal_name($str);
+    my(%sectorimgmapper) = ("hydrology" => "img/hydrology.png", "agriculture" => "img/agriculture.png", "biodiversity" => "img/biodiversity.png", "infrastructure" => "img/infrastructure.png", "land_use_planning" => "img/land_use_planning.png", "fisheries" => "img/fisheries.png", "forestry" => "img/forestry.png");
+    if(exists($sectorimgmapper{$internal_str})) {
+	return '<img src="' . $sectorimgmapper{$internal_str} . '" alt="' . $str . '" title="' . $str . '" />';
+    } else {
+	return '<span class="' . $internal_str . '">' . $str . '</span>';
+    }
+}
+
+sub get_category_internal_name {
+    my($str) = @_;
+    my(%catmapper) = ("High Intensity Precipitation" => "high_intensity_precipitation", "Possible Flooding" => "possible_flooding", "Waterlogged Soil" => "waterlogged_soil", "Sea Level Rise / Storm Surge" => "sea_level_rise", "Reduced Water Supply" => "reduced_water_supply", "Longer Dry Season" => "longer_dry_season", "Increase in Temperature" => "increase_in_temperature", "Considerable Increase in Temperature" => "considerable_increase_in_temperature", "Change in Hydrologic Regime" => "change_in_hydrologic_regime", "Increase in Freeze/Thaw Cycles" => "increase_in_freeze_thaw_cycles", "Increase in Hot and Dry Conditions" => "increase_in_hot_and_dry_conditions", "Decrease in Snowpack" => "decrease_in_snowpack", "Change in Species Range" => "change_in_species_range", "Possible Change in Productivity" => "possible_change_in_productivity");
+    return($catmapper{$str});
+}
+
+sub make_category_span {
+    my($str) = @_;
+    my($internal_str) = get_category_internal_name($str);
+    return '<img src="img/' . $internal_str . '.png" alt="' . $str . '" title="' . $str . '" />';
 }
 
 sub anchorify {
@@ -535,7 +557,7 @@ sub anchorify {
 
 
 sub make_pretty_impacts_data {
-    my($self) = @_;
+    my($self, $planners_plotdat_cache) = @_;
     my($result_html) = "";
     my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
     my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
@@ -586,7 +608,9 @@ sub make_pretty_impacts_data {
 	## Link rules together
 	$cond =~ s/(rule_[a-z0-9-]+)/'<a href="#' . anchorify($1) . '">' . $1 . '<\/a>'/eg;
 
-	$result_html .= '<tr><td><a name="rule_' . anchorify($impacts_logic_csv->{id}->[$rowid]) . '"></a>' . join("</td><td>", $impacts_logic_csv->{id}->[$rowid], $cond, encode_entities($impacts_logic_csv->{category}->[$rowid]), encode_entities($impacts_logic_csv->{sector}->[$rowid]), encode_entities($impacts_logic_csv->{text1}->[$rowid]), $impacts_logic_csv->{text2}->[$rowid]) . "</td></tr>\n";
+	my($ruletruth) = test_expression($impacts_logic_csv->{condition}->[$rowid], $planners_plotdat_cache);
+
+	$result_html .= '<tr><td><a name="rule_' . anchorify($impacts_logic_csv->{id}->[$rowid]) . '"></a>' . join("</td><td>", (($ruletruth) ? '<strong>' . $impacts_logic_csv->{id}->[$rowid] . '</strong>' : $impacts_logic_csv->{id}->[$rowid]), $cond, encode_entities($impacts_logic_csv->{category}->[$rowid]), encode_entities($impacts_logic_csv->{sector}->[$rowid]), encode_entities($impacts_logic_csv->{text1}->[$rowid]), $impacts_logic_csv->{text2}->[$rowid]) . "</td></tr>\n";
     }
 
     $result_html .= "</table>\n";
@@ -598,22 +622,24 @@ sub make_planners_impacts_table {
     my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
     my($expression_success_count) = 0;
     my($result_html) = "";
-    my(%catmapper) = ("High Intensity Precipitation" => "high_intensity_precipitation", "Possible Flooding" => "possible_flooding", "Waterlogged Soil" => "waterlogged_soil", "Sea Level Rise / Storm Surge" => "sea_level_rise", "Reduced Water Supply" => "reduced_water_supply", "Longer Dry Season" => "longer_dry_season", "Increase in Temperature" => "increase_in_temperature", "Considerable Increase in Temperature" => "considerable_increase_in_temperature", "Change in Hydrologic Regime" => "change_in_hydrologic_regime", "Increase in Freeze/Thaw Cycles" => "increase_in_freeze_thaw_cycles", "Increase in Hot and Dry Conditions" => "increase_in_hot_and_dry_conditions", "Changes in Snowpack" => "changes_in_snowpack", "Change in Species Range" => "change_in_species_range", "Possible Change in Productivity" => "possible_change_in_productivity");
 
-    # Conditionals and resulting table rows -- TODO needs to be read from a file
+    # Conditionals and resulting table rows
     my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
 
     ## Header Row
-    $result_html = "<table>\n";
+    $result_html = '<table id="impactstable">' . "\n";
     $result_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-    $result_html .= '<tr class="dkblue"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
+    $result_html .= '<tr class="dkblue category"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
+    $result_html .= '<tr class="dkblue sector"><th>Sectors</th><th>Impacts</th></tr>' . "\n";
 
     my %cond_hash;
     @cond_hash{@{$impacts_logic_csv->{id}}} = @{$impacts_logic_csv->{condition}};
 
     my %category_hash;
+    my %sector_hash;
     foreach my $rowid (0..$#{$impacts_logic_csv->{id}}) {
 	my $category = $impacts_logic_csv->{category}->[$rowid];
+	my $sector = $impacts_logic_csv->{sector}->[$rowid];
 	if($category eq "") {
 	    next;
 	}
@@ -621,6 +647,15 @@ sub make_planners_impacts_table {
 	print STDERR "id: " . $impacts_logic_csv->{id}->[$rowid] . ", rule: " . $rule . "\n";
 	if(test_expression($rule, $planners_plotdat_cache)) {
 	    my $dathash;
+	    my $secthash;
+	    if(exists($sector_hash{$sector})) {
+		$secthash = $sector_hash{$sector};
+	    } else {
+		$secthash = {};
+		$secthash->{categories} = {};
+		$secthash->{sector_text} = "";
+		$sector_hash{$sector} = $secthash;
+	    }
 	    if(exists($category_hash{$category})) {
 		$dathash = $category_hash{$category};
 	    } else {
@@ -629,21 +664,40 @@ sub make_planners_impacts_table {
 		$dathash->{category_text} = "";
 		$category_hash{$category} = $dathash;
 	    }
-	    $dathash->{sectors}->{$impacts_logic_csv->{sector}->[$rowid]} = 1;
-	    $dathash->{category_text} .= "<h3>" . $impacts_logic_csv->{text1}->[$rowid] . '</h3><div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	    $dathash->{sectors}->{$sector} = 1;
+	    $secthash->{categories}->{$category} = 1;
+	    $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
+	    $dathash->{category_text} .= '<div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	    $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
+	    $secthash->{sector_text} .= '<div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
 	}
     }
+    
+    my($zoomwins) = "";
 
     foreach my $cat (sort(keys(%category_hash))) {
-	$result_html .= '<tr><td style="text-align: center;"><a href="#" onclick="' . "zoomImpact('" . $catmapper{$cat} . "')\">" . $cat . '</a></td>';
-	$result_html .= '<td style="text-align: center;">' . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</td></tr>' . "\n";
+	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">";
+	$result_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . $cat . '</span></a></td>';
+	$result_html .= '<td>' . $linktext . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</a></td></tr>' . "\n";
+
+	my($innertext) = '<h2>' . make_category_span($cat) . ' <span>' . $cat . '</span></h2><div class="categorytext">' . $category_hash{$cat}->{category_text} . "</div>\n";
+	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_category_internal_name($cat), "category_text" => $innertext});
     }
+
+    foreach my $sect (sort(keys(%sector_hash))) {
+	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">";
+	$result_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . $sect . '</span></a></td>';;
+	$result_html .= '<td>' . $linktext . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
+	
+	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . $sect . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
+	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_sector_internal_name($sect), "category_text" => $innertext});
+    }
+
+    $result_html .= '<tr class="dkblue category"><th colspan="2"><a onclick="' . "hideTRClass('category'); showTRClass('sector'); return false;" . '" id="switchtosector" href="#">Switch to sector view</a></th></tr>';
+    $result_html .= '<tr class="dkblue sector"><th colspan="2"><a onclick="' . "hideTRClass('sector'); showTRClass('category'); return false;" . '" id="switchtocategory" href="#">Switch to category view</a></th></tr>';
     $result_html .= "</table>\n";
 
-    foreach my $cat (keys(%catmapper)) {
-	my($innertext) = exists($category_hash{$cat}) ? '<h2>' . $cat . '</h2><div style="padding: 10px;">' . $category_hash{$cat}->{category_text} . "</div>\n" : "";
-	$result_html .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => $catmapper{$cat}, "category_text" => $innertext});
-    }
+    $result_html .= $zoomwins;
 
     return $result_html;
 }

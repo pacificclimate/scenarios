@@ -152,7 +152,7 @@ var ol_params = new Array(<%ol_maps%>);
                   </tr>
                 </table> 
                 <!--            <table><%planners_variable_table%></table>  -->
-                <p>The table above shows projected changes in average (mean) temperature, precipitation and several derived climate variables from the baseline historical period (1961-1990) to the <strong><%var:ts_period%></strong> for the <strong><%var:region%></strong> region. The ensemble median is a mid-point value, chosen from a PCIC standard set of Global Climate Model (GCM) projections (see the 'Notes' tab for more information). The range values represent the lowest and highest results within the set. Please note that this summary table does not reflect the 'time of year' choice made under the 'Settings' tab. However, this setting does affect results obtained under each variable tab.</p>
+                <p>The table above shows projected changes in average (mean) temperature, precipitation and several derived climate variables from the baseline historical period (1961-1990) to the <strong><%var:ts_period%></strong> for the <strong><%var:region%></strong> region for <strong>all times of year</strong>. The ensemble median is a mid-point value, chosen from a PCIC standard set of Global Climate Model (GCM) projections (see the 'Notes' tab for more information). The range values represent the lowest and highest results within the set. Please note that this summary table does not reflect the 'time of year' choice made under the 'Settings' tab. However, this setting does affect results obtained under each variable tab.</p>
                 <br />
                 <p>* These values are derived from temperature and precipitation. Please select the appropriate variable tab for more information.</p>
                 <!--            <a href="#">Download CSV</a> -->
@@ -165,10 +165,10 @@ var ol_params = new Array(<%ol_maps%>);
                 <%planners_impacts_table%>
 		<%planners_impacts_pretty%>
 
-		<p>To see the impacts rules, <a href="#" onClick="zoomImpact('raw_impacts')">click here.</a></p>
-                <p><span class="warningtext">Warning: DO NOT USE OR REPRODUCE THE CONTENTS OF THIS TABLE. The current table is created using rules to relate projected climate change to impacts. The thresholds and rules are arbitrary. This table is for demonstration purposes only and will be replaced by new rules developed through a more rigorous process involving climate impacts experts.</span></p>
+		<p>The <a href="#" onclick="zoomImpact('raw_impacts')">impacts table rules</a> are now available for viewing.</p>
+                <!--<p><span class="warningtext">Warning: DO NOT USE OR REPRODUCE THE CONTENTS OF THIS TABLE. The current table is created using rules to relate projected climate change to impacts. The thresholds and rules are arbitrary. This table is for demonstration purposes only and will be replaced by new rules developed through a more rigorous process involving climate impacts experts.</span></p>-->
                 <br />
-                <p>The table above shows potential impacts resulting from climate change for the <strong><%var:region%></strong> region by the <strong><%var:ts_period%></strong> period. It is important to note that these are <strong>potential</strong> impacts only, based on the amount of projected climate change. An appropriate regional adaptation expert should be consulted prior to making use of this information in order to further determine its local relevance and completeness.</p>
+                <p>The table above shows potential impacts resulting from climate change for the <strong><%var:region%></strong> region by the <strong><%var:ts_period%></strong> period for <strong>all times of year</strong>. It is important to note that these are <strong>potential</strong> impacts only, based on the amount of projected climate change. An appropriate regional adaptation expert should be consulted prior to making use of this information in order to further determine its local relevance and completeness.</p>
           </div>
           </div></div>
           
@@ -215,6 +215,8 @@ var ol_params = new Array(<%ol_maps%>);
             
             
             <div class="update" style="margin: 18px 0px 0px 12px;"><%c_form:update%></div>
+
+	    <br/><p>Please note that the <strong>Time of Year</strong> field only affects maps; it does not affect the Summary or Impacts tabs.</p>
             
             <%c_form:c_submit%><br/>
             
@@ -271,7 +273,7 @@ var ol_params = new Array(<%ol_maps%>);
     </div>
     
     <div id="footer">
-      &copy; 2011 Pacific Climate Impacts Consortium
+      &copy; 2012 Pacific Climate Impacts Consortium
     </div>
     
   </div> <!-- end centre -->

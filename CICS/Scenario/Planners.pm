@@ -178,7 +178,7 @@ sub handler {
   ## Impacts Table ##
   ###################
   $template_hash->{planners_impacts_table} = $displayer->make_planners_impacts_table($template_hash, $planners_plotdat_cache);
-  $template_hash->{planners_impacts_pretty} = $displayer->make_pretty_impacts_data();
+  $template_hash->{planners_impacts_pretty} = $displayer->make_pretty_impacts_data($planners_plotdat_cache);
 
 #NOT MUCH IN THIS SECTION IS NEEDED IN PLANNERS, BUT SOME IS    TODO:  GUTME/REPLACEME
 
