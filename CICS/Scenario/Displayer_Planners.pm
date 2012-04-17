@@ -667,9 +667,9 @@ sub make_planners_impacts_table {
 	    $dathash->{sectors}->{$sector} = 1;
 	    $secthash->{categories}->{$category} = 1;
 	    $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
-	    $dathash->{category_text} .= '<div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	    $dathash->{category_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
 	    $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
-	    $secthash->{sector_text} .= '<div style="padding: 10px;">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	    $secthash->{sector_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
 	}
     }
     

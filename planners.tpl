@@ -216,7 +216,7 @@ var ol_params = new Array(<%ol_maps%>);
             
             <div class="update" style="margin: 18px 0px 0px 12px;"><%c_form:update%></div>
 
-	    <br/><p>Please note that the <strong>Time of Year</strong> field only affects maps; it does not affect the Summary or Impacts tabs.</p>
+	    <br/><p>Please note that the <strong>Time of Year</strong> field only affects maps and graphs; it does not affect the Summary or Impacts tabs.</p>
             
             <%c_form:c_submit%><br/>
             

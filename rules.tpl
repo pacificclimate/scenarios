@@ -2,7 +2,7 @@
   <div class="bg" onclick="hideImpact('<%category%>')"></div>
   <div class="zoomwin">
     <div class="closebutton" onclick="hideImpact('<%rules_id%>')">CLOSE&nbsp;<span>&times;</span></div>
-    <div style="text-align: left; padding-left: 10px;">
+    <div class="impactsrulestable">
       <h2>Rules</h2>
       <p>The table below lists a cleaned up version of all of the rules in use. Quite a bit of shorthand is used; this is described here. If not otherwise specified, fields are an interannual and spatial mean, and in standard units (degrees C for temperatures, mm/day for precipitation, etc). Rules highlighted in <strong>bold</strong> are true for the inputs selected.</p>
 

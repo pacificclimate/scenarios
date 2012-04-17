@@ -23,9 +23,20 @@ div.legend {
 }
 */
 
-div.zoomwin div + div {
+div.impacticon {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+div.zoomwin div.impactsrulestable {
     padding-left: 10px;
     padding-right: 10px;
+    text-align: left;
+}
+
+div.impactsrulestable tr {
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 div.categorytext {

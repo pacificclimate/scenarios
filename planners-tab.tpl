@@ -37,7 +37,6 @@ The maps show <strong><%toy%></strong> <%lc_varname%> (<%units%>) for the <stron
               <li class="indent">The blue line indicates the model used for display purposes (CGCM3 A2 run 4).</li> 
               <li class="indent">The dark grey shading shows the middle 50% (25<span class="superscript">th</span> to 75<span class="superscript">th</span> percentiles), representing half of the projections in the set.</li> 
               <li class="indent">The light grey shading shows the range according to 80% of the climate change projections used (10<span class="superscript">th</span> to 90<span class="superscript">th</span> percentiles).</li> 
-              <li class="indent">The light grey shading shows the range according to 80% of the climate change projections used (10<span class="superscript">th</span> to 90<span class="superscript">th</span> percentiles).</li> 
             </ul> 
             <p>Note: some variables do not come directly from the climate models (see 'Notes' tab for more information).</p> 
           </td> 
