@@ -881,7 +881,7 @@ sub resolve_rule_references {
 	## Insert a sentinel in here to avoid infinite looping.
 	$cond_hash->{$ruleid} = "rule_" . $ruleid;
 
-	$ruletext =~ s/(rule_([a-zA-Z0-9-]+))/ resolve_rule_references($cond_hash, $2) /ge;
+	$ruletext =~ s/(rule_([a-zA-Z0-9-]+))/'(' . resolve_rule_references($cond_hash, $2) . ')'/ge;
 	$cond_hash->{$ruleid} = $ruletext;
 	return $ruletext;
     } else {

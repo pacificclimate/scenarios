@@ -562,9 +562,26 @@ sub make_pretty_impacts_data {
     my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
     my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
 
+    ## Emit variable table
+    # $result_html .= "<br/><h3>Variables</h3>\n";
+    # $result_html .= '<table id="varstable">' . "\n";
+    # $result_html .= '<tr class="dkerblue"><th>Variable</th><th>Description</th><th>Units</th></tr>';
+    # foreach my $varid (0..$#{$self->{dat}[3]{'variable'}}) {
+    # 	$result_html .= '<tr class="varrow">' . "\n";
+    # 	$result_html .= '<td>' . $self->{dat}[2]{'variable'}->[$varid] . "</td>\n";
+    # 	$result_html .= '<td>' . $self->{dat}[0]{'variable'}->[$varid] . "</td>\n";
+    # 	$result_html .= '<td>' . $self->{dat}[3]{'variable'}->[$varid] . "</td>\n";
+    # 	$result_html .= "</tr>\n";
+    # }
+    # $result_html .= "</table>\n";
+
     ## Header Row
-    $result_html = "<table>\n";
+    $result_html .= "<br/><h3>Rules</h3>\n";
+    $result_html .= "<table>\n";
     $result_html .= '<tr class="dkblue"><th>ID</th><th>Condition</th><th>Category</th><th>Sector</th><th>Impact</th><th>Management Implications</th></tr>' . "\n";
+
+    my %cond_hash;
+    @cond_hash{@{$impacts_logic_csv->{id}}} = @{$impacts_logic_csv->{condition}};
 
     foreach my $rowid (0..$#{$impacts_logic_csv->{id}}) {
 	## Condition munger...
@@ -577,16 +594,16 @@ sub make_pretty_impacts_data {
 	## Tag percentage change fields as percent
 	$cond =~ s/prec_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p/prec_$1_iamean_$2_e$3p_percent/g;
 
-	## Tag anomalies as anomalies
-	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p([^_])/$1_$2_iamean_$3_e$4p_anom$5/g;
-	
 	## Show non-percentage fields as that, not a bunch of math.
-	$cond =~ s/\(([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_percent\s*\/\s*100\)\s*\*\s*\1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
+	$cond =~ s/\(([a-z0-9]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_percent\s*\/\s*100\)\s*\*\s*\1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
 	$cond =~ s/prec_([a-z]+)_iamean_([a-z0-9]+)_hist\s*\*\s*\(1\s*\+\s*\(prec_\1_iamean_\2_e([0-9]+)p_percent\s*\/\s*100\)\)/prec_$1_iamean_$2_e$3p/g;
+
+	## Tag anomalies as anomalies
+	$cond =~ s/([a-z0-9]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p([^_])/$1_$2_iamean_$3_e$4p_anom$5/g;
 	
 	## Show fields where we are summing together historical and future as absolute
-	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_anom \+ \1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
-	$cond =~ s/([a-z]+)_([a-z]+)_iamean_([a-z0-9]+)_hist \+ \1_\2_iamean_\3_e([0-9]+)p_anom/$1_$2_iamean_$3_e$4p/g;
+	$cond =~ s/([a-z0-9]+)_([a-z]+)_iamean_([a-z0-9]+)_e([0-9]+)p_anom \+ \1_\2_iamean_\3_hist/$1_$2_iamean_$3_e$4p/g;
+	$cond =~ s/([a-z0-9]+)_([a-z]+)_iamean_([a-z0-9]+)_hist \+ \1_\2_iamean_\3_e([0-9]+)p_anom/$1_$2_iamean_$3_e$4p/g;
 
 	## Get rid of extra parens
 	$cond =~ s/\(([a-z0-9_]*)\)/$1/g;
@@ -595,20 +612,21 @@ sub make_pretty_impacts_data {
 	$cond =~ s/iamean_//g;
 	$cond =~ s/smean_//g;
 
-	## Change operators to more readable forms
-	$cond =~ s/&amp;&amp;/AND/g;
-	$cond =~ s/\|\|/OR/g;
-	$cond =~ s/!\(/NOT\(/g;
-	$cond =~ s/!([a-z0-9_]+)/NOT\($1\)/g;
-
 	## Map division and equality
 	$cond =~ s/\//&divide;/g;
 	$cond =~ s/==/=/g;
 
+	## Change operators to more readable forms
+	$cond =~ s/&amp;&amp;/<br\/>AND/g;
+	$cond =~ s/\|\|/<br\/>OR/g;
+	$cond =~ s/!\(/NOT\(/g;
+	$cond =~ s/!([a-z0-9_-]+)/NOT\($1\)/g;
+
 	## Link rules together
 	$cond =~ s/(rule_[a-z0-9-]+)/'<a href="#' . anchorify($1) . '">' . $1 . '<\/a>'/eg;
 
-	my($ruletruth) = test_expression($impacts_logic_csv->{condition}->[$rowid], $planners_plotdat_cache);
+	my $rule = resolve_rule_references(\%cond_hash, $impacts_logic_csv->{id}->[$rowid]);
+	my($ruletruth) = test_expression($rule, $planners_plotdat_cache);
 
 	$result_html .= '<tr><td><a name="rule_' . anchorify($impacts_logic_csv->{id}->[$rowid]) . '"></a>' . join("</td><td>", (($ruletruth) ? '<strong>' . $impacts_logic_csv->{id}->[$rowid] . '</strong>' : $impacts_logic_csv->{id}->[$rowid]), $cond, encode_entities($impacts_logic_csv->{category}->[$rowid]), encode_entities($impacts_logic_csv->{sector}->[$rowid]), encode_entities($impacts_logic_csv->{text1}->[$rowid]), $impacts_logic_csv->{text2}->[$rowid]) . "</td></tr>\n";
     }
@@ -666,10 +684,10 @@ sub make_planners_impacts_table {
 	    }
 	    $dathash->{sectors}->{$sector} = 1;
 	    $secthash->{categories}->{$category} = 1;
-	    $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
-	    $dathash->{category_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
-	    $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . $impacts_logic_csv->{text1}->[$rowid] . '</span></h3>';
-	    $secthash->{sector_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div>\n";
+	    $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$rowid]) . '</span></h3>';
+	    $dathash->{category_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div><br/>\n";
+	    $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$rowid]) . '</span></h3>';
+	    $secthash->{sector_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div><br/>\n";
 	}
     }
     
@@ -677,19 +695,19 @@ sub make_planners_impacts_table {
 
     foreach my $cat (sort(keys(%category_hash))) {
 	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">";
-	$result_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . $cat . '</span></a></td>';
+	$result_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . encode_entities($cat) . '</span></a></td>';
 	$result_html .= '<td>' . $linktext . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</a></td></tr>' . "\n";
 
-	my($innertext) = '<h2>' . make_category_span($cat) . ' <span>' . $cat . '</span></h2><div class="categorytext">' . $category_hash{$cat}->{category_text} . "</div>\n";
+	my($innertext) = '<h2>' . make_category_span($cat) . ' <span>' . encode_entities($cat) . '</span></h2><div class="categorytext">' . $category_hash{$cat}->{category_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_category_internal_name($cat), "category_text" => $innertext});
     }
 
     foreach my $sect (sort(keys(%sector_hash))) {
 	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">";
-	$result_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . $sect . '</span></a></td>';;
+	$result_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></a></td>';;
 	$result_html .= '<td>' . $linktext . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
 	
-	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . $sect . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
+	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . encode_entities($sect) . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_sector_internal_name($sect), "category_text" => $innertext});
     }
 
@@ -787,7 +805,10 @@ sub make_html_from_desclist {  # WARNING do not use this with arrays for general
 	  push(@{$result}, $images->[0]);
       } else {
 	  if($_->{plot_type} != TYPE_MAP) {
-	      push(@{$result}, "<div><img src=\"".$wrapper."?".mkgetstring($_)."\" class=\"" . $img_class_hash{$_->{plot_type}} . "\" alt=\"\"/></div>");
+	      my(%desc);
+	      %desc = %{$_};
+	      delete($desc{points});
+	      push(@{$result}, "<div><img src=\"".$wrapper."?".mkgetstring(\%desc)."\" class=\"" . $img_class_hash{$_->{plot_type}} . "\" alt=\"\"/></div>");
 	  }
       }
   }

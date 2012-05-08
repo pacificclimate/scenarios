@@ -165,7 +165,7 @@ sub handler {
 
     # Build content div -- conveniently all of these start out hidden.
     my $tab_template_hash = {%{$var_hash}, toy => $template_hash->{'var:toy'}, region => $template_hash->{'var:region'}, ts => $template_hash->{'var:ts'}, ts_period => $template_hash->{'var:ts_period'}, lc_varname => lc($var_hash->{'uc_varname'})};
-    $tab_template_hash->{'scatter_link'} = $displayer->make_url_from_desc(mod_desc_with_params($var_basedesc, { plot_type => TYPE_SCATTER_TIMESLICE_TEXT,  expt => 280, sset => 280, baseline_expt => 217}));
+    $tab_template_hash->{'scatter_link'} = $displayer->make_url_from_desc(mod_desc_with_params($var_basedesc, { plot_type => TYPE_SCATTER_TIMESLICE_TEXT,  expt => 280, sset => 280, baseline_expt => 217, points => undef}));
 
     $template_hash->{'planners_vardivs'} .= parseTemplate($hash->{cfg}->[2]->{'planners_tab_template'}, $tab_template_hash, $planners_plotdat_cache);
   }

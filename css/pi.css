@@ -4,12 +4,34 @@
 }
 
 #raw_impacts table td {
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px 1px;
+    border-left: 1px solid #C0C0C0;
+    border-right: 1px solid #C0C0C0;
+    border-collapse: collapse;
 }
 
 #raw_impacts table {
     margin-top: 5px;
+}
+
+#raw_impacts tr:nth-child(even) {
+    background-color: #d9e1e9;
+}
+
+#raw_impacts table th {
+    background-color: #475D81;
+    color: #FFFFFF;
+    padding: 3px 1px;
+}
+
+#raw_impacts table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid black;
+    margin-bottom: 8px;
+}
+
+#raw_impacts table td, #raw_impacts table th {
 }
 
 div.legend {
@@ -34,35 +56,13 @@ div.zoomwin div.impactsrulestable {
     text-align: left;
 }
 
-div.impactsrulestable tr {
-    padding-left: 1px;
-    padding-right: 1px;
+div.impactsrulestable table td {
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 div.categorytext {
     padding: 10px;
-}
-
-#raw_impacts tr:nth-child(even) {
-    background-color: #d9e1e9;
-}
-
-#raw_impacts table th {
-    background-color: #475D81;
-    color: #FFFFFF;
-    padding-bottom: 3px;
-}
-
-#raw_impacts table {
-width: 100%;
-border-collapse: collapse;
-border: 1px solid black;
-margin-bottom: 8px;
-}
-
-#raw_impacts table td, $raw_impacts table th {
-    padding-left: 1px;
-    padding-right: 1px;
 }
 
 #impactstable tr.category {
