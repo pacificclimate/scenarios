@@ -1,7 +1,8 @@
-#raw_impacts div.zoomwin div + div {
+/*#raw_impacts div.zoomwin div + div {
     overflow-y: scroll;
     height: 592px;
 }
+*/
 
 #raw_impacts table td {
     padding: 3px 1px;
@@ -390,6 +391,11 @@ opacity:0.6;
 
 #content div.zoomable {  display: none; }  /* invisible control container */
 #content div.zoomed { }
+
+#content div.zoomed_impact div.zoomwin div + div {
+    overflow-y: auto;
+    height: 592px;
+}
 
 /* internal div providing zoomed content */
 #content div.zoomwin {
