@@ -66,45 +66,44 @@ div.categorytext {
     padding: 10px;
 }
 
-#impactstable tr.category {
-    display: table-row;
-}
-
-#impactstable tr.sector {
-    display: none;
-}
-
-#impactstable img {
+table.impactstable img {
     border: none;
 }
 
-#impactstable tr.category:nth-child(even), #impactstable tr.sector:nth-child(even) {
+table.impactstable tr.category:nth-child(even), table.impactstable tr.sector:nth-child(even) {
     background-color: #d9e1e9;
 }
 
+#sectortable {
+    display: none;
+}
 
-#impactstable tr.category td, #impactstable tr.sector td {
+#categorytable {
+    display: block;
+}
+
+#sectortable  td, #categorytable  td {
     padding-top: 2px;
     padding-bottom: 2px;
     padding-right: 2px;
     padding-left: 10px;
 }
 
-#impactstable tr.category td + td, #impactstable tr.sector td + td {
+#sectortable  td + td, #categorytable  td + td {
     padding: 2px;
     text-align: center;
 }
 
-#impactstable tr.category td + td a:hover, #impactstable tr.sector td + td a:hover {
+#sectortable  td + td a:hover, #categorytable  td + td a:hover {
     text-decoration: none;
 }
 
-#impactstable tr.sector td span, #impactstable tr.category td span {
+#sectortable  td span, #categorytable  td span {
     vertical-align: 40%;
 }
 
 /*
-#impactstable tr.sector td + td, #impactstable tr.category td + td {
+ tr.sector td + td,  tr.category td + td {
     vertical-align: 40%;
 }
 */

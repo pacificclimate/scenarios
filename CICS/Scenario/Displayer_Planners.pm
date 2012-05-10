@@ -639,16 +639,18 @@ sub make_planners_impacts_table {
     my($self, $template_hash, $planners_plotdat_cache) = @_;
     my($impacts_logic_filename) = $self->{cfg}->[2]->{planners_impacts_csv};
     my($expression_success_count) = 0;
-    my($result_html) = "";
+    my($sector_html, $category_html) = ("", "");
 
     # Conditionals and resulting table rows
     my $impacts_logic_csv = parse_csv($impacts_logic_filename, ";");
 
     ## Header Row
-    $result_html = '<table id="impactstable">' . "\n";
-    $result_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-    $result_html .= '<tr class="dkblue category"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
-    $result_html .= '<tr class="dkblue sector"><th>Sectors</th><th>Impacts</th></tr>' . "\n";
+    $sector_html .= '<div class="summary" id="sectortable"><table class="impactstable">' . "\n";
+    $category_html .= '<div class="summary" id="categorytable"><table class="impactstable">' . "\n";
+    $sector_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+    $category_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+    $sector_html .= '<tr class="dkblue sector"><th>Sectors</th><th>Impacts</th></tr>' . "\n";
+    $category_html .= '<tr class="dkblue category"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
 
     my %cond_hash;
     @cond_hash{@{$impacts_logic_csv->{id}}} = @{$impacts_logic_csv->{condition}};
@@ -695,8 +697,8 @@ sub make_planners_impacts_table {
 
     foreach my $cat (sort(keys(%category_hash))) {
 	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">";
-	$result_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . encode_entities($cat) . '</span></a></td>';
-	$result_html .= '<td>' . $linktext . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</a></td></tr>' . "\n";
+	$category_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . encode_entities($cat) . '</span></a></td>';
+	$category_html .= '<td>' . $linktext . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</a></td></tr>' . "\n";
 
 	my($innertext) = '<h2>' . make_category_span($cat) . ' <span>' . encode_entities($cat) . '</span></h2><div class="categorytext">' . $category_hash{$cat}->{category_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_category_internal_name($cat), "category_text" => $innertext});
@@ -704,20 +706,19 @@ sub make_planners_impacts_table {
 
     foreach my $sect (sort(keys(%sector_hash))) {
 	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">";
-	$result_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></a></td>';;
-	$result_html .= '<td>' . $linktext . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
+	$sector_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></a></td>';;
+	$sector_html .= '<td>' . $linktext . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
 	
 	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . encode_entities($sect) . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_sector_internal_name($sect), "category_text" => $innertext});
     }
 
-    $result_html .= '<tr class="dkblue category"><th colspan="2"><a onclick="' . "hideTRClass('category'); showTRClass('sector'); return false;" . '" id="switchtosector" href="#">Switch to sector view</a></th></tr>';
-    $result_html .= '<tr class="dkblue sector"><th colspan="2"><a onclick="' . "hideTRClass('sector'); showTRClass('category'); return false;" . '" id="switchtocategory" href="#">Switch to category view</a></th></tr>';
-    $result_html .= "</table>\n";
+    $category_html .= '<tr class="dkblue category"><th colspan="2"><a onclick="' . "hideDiv('categorytable'); showDiv('sectortable'); return false;" . '" id="switchtosector" href="#">Switch to sector view</a></th></tr>';
+    $sector_html .= '<tr class="dkblue sector"><th colspan="2"><a onclick="' . "hideDiv('sectortable'); showDiv('categorytable'); return false;" . '" id="switchtocategory" href="#">Switch to category view</a></th></tr>';
+    $category_html .= "</table></div>\n";
+    $sector_html .= "</table></div>\n";
 
-    $result_html .= $zoomwins;
-
-    return $result_html;
+    return $category_html . $sector_html . $zoomwins;
 }
 
 sub make_map_creation_param_js {
