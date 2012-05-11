@@ -17,6 +17,7 @@
 	<li>percent = Value is a percentage anomaly from the baseline.</li>
 	<li>rule_&lt;rule-ID&gt; = A reference to another rule.</li>
 	<li>region_oncoast = Whether the region is on the coast (0 for false, 1 for true).</li>
+	<li>rule ? if_true : if_false = Checks whether a rule is true; if true, runs the clause represented by if_true; if false, runs the clause represented by if_false.</li>
       </ul>
       
       <br/><h3>Variables</h3>

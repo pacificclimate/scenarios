@@ -763,6 +763,7 @@ sub make_map_creation_param_js {
 
     my($div_id) = '"ol_' . $varname . '_' . (($desc->{'ts'} == 0) ? 'hist' : 'future') . '"';
     my($region) = '"' . $self->{regions}->[$desc->{pr}]{name}->[0] . '"';
+    my($region_group) = '"' . $self->{regions}->[$desc->{pr}]{group} . '"';
     my($climate_overlay) = '"' . join("-", $curexpt{modelname}, $ncwms_scen, $ncwms_varname, $ncwms_run, $ncwms_period) . '/' . $ncwms_varname . '"';
     my($climate_time) = '"' . $curexpt{'ncwms_centers'}[$desc->{ts}] . '-' . $self->{dat}->[5]{'timeofyear'}->[$desc->{toy}] . 'T00:00:00Z"';
     my($climate_color_scale) = '"' . $self->{dat}[17]{variable}->[$desc->{var}] . '"';
@@ -770,7 +771,7 @@ sub make_map_creation_param_js {
     ## FIXME: NEED TO PROJECT THIS.
     my($center_point) = 'new OpenLayers.LonLat(' . join(",", $desc->{view_x}, $desc->{view_y}) .')';
     my($zoom_level) = $desc->{zoom};
-    return 'new Array(' . join(",", $div_id, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level, $canvas_id, $desc->{r_min}, $desc->{r_max}, $dec_places, $vardesc_txt, $minrange, $maxrange) . ')';
+    return 'new Array(' . join(",", $div_id, $region_group, $region, $climate_overlay, $climate_time, $climate_color_range, $climate_color_scale, $center_point, $zoom_level, $canvas_id, $desc->{r_min}, $desc->{r_max}, $dec_places, $vardesc_txt, $minrange, $maxrange) . ')';
 }
 
 sub make_ol_map_js_from_desclist {
