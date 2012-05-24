@@ -276,7 +276,7 @@ color: white;
 }
 
 /* #sidetabs li#settings_tab { font-weight: bold; } */
-#sidetabs li.inactive#settings_tab { background-color: #74A2B9; }
+#sidetabs li.inactive#settings_tab { background-color: #5D7F9D; }
 #sidetabs li.inactive#settings_tab:hover { background-color: #00A42E; }
 
 
