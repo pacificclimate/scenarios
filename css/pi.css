@@ -254,17 +254,31 @@ padding-left: 14px;
 padding-top: 9px;
 }
 
-#sidetabs li.inactive:hover {
-background-color: #00A42E;
-}
-
 #sidetabs li.tab_last_in_group {
 margin-bottom: 14px;
 }
 
-#sidetabs li.active { background: #00A42E url(/tools/img/tabmask.png) no-repeat scroll left top; }
-#sidetabs li.inactive { background: #00364A url(/tools/img/tabmask.png) no-repeat scroll left top;
-                        margin-right: 1px; cursor: pointer; }
+#sidetabs li.inactive {
+background: #00364A url(/tools/img/tabmask.png) no-repeat scroll left top;
+margin-right: 2px;
+cursor: pointer;
+/* color: lightgrey;  this ends up looking kind of drab */
+}
+
+#sidetabs li.inactive:hover {
+background-color: #00A42E;
+color: white;
+}
+
+#sidetabs li.active {
+background: #00A42E url(/tools/img/tabmask.png) no-repeat scroll left top;
+color: white;
+}
+
+/* #sidetabs li#settings_tab { font-weight: bold; } */
+#sidetabs li.inactive#settings_tab { background-color: #74A2B9; }
+#sidetabs li.inactive#settings_tab:hover { background-color: #00A42E; }
+
 
 #tabbedbox {  /* VISIBLE BORDER */
 margin-left: 121px;  /* navigation */

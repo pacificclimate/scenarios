@@ -82,7 +82,7 @@ var ol_params = new Array(<%ol_maps%>);
         <ul>
           <li id="summary_tab" class="active">Summary</li>
           <li id="impacts_tab" class="inactive">Impacts</li>
-          <li id="settings_tab" class="inactive tab_last_in_group">Settings</li>
+          <li id="settings_tab" class="inactive tab_last_in_group">When &amp; Where</li>
           <li id="temp_tab" class="inactive">Temperature</li>
           <li id="prec_tab" class="inactive">Precipitation</li>
           <li id="pass_tab" class="inactive">Snowfall</li>
