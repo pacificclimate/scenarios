@@ -154,7 +154,16 @@ sub handler {
   ## Loop through vars, set up tabs, specs for zoomed images ##
   #############################################################
   for my $var_hash (@{$planners_vars}) {  #TODO almost everything moves into here...
-    my(@range) = get_range($var_hash->{var}, $basedesc->{toy}, 0, $basedesc->{expt}, $hash->{dat}, $hash->{exptdata});
+    my @range;
+    if(defined($hash->{'dat'}[20]{'variable'}->[$var_hash->{'var'}]) && defined($hash->{'dat'}[20]{'variable'}->[$var_hash->{'var'}]->[$basedesc->{'toy'}])) {
+      # Mod for custom P2A map ranges (applying to ALL P2A plot types right now, which might blow up! -- this does not include data and stuff, just the image plot types)
+      print STDERR "Using custom plot range.\n";
+      (@range) = @{$hash->{'dat'}[20]{'variable'}->[$var_hash->{'var'}]->[$basedesc->{'toy'}]};
+    } else {
+      print STDERR "P2A-BAD: Using default plot range for variable $var_hash->{'var'}, toy $basedesc->{'toy'}.\n";
+      (@range) = get_range($var_hash->{var}, $basedesc->{toy}, 0, $basedesc->{expt}, $hash->{dat}, $hash->{exptdata});
+    }
+
     my $var_basedesc = { %{$basedesc}, var => $var_hash->{'var'}, r_min => $range[0], r_max => $range[1] };
     ##delete $var_basedesc->{'points'};
 

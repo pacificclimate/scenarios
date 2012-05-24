@@ -106,6 +106,21 @@ $dat[5]{'variable'} =
     [-30, 30], [0, 0.5], [0, 5], [5000, 6000], [0, 2], [0, 5000], [0, 5000], [0, 8000], 
     [0, 5000], [0, 365], [0, 3500], [0, 5], [0, 5]
   ];
+# P2A hist + prediction (absolute) default ranges, [var#]->[toy]->[min,max] -- obviously remember to check defined(->[]) && defined(->[]->[]) before using these values :)
+$dat[20]{'variable'} = #                                                                           win  spr  sum  fall  ann
+  [ [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-30,15], [-25,15], [-12,23], [-23,17], [-25,15], undef, undef, undef ], # temp
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,40], [0,25], [0,20], [0,45], [0,30], undef, undef, undef ], # prec
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-25,15], [-15,20], [-3,32], [-15,20], [-15,20], undef, undef, undef ], # tmax
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-34,11], [-30,10], [-23,17], [-28,12], [-29,11], undef, undef, undef ], # tmin
+  # "shum","irad","tcld","wind","evap","soil","mslp","snow","sice","vapp","rhum","ditr","surt","somm","snod","h500","melt"
+    undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef,
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,2500], [0,2000], [0,1000], [0,2000], [0,7000], undef, undef, undef ], # dl00
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,750], [0,1000], [0,1800], [0,1200], [0,4500], undef, undef, undef ], # dg05
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,4100], [0,3500], [0,2600], [0,3500], [0,13500], undef, undef, undef ], # dl18
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,10], [0,65], [0,550], [0,120], [0,650], undef, undef, undef ], # dg18
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,100], [0,100], [0,100], [0,100], [0,400], undef, undef, undef ], # nffd
+    [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,3500], [0,2000], [0,0], [0,4000], [0,10000], undef, undef, undef ], # pass
+    undef, undef ];
 # Prediction legend range default
 $dat[6]{'variable'} = 
   [ [-1, 9], [-25, 25], [-1, 9], [-1, 9], [-0.5, 2], [-15, 25], [-15, 35], [-25, 25],
@@ -210,6 +225,7 @@ $dat[19]{'variable'} =
     0,0,0,0,0,0,0,0,
     0,0,0,0,0
   ];
+# $dat[20] is used above for P2A hist/future absolute ranges by season!!
 
 # Time periods aka timeslices
 $dat[0]{'timeslice'} = [ "1961-1990 Baseline", "2020s (2010-2039)", "2050s (2040-2069)", "2080s (2070-2099)", "All Time Slices" ];
