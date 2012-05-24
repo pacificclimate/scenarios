@@ -74,6 +74,13 @@ table.impactstable tr.category:nth-child(even), table.impactstable tr.sector:nth
     background-color: #d9e1e9;
 }
 
+/* hover colour for clickable impacts table rows -- WARNING this only doesn't affect the header rows because their selectors are more specific, which is bad.  WHY are they "category" when they're not? */
+table.impactstable tr.category:hover, table.impactstable tr.sector:hover {
+    background-color: #74A2B9;
+    color: white;
+    cursor: pointer;
+}
+
 #sectortable {
     display: none;
 }

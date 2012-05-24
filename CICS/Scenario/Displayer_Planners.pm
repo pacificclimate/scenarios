@@ -696,18 +696,16 @@ sub make_planners_impacts_table {
     my($zoomwins) = "";
 
     foreach my $cat (sort(keys(%category_hash))) {
-	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">";
-	$category_html .= '<tr class="category"><td>' . $linktext . make_category_span($cat) . '<span> ' . encode_entities($cat) . '</span></a></td>';
-	$category_html .= '<td>' . $linktext . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</a></td></tr>' . "\n";
+	$category_html .= '<tr class="category"><td onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">" . make_category_span($cat) . '<span> ' . encode_entities($cat) . '</span></td>';
+	$category_html .= '<td onclick="' . "zoomImpact('" . get_category_internal_name($cat) . "')\">" . join(" ", map { make_sector_span($_) } sort(keys(%{$category_hash{$cat}->{sectors}}))) . '</td></tr>' . "\n";
 
 	my($innertext) = '<h2>' . make_category_span($cat) . ' <span>' . encode_entities($cat) . '</span></h2><div class="categorytext">' . $category_hash{$cat}->{category_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_category_internal_name($cat), "category_text" => $innertext});
     }
 
     foreach my $sect (sort(keys(%sector_hash))) {
-	my($linktext) = '<a href="#" onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">";
-	$sector_html .= '<tr class="sector"><td>' . $linktext . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></a></td>';;
-	$sector_html .= '<td>' . $linktext . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
+	$sector_html .= '<tr class="sector"><td onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">" . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></td>';;
+	$sector_html .= '<td onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">" . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
 	
 	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . encode_entities($sect) . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_sector_internal_name($sect), "category_text" => $innertext});
