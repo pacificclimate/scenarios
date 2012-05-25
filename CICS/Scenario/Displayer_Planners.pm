@@ -657,42 +657,76 @@ sub make_planners_impacts_table {
 
     my %category_hash;
     my %sector_hash;
-    foreach my $rowid (0..$#{$impacts_logic_csv->{id}}) {
-	my $category = $impacts_logic_csv->{category}->[$rowid];
-	my $sector = $impacts_logic_csv->{sector}->[$rowid];
+
+    # Generate array-of-arrays-of-row-indices to roll rules that should have their text joined together, together.
+    # If the CSV is a mess, these will end up ordered by the occurrence of the FIRST instance of , and "sub-rules" will be ordered by their id's 4th component (which had better be a number!)
+    my(%id_to_idx_hash, @row_idx_list_list);
+    foreach my $rowidx (0..$#{$impacts_logic_csv->{id}}) {
+      my($idname, $idnum);
+      if($impacts_logic_csv->{id}->[$rowidx] =~ /^[^-]+-[^-]+-[^-]+-[^-]+$/) {
+        ($idname, $idnum) = ($impacts_logic_csv->{id}->[$rowidx] =~ m/^([^-]+-[^-]+-[^-]+)-([0-9]+)$/);
+      } else {
+        $idnum = 0; # I think this is an asinine normalization
+        $idname = $impacts_logic_csv->{id}->[$rowidx];
+      }
+      if(!defined($id_to_idx_hash{$idname})) {
+        # Haven't seen this name before
+        push(@row_idx_list_list, []);
+        $id_to_idx_hash{$idname} = $#row_idx_list_list;
+      }
+      $row_idx_list_list[$id_to_idx_hash{$idname}]->[$idnum] = $rowidx;    
+    }
+
+               # idx here could use a more obvious name :)
+    foreach my $idx (0..$#row_idx_list_list) {
+        # Get all TRUE rowidx's
+        my @true_rowidxs;
+        foreach my $rowidx (@{$row_idx_list_list[$idx]}) {
+          if($rowidx =~ /^[0-9]+$/) { # Reject invalid or missing id's -- right now this is not tolerant of whitespace
+            my $rule = resolve_rule_references(\%cond_hash, $impacts_logic_csv->{id}->[$rowidx]);
+            print STDERR "id: " . $impacts_logic_csv->{id}->[$rowidx] . ", rule: " . $rule . "\n";
+            if(test_expression($rule, $planners_plotdat_cache)) {
+                push(@true_rowidxs, $rowidx);
+            }
+          }
+        }
+        if($#true_rowidxs < 0) { # Bail if none of them were true
+            next;
+        }
+
+	my $category = $impacts_logic_csv->{category}->[$true_rowidxs[0]];
+	my $sector = $impacts_logic_csv->{sector}->[$true_rowidxs[0]];
 	if($category eq "") {
 	    next;
 	}
-	my $rule = resolve_rule_references(\%cond_hash, $impacts_logic_csv->{id}->[$rowid]);
-	print STDERR "id: " . $impacts_logic_csv->{id}->[$rowid] . ", rule: " . $rule . "\n";
-	if(test_expression($rule, $planners_plotdat_cache)) {
-	    my $dathash;
-	    my $secthash;
-	    if(exists($sector_hash{$sector})) {
-		$secthash = $sector_hash{$sector};
-	    } else {
-		$secthash = {};
-		$secthash->{categories} = {};
-		$secthash->{sector_text} = "";
-		$sector_hash{$sector} = $secthash;
-	    }
-	    if(exists($category_hash{$category})) {
-		$dathash = $category_hash{$category};
-	    } else {
-		$dathash = {};
-		$dathash->{sectors} = {};
-		$dathash->{category_text} = "";
-		$category_hash{$category} = $dathash;
-	    }
-	    $dathash->{sectors}->{$sector} = 1;
-	    $secthash->{categories}->{$category} = 1;
-	    $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$rowid]) . '</span></h3>';
-	    $dathash->{category_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div><br/>\n";
-	    $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$rowid]) . '</span></h3>';
-	    $secthash->{sector_text} .= '<div class="impacticon">' . $impacts_logic_csv->{text2}->[$rowid] . "</div><br/>\n";
-	}
+
+        my $dathash;
+        my $secthash;
+        if(exists($sector_hash{$sector})) {
+            $secthash = $sector_hash{$sector};
+        } else {
+            $secthash = {};
+            $secthash->{categories} = {};
+            $secthash->{sector_text} = "";
+            $sector_hash{$sector} = $secthash;
+        }
+        if(exists($category_hash{$category})) {
+            $dathash = $category_hash{$category};
+        } else {
+            $dathash = {};
+            $dathash->{sectors} = {};
+            $dathash->{category_text} = "";
+            $category_hash{$category} = $dathash;
+        }
+        $dathash->{sectors}->{$sector} = 1;
+        $secthash->{categories}->{$category} = 1;
+        $dathash->{category_text} .= "<h3>" . make_sector_span($sector) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$true_rowidxs[0]]) . '</span></h3>';
+        $dathash->{category_text} .= '<div class="impacticon">' . join("\n", map { $impacts_logic_csv->{text2}->[$_] } @true_rowidxs ) . "</div><br/>\n";
+        $secthash->{sector_text} .= "<h3>" . make_category_span($category) . '<span> ' . encode_entities($impacts_logic_csv->{text1}->[$true_rowidxs[0]]) . '</span></h3>';
+        $secthash->{sector_text} .= '<div class="impacticon">' . join("\n", map { $impacts_logic_csv->{text2}->[$_] } @true_rowidxs ) . "</div><br/>\n";
     }
-    
+
+
     my($zoomwins) = "";
 
     foreach my $cat (sort(keys(%category_hash))) {
