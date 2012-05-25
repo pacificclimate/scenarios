@@ -108,7 +108,7 @@ $dat[5]{'variable'} =
   ];
 # P2A hist + prediction (absolute) default ranges, [var#]->[toy]->[min,max] -- obviously remember to check defined(->[]) && defined(->[]->[]) before using these values :)
 $dat[20]{'variable'} = #                                                                           win  spr  sum  fall  ann
-  [ [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-30,15], [-25,15], [-12,23], [-23,17], [-25,15], undef, undef, undef ], # temp
+  [ [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-31.5,13.5], [-24,16], [-16,24], [-24,16], [-24,16], undef, undef, undef ], # temp
     [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [0,40], [0,25], [0,20], [0,45], [0,30], undef, undef, undef ], # prec
     [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-25,15], [-15,20], [-3,32], [-15,20], [-15,20], undef, undef, undef ], # tmax
     [ undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, [-34,11], [-30,10], [-23,17], [-28,12], [-29,11], undef, undef, undef ], # tmin
