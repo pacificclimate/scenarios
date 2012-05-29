@@ -739,7 +739,7 @@ sub make_planners_impacts_table {
 
     foreach my $sect (sort(keys(%sector_hash))) {
 	$sector_html .= '<tr class="sector"><td onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">" . make_sector_span($sect) . '<span> ' . encode_entities($sect) . '</span></td>';;
-	$sector_html .= '<td onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">" . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</a></td></tr>' . "\n";
+	$sector_html .= '<td onclick="' . "zoomImpact('" . get_sector_internal_name($sect) . "')\">" . join(" ", map {make_category_span($_) } sort(keys(%{$sector_hash{$sect}->{categories}}))) . '</td></tr>' . "\n";
 	
 	my($innertext) = '<h2>' . make_sector_span($sect) . ' <span>' . encode_entities($sect) . '</span></h2><div class="categorytext">' . $sector_hash{$sect}->{sector_text} . "</div>\n";
 	$zoomwins .= parseTemplate($self->{cfg}->[2]->{planners_impacts_template}, {"category" => get_sector_internal_name($sect), "category_text" => $innertext});
