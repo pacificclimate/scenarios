@@ -798,7 +798,7 @@ sub make_map_creation_param_js {
     my($region_group) = '"' . $self->{regions}->[$desc->{pr}]{group} . '"';
     my($climate_overlay) = '"' . join("-", $curexpt{modelname}, $ncwms_scen, $ncwms_varname, $ncwms_run, $ncwms_period) . '/' . $ncwms_varname . '"';
     my($climate_time) = '"' . $curexpt{'ncwms_centers'}[$desc->{ts}] . '-' . $self->{dat}->[5]{'timeofyear'}->[$desc->{toy}] . 'T00:00:00Z"';
-    my($climate_color_scale) = '"' . $self->{dat}[17]{variable}->[$desc->{var}] . '"';
+    my($climate_color_scale) = '"' . ( (ref($self->{dat}[17]{variable}->[$desc->{var}]) eq 'ARRAY') ? $self->{dat}[17]{variable}->[$desc->{var}]->[$desc->{'toy'}] : $self->{dat}[17]{variable}->[$desc->{var}] ) . '"';
     my($climate_color_range) = '"' . (($desc->{r_min} * $scale_factor) + $add_factor) . "," . (($desc->{r_max} * $scale_factor) + $add_factor) . '"';
     ## FIXME: NEED TO PROJECT THIS.
     my($center_point) = 'new OpenLayers.LonLat(' . join(",", $desc->{view_x}, $desc->{view_y}) .')';
