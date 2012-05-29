@@ -204,10 +204,10 @@ $dat[16]{'variable'} =
 
 # ncWMS color pallette name
 $dat[17]{'variable'} = 
-  [ [undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, "blue7_red3","blue6_red4","blue4_red6","blue6_red4","blue6_red4", undef, undef, undef], "lightblue_darkblue_log", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
+  [ [undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, undef, "blue7_red3","blue6_red4","blue4_red6","blue6_red4","blue6_red4", undef, undef, undef], "lightblue_darkblue_log_nc", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
     "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", 
     "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "rainbow", "yellow_red", "red_yellow", 
-    "rainbow", "red_yellow", "lightblue_darkblue_log", "lightblue_darkblue_log", "lightblue_darkblue_log", 
+    "rainbow", "red_yellow", "lightblue_darkblue_log_nc", "lightblue_darkblue_log_nc", "lightblue_darkblue_log_nc", 
   ];
 
 # ncWMS scale factor
