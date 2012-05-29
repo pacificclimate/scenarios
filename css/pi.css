@@ -166,7 +166,7 @@ a:hover, a:active {
 
 .tooltipped { text-decoration: none; border-bottom: 1px dotted #505050; }
 
-.superscript { vertical-align: top; font-size: smaller; }
+.superscript { vertical-align: top; font-size: smaller; }  /* because W3C 'vertical-align: super' is permanently broken */
 .subscript { vertical-align: bottom; font-size: 60%; }
 
 .hidden { display: none; }
@@ -511,12 +511,16 @@ height: 520px;
 }
 
 #content div.zoomwin p {
-margin: 15px 15px 15px 8px;
+margin: 0px 15px 6px 15px;
+text-align: left;
 }
 
-#content div.zoomwin p {
-margin-left: 15px;
-margin-right: 15px;
+#content div.zoomwin p.center {
+text-align: center;
+}
+
+#content div.zoomwin ul {
+margin-bottom: 6px;
 }
 
 div#settings input[type=radio] {
