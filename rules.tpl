@@ -8,10 +8,10 @@
 
       <h3>Terminology</h3>
       <ul>
-	<li>s0p/s50p/s100p = Minimum/median/maximum 0.5&deg; grid box value in the region.</li>
+	<li>s0p/s50p/s100p = <strong>Spatial</strong> minimum/median/maximum 0.5&deg; grid box value in the region.</li>
 	<li>iastddev = <strong>I</strong>nter<strong>a</strong>nnual <strong>standard deviation</strong> of the monthly, seasonal, or annual mean.</li>
-	<li>hist = CRU TS 2.1 historical baseline.</li>
-	<li>e25p/e75p = GCM <strong>ensemble</strong> 25th/75th percentile.</li>
+	<li>hist = CRU TS 2.1 1961-1990 historical baseline.</li>
+	<li>e25p/e75p = GCM <strong>ensemble</strong> 25th/75th percentile. This is always an interannual mean.</li>
 	<li>ann, djf, mam, jja, son = Annual, Dec/Jan/Feb, Mar/Apr/May, Jun/Jul/Aug, Sep/Oct/Nov.</li>
 	<li>anom = Value is an anomaly (not a percentage) from the baseline (i.e. future minus historical).</li>
 	<li>percent = Value is a percentage anomaly from the baseline.</li>
