@@ -81,8 +81,8 @@ var ol_params = new Array(<%ol_maps%>);
       <div id="sidetabs">
         <ul>
           <li id="summary_tab" class="active">Summary</li>
-          <li id="impacts_tab" class="inactive">Impacts</li>
-          <li id="settings_tab" class="inactive tab_last_in_group">When &amp; Where</li>
+          <li id="settings_tab" class="inactive tab_last_in_group">Region &amp; Time </li>
+          <li id="impacts_tab" class="inactive tab_last_in_group">Impacts</li>
           <li id="temp_tab" class="inactive">Temperature</li>
           <li id="prec_tab" class="inactive">Precipitation</li>
           <li id="pass_tab" class="inactive">Snowfall</li>
@@ -175,7 +175,7 @@ var ol_params = new Array(<%ol_maps%>);
 
           
           <div id="settings" class="hidden">
-            <div class="heading"><h1>When and Where</h1></div>
+            <div class="heading"><h1>Region &amp; Time</h1></div>
             
             <table border="0" width="400px">
               <tr>
