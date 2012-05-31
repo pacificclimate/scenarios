@@ -107,12 +107,12 @@ var ol_params = new Array(<%ol_maps%>);
         <div id="content">
 
           <div id="summary" class="visible"><div>
-              <div class="heading"><h1>Summary of Climate Variables</h1></div>
+              <div class="heading"><h1>Summary of Climate Change for <%var:region%> in the <%var:ts_period%></h1></div>
               <div class="summary">
                 <table>
-                  <tr class="dkerblue"><th colspan="4">Climate Change for <%var:region%> Region in <%var:ts_period%> Period</th></tr>
-                  <tr class="dkblue"><th rowspan="2">Climate Variable</th><th rowspan="2">Time of Year</th><th colspan="2">Projected Change<br/>from 1961-1990 Baseline</th></tr>
-                  <tr class="dkblue"><th>Ensemble Median</th><th>Range</th></tr>
+                  <!--<tr class="dkerblue"><th colspan="4">Climate Change for <%var:region%> Region in <%var:ts_period%> Period</th></tr>-->
+                  <tr class="dkblue"><th rowspan="2">Climate Variable</th><th rowspan="2">Season</th><th colspan="2">Projected Change from 1961-1990 Baseline</th></tr>
+                  <tr class="dkblue"><th>Ensemble Median</th><th>Range (10th to 90th percentile)</th></tr>
 
                   <tr class="ltblue">
                     <td>Mean Temperature (&deg;C)</td>
@@ -160,13 +160,13 @@ var ol_params = new Array(<%ol_maps%>);
           </div></div>
           
           <div id="impacts" class="hidden"><div>
-              <div class="heading"><h1>Summary of Potential Impacts</h1></div>
+              <div class="heading"><h1>Potential Impacts for <%var:region%> in the <%var:ts_period%></h1></div>
               <div class="summary">
                 <%planners_impacts_table%>
 		<%planners_impacts_pretty%>
 
                 <!--<p><span class="warningtext">Warning: DO NOT USE OR REPRODUCE THE CONTENTS OF THIS TABLE. The current table is created using rules to relate projected climate change to impacts. The thresholds and rules are arbitrary. This table is for demonstration purposes only and will be replaced by new rules developed through a more rigorous process involving climate impacts experts.</span></p>-->
-                <p>The table above shows potential climate change impacts for the <strong><%var:region%></strong> region by the <strong><%var:ts_period%></strong>. Note that these are <strong>potential</strong> impacts based on limited projected climate change information, as shown in the <a href="#" onclick="zoomImpact('raw_impacts'); return false;">detailed rules logic</a>. This is intended to provide a starting point for more detailed local assessment of climate change impacts.</p>
+<!--                <p>The table above shows potential climate change impacts for the <strong><%var:region%></strong> region by the <strong><%var:ts_period%></strong>. Note that these are <strong>potential</strong> impacts based on limited projected climate change information, as shown in the <a href="#" onclick="zoomImpact('raw_impacts'); return false;">detailed rules logic</a>. This is intended to provide a starting point for more detailed local assessment of climate change impacts.</p> -->
           </div>
           </div></div>
           

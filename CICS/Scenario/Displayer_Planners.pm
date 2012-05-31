@@ -647,10 +647,10 @@ sub make_planners_impacts_table {
     ## Header Row
     $sector_html .= '<div class="summary" id="sectortable"><table class="impactstable">' . "\n";
     $category_html .= '<div class="summary" id="categorytable"><table class="impactstable">' . "\n";
-    $sector_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-    $category_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
-    $sector_html .= '<tr class="dkblue sector"><th>Sectors</th><th>Impacts</th></tr>' . "\n";
-    $category_html .= '<tr class="dkblue category"><th>Impacts</th><th>Sectors</th></tr>' . "\n";
+    #$sector_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+    #$category_html .= '<tr class="dkerblue"><th colspan="2">Potential Impacts for the ' . $template_hash->{'var:region'} . ' region in ' . $template_hash->{'var:ts_period'} . " period</th></tr>\n";
+    $sector_html .= '<tr class="dkblue sector"><th>Sector</th><th>Impacts on Sector</th></tr>' . "\n";
+    $category_html .= '<tr class="dkblue category"><th>Impact</th><th>Affected Sectors</th></tr>' . "\n";
 
     my %cond_hash;
     @cond_hash{@{$impacts_logic_csv->{id}}} = @{$impacts_logic_csv->{condition}};
