@@ -245,15 +245,30 @@ var ol_params = new Array(<%ol_maps%>);
 	    <p>British Columbia Ministry of Water, Land and Air Protection. 2002. <em>Indicators of Climate Change for British Columbia 2002</em>. Victoria, BC. 48 pp.</p>
 	    <br />
 	    
+	    <p>Bronaugh, D., T. Murdock. In review. <em>Developing Improved Degree-Day Regressions</em>. Pacific Climate Impacts Consortium report; 33 pp.</p>
+	    <br />
+	    
 	    <p>Cohen, Stewart. 2009. <em>Climate Change in the 21st Century - Understanding the World's Biggest Crisis</em>. McGill-Queen's University Press. 379 pp.</p>
 	    <br />
 	    
 	    <p>Daly, C., W.P. Gibson, G.H. Taylor, G.L. Johnson, and P. Pasteris. 2002. "A knowledge-based approach to the statistical mapping of climate", <em>Climate Research</em>, 22: 99-113. Details the PRISM 4km climatology.</p>
 	    <br />
 
-        <p>Intergovernmental Panel on Climate Change. 2000. <em>Special Report on Emissions Scenarios</em>. Cambridge University Press. 570 pp. <a href="http://www.ipcc.ch/ipccreports/sres/emission/index.htm">http://www.ipcc.ch/ipccreports/sres/emission/index.htm</a></p>
-        <br />
+	    <p>Hamlet A.F., D.P. Lettenmaier. 2005. <em>Effects of Temperature and Precipitation Variability on Snowpack Trends in the Western U.S.</em> Journal of Climate, 18 (21): pp. 4545-4561.</p>
+	    <br />
+
+	    <p>Hamlet A.F., D.P. Lettenmaier. 2007. <em>Effects of 20th Century Warming and Climate Variability on Flood Risk in the Western U.S.</em> Water Resources Research, 43: W06427.doi:10.1029/2006WR005099.</p>
+	    <br />
+
+            <p>Intergovernmental Panel on Climate Change. 2000. <em>Special Report on Emissions Scenarios</em>. Cambridge University Press. 570 pp. <a href="http://www.ipcc.ch/ipccreports/sres/emission/index.htm">http://www.ipcc.ch/ipccreports/sres/emission/index.htm</a></p>
+            <br />
 	    
+	    <p>Mote P.W., A.F. Hamlet, M. Clark, D.P. Lettenmaier. 2005. <em>Declining Mountain Snowpack in Western North America</em>. Bulletin of the American Meteorological Society, 86(1):39-49.</p>
+	    <br/>
+
+	    <p>Murdock, T.Q. and D.L. Spittlehouse. 2011. <em>Selecting and Using Climate Change Scenarios for British Columbia</em>. Pacific Climate Impacts Consortium, University of Victoria, Victoria, BC, 39 pp.</p>
+	    <br />
+
 	    <p>Rodenhuis, D.R., Bennett, K.E., Werner, A.T., Murdock, T.Q., Bronaugh, D. Revised 2009. <em>Hydro-climatology and future climate impacts in British Columbia</em>. Pacific Climate Impacts Consortium, University of Victoria, Victoria BC, 132 pp. Provides additional information on future climate projects in British Columbia.</p>
 	    <br />
 	    
