@@ -297,6 +297,8 @@ color: white;
 /* #sidetabs li#settings_tab { font-weight: bold; } */
 #sidetabs li.inactive#settings_tab { background-color: #5D7F9D; }
 #sidetabs li.inactive#settings_tab:hover { background-color: #00A42E; }
+#sidetabs li.inactive#impacts_tab { background-color: #C00000; }
+#sidetabs li.inactive#impacts_tab:hover { background-color: #00A42E; }
 
 
 #tabbedbox {  /* VISIBLE BORDER */
