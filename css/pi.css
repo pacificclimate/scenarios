@@ -4,6 +4,14 @@
 }
 */
 
+.monospace {
+font-family: monospace;
+}
+
+.italic {
+font-style: italic;
+}
+
 #raw_impacts table td {
     padding: 3px 1px;
     border-left: 1px solid #C0C0C0;
