@@ -152,7 +152,7 @@ var ol_params = new Array(<%ol_maps%>);
                   </tr>
                 </table> 
                 <!--            <table><%planners_variable_table%></table>  -->
-                <p>The table above shows projected changes in average (mean) temperature, precipitation and several derived climate variables from the baseline historical period (1961-1990) to the <strong><%var:ts_period%></strong> for the <strong><%var:region%></strong> region for <strong>all times of year</strong>. The ensemble median is a mid-point value, chosen from a PCIC standard set of Global Climate Model (GCM) projections (see the 'Notes' tab for more information). The range values represent the lowest and highest results within the set. Please note that this summary table does not reflect the 'time of year' choice made under the 'Settings' tab. However, this setting does affect results obtained under each variable tab.</p>
+                <p>The table above shows projected changes in average (mean) temperature, precipitation and several derived climate variables from the baseline historical period (1961-1990) to the <strong><%var:ts_period%></strong> for the <strong><%var:region%></strong> region. The ensemble median is a mid-point value, chosen from a PCIC standard set of Global Climate Model (GCM) projections (see the 'Notes' tab for more information). The range values represent the lowest and highest results within the set. Please note that this summary table does not reflect the 'Season' choice made under the 'Region &amp; Time' tab. However, this setting does affect results obtained under each variable tab.</p>
                 <br />
                 <p>* These values are derived from temperature and precipitation. Please select the appropriate variable tab for more information.</p>
                 <!--            <a href="#">Download CSV</a> -->
@@ -162,6 +162,9 @@ var ol_params = new Array(<%ol_maps%>);
           <div id="impacts" class="hidden"><div>
               <div class="heading"><h1>Potential Impacts for <%var:region%> in the <%var:ts_period%></h1></div>
               <div class="summary">
+
+                <p>Below, you can view a list of potential impacts that may affect <strong><%var:region%></strong> in the <strong><%var:ts_period%></strong>. <strong><em>This is intended to provide a starting point for more detailed local assessment of climate change impacts.</em></strong> These are based on limited climate change information, as shown in the <a href="#" onclick="zoomImpact('raw_impacts'); return false;">detailed rules logic</a>. These rules were developed based on a workshop attended by climate impacts experts and subsequent peer review. Although quite comprehensive, the rules are a work in progress, and some key impacts or management implications may be missing. We welcome contributions and suggestions from users of Plan2Adapt.</p>
+                
                 <%planners_impacts_table%>
 		<%planners_impacts_pretty%>
 
@@ -202,12 +205,12 @@ var ol_params = new Array(<%ol_maps%>);
                 </td>
                 
                 <td valign="top"> 
-                  <h3>Time of Year</h3> 
+                  <h3>Season</h3> 
                   <!-- FIXME this should be using c_form but at present that doesn't get us radio buttons -->
                   <div style="padding: 10px 0px 18px 10px;">
                     <%c_form:toy%>
                   </div>
-		  <p>Please note that the <strong>Time of Year</strong> field only affects maps and graphs; it does not affect the Summary or Impacts tabs.</p>
+		  <p>Please note that the <strong>Season</strong> chosen only affects maps and graphs; it does not affect the Summary or Impacts tabs.</p>
                 </td>
                 
               </tr>
