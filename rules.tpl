@@ -56,6 +56,7 @@
 	  <td>days</td>
 	</tr>
       </table>
+      <p>If not otherwise specified, values are an interannual and spatial mean, and in the same units used on the maps (&deg;C for temperatures, mm per day for precipitation, etc.).</p>
 
       <%rules_table%>
     </div>
