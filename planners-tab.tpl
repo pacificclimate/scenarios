@@ -12,9 +12,9 @@
 	<tr><th style="width: 395px;"><h3>Historical</h3></th><th style="width: 395px;"><h3>Projected</h3></th><th style="width: 82px;"><h3>Range</h3></th></tr>
 	<tr>
 	  <td><div id="ol_<%symname%>_hist"></div></td><td><div id="ol_<%symname%>_future"></div></td>
-	  <td rowspan="2"><div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div></td>
+	  <td rowspan="2" style="max-height: 465px; height: 465px;"><div id="zoomimg_<%symname%>_h_map" class="zoomimg_map"></div></td>
 	</tr>
-	<tr><td colspan="2" style="text-align: center;"><div id="legend_<%symname%>" class="legend" height="75px" width="660px"></div></td></tr>
+	<tr><td colspan="2" class="legend"><div id="legend_<%symname%>" class="legend"></div></td></tr>
       </table>
       
       <p>The <span style="font-style: italic">Historical</span> map shows interpolated 1961-1990 station data. The <span style="font-style: italic">Projected</span> map shows how this picture will change by the <strong><%ts_period%></strong> period, based on a single GCM projection.</p>

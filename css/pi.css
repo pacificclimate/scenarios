@@ -47,6 +47,10 @@ div.legend {
     text-align: center;
 }
 
+#content div.zoomwin td.legend {
+    text-align: center;
+}
+
 /*
 #impacts div.summary table td {
     padding: 0px;
@@ -511,6 +515,11 @@ div.zoomimg_scatter {
 overflow: hidden;
 height: 500px;
 width: 480px;
+}
+
+div.zoomimg_map {
+    overflow: hidden;
+    height: 465px;
 }
 
 img.scatterplot {
