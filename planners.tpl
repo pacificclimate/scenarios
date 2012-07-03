@@ -70,9 +70,8 @@ var ol_params = new Array(<%ol_maps%>);
 
     <div id="navbarcontainer">
       <ul id="navbar">
-        <li><a href="http://www.pacificclimate.org/aboutus/contactus/">Contact Us</a></li><li>|</li>
-        <li><a href="http://www.pacificclimate.org/">PCIC Home</a></li><li>|</li>
-        <li><a href="http://www.plan2adapt.ca/">Home</a></li>
+        <li><a href="http://www.pacificclimate.org/contact">Contact Us</a></li><li>|</li>
+        <li><a href="http://www.pacificclimate.org/">PCIC Home</a></li>
       </ul>
     </div>
 
