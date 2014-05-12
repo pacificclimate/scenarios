@@ -7,6 +7,7 @@ use Text::CSV_XS;
 
 use CICS::Helpers;
 use CICS::Scenario::Cache;  #need to know plot types for desc-mangling!
+use List::Util qw(max min);
 
 use Exporter 'import';
 
@@ -38,21 +39,24 @@ sub is_ts_future {
     return($tsno <= $#{$ts_future} && $ts_future->[$tsno]);
 }
 
+## Lifted from R's quantile function (type=8)
 sub weighted_pctile {
   my($vars, $pct) = @_;
   my(@svars) = sort {$a <=> $b} @{$vars};
-  my($max) = $#svars;
-  my($lowelement) = floor($pct * $max);
-  my($highelement) = ceil($pct * $max);
-  if($lowelement == $highelement) {
-    # Single element, no weighting
-    return $svars[$lowelement]
+  my($a, $b) = (1.0/3.0, 1.0/3.0);
+  my($fuzz) = 4.4e-16;
+  my($nppm) = $a + ($pct * ($#svars + 2 - $a - $b)) - 1;
+  my($j) = max((0.0, floor($nppm + $fuzz)));
+  my($h) = (abs($nppm - $j) <= $fuzz || $nppm < 0) ? 0 : $nppm - $j;
+  
+  my($left, $right) = @svars[(min(($j, $#svars)), min(($j + 1, $#svars)))];
+
+  if($h == 1.0) {
+      return $right;
+  } elsif($h == 0.0) {
+      return $left;
   } else {
-    # Weight for the low element should be proportional to the distance of
-    # the high element to the desired percentile
-    my($lowweight) = (($highelement / $max) - $pct) * $max;
-    my($highweight) = 1.0 - $lowweight;
-    return $lowweight * $svars[$lowelement] + $highweight * $svars[$highelement];
+      return ((1 - $h) * $left) + ($h * $right);
   }
 }
 
@@ -532,9 +536,11 @@ sub load_gcminfo {
       if(exists($PCICPlanners{$temp[0]}) && exists($PCICPlanners{$temp[0]}{$temp[5]})) {
 	  push(@PCICsetPlanners, $i);
       }
-
+      
       push(@{$expthash{$temp[3] . " - " . substr($temp[5], 0, 2)}}, $i);
-      push(@{$scenhash{$temp[3]}}, $i);
+      #if($temp[3] ne "HIST" && $exptdata[$i]{"ts_abs"}[$numtp + 1] == 0) {
+	  push(@{$scenhash{$temp[3]}}, $i);
+      #}
       push(@{$modelhash{$temp[3] . " - " . $temp[0]}}, $i);
     }
     $i++;
