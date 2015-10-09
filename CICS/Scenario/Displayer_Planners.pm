@@ -529,7 +529,7 @@ sub get_sector_internal_name {
 sub make_sector_span {
     my($str) = @_;
     my($internal_str) = get_sector_internal_name($str);
-    my(%sectorimgmapper) = ("hydrology" => "img/hydrology.png", "agriculture" => "img/agriculture.png", "biodiversity" => "img/biodiversity.png", "infrastructure" => "img/infrastructure.png", "land_use_planning" => "img/land_use_planning.png", "fisheries" => "img/fisheries.png", "forestry" => "img/forestry.png");
+    my(%sectorimgmapper) = ("hydrology" => "img/hydrology.png", "agriculture" => "img/agriculture.png", "biodiversity" => "img/biodiversity.png", "infrastructure" => "img/infrastructure.png", "land_use_planning" => "img/land_use_planning.png", "fisheries" => "img/fisheries.png", "forestry" => "img/forestry.png", "health" => "img/health.png");
     if(exists($sectorimgmapper{$internal_str})) {
 	return '<img src="' . $sectorimgmapper{$internal_str} . '" alt="' . $str . '" title="' . $str . '" />';
     } else {
@@ -539,7 +539,7 @@ sub make_sector_span {
 
 sub get_category_internal_name {
     my($str) = @_;
-    my(%catmapper) = ("High Intensity Precipitation" => "high_intensity_precipitation", "Possible Flooding" => "possible_flooding", "Waterlogged Soil" => "waterlogged_soil", "Sea Level Rise / Storm Surge" => "sea_level_rise", "Reduced Water Supply" => "reduced_water_supply", "Longer Dry Season" => "longer_dry_season", "Increase in Temperature" => "increase_in_temperature", "Considerable Increase in Temperature" => "considerable_increase_in_temperature", "Shift in Hydrologic Regime Classification" => "change_in_hydrologic_regime", "Increase in Freeze/Thaw Cycles" => "increase_in_freeze_thaw_cycles", "Increase in Hot and Dry Conditions" => "increase_in_hot_and_dry_conditions", "Decrease in Snowpack" => "decrease_in_snowpack", "Change in Species Range" => "change_in_species_range", "Possible Change in Productivity" => "possible_change_in_productivity");
+    my(%catmapper) = ("High Intensity Precipitation" => "high_intensity_precipitation", "Possible Flooding" => "possible_flooding", "Waterlogged Soil" => "waterlogged_soil", "Sea Level Rise / Storm Surge" => "sea_level_rise", "Reduced Water Supply" => "reduced_water_supply", "Longer Dry Season" => "longer_dry_season", "Increase in Temperature" => "increase_in_temperature", "Considerable Increase in Temperature" => "considerable_increase_in_temperature", "Shift in Hydrologic Regime Classification" => "change_in_hydrologic_regime", "Increase in Freeze/Thaw Cycles" => "increase_in_freeze_thaw_cycles", "Increase in Hot and Dry Conditions" => "increase_in_hot_and_dry_conditions", "Decrease in Snowpack" => "decrease_in_snowpack", "Change in Species Range" => "change_in_species_range", "Possible Change in Productivity" => "possible_change_in_productivity", "Human Health Effects" => "human_health_effects");
     return($catmapper{$str});
 }
 
