@@ -1,0 +1,44 @@
+Pull up with no args
+Click on region map with no op selected
+Click on region map to add point
+Deselect point
+Remove point (should not remove point)
+Deselect gridbox (should do nothing)
+Clear points
+Add three points
+Select a different point
+Move a point
+Select a gridbox (using region map)
+Add a point
+Deselect point
+Select point
+Remove point
+Select point
+Remove point
+Add point
+
+Select maps tab
+Select multiexpt
+  - Check that metadata looks right
+Select multivar
+  - Check that metadata looks right
+Select multits
+  - Check that metadata looks right
+Select multitoy
+  - Check that metadata looks right
+
+Select single toy
+Select region tab
+Add point
+Clear points
+Add point
+
+Select single ts
+Add point
+Clear points
+Add point
+
+Select single
+Choose different window
+Select a predefined region
+Add point
