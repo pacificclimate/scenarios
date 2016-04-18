@@ -15,5 +15,5 @@ Build and then run the app using the provided Dockerfile. Requires that the geni
 git clone https://github.com/pacificclimate/scenarios
 cd scenarios
 sudo docker build -t pcic/scenarios .
-sudo docker run -d [-v $(pwd):/usr/local/lib/scenarios] -v ${HOME}/code/scenarios-basemaps/basemaps/:/data/basemaps/ -v /datasets/data5/projects/rat/data/nc:/data/nc -p 5678:80 --name scenarios pcic/scenarios
+sudo docker run -d [-v $(pwd):/usr/local/lib/scenarios] -v /datasets/data5/projects/rat/data/nc:/data/nc -p 5678:80 --name scenarios pcic/scenarios
 ```

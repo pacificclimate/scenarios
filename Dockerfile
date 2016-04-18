@@ -30,6 +30,11 @@ RUN cd /genimage-master/core && make && make install
 ENV GENIMAGE_BIN /usr/local/bin/genimage
 ENV GENIMAGE_CFG /usr/local/etc/genimage.cfg
 
+## DOWNLOAD BASEMAPS ##
+
+RUN curl -L https://github.com/pacificclimate/scenarios-basemaps/archive/master.tar.gz -o basemaps.tar.gz && tar xf basemaps.tar.gz
+RUN mkdir -p /data && mv scenarios-basemaps-master/basemaps /data/
+
 ## INSTALL SCENARIOS ##
 
 RUN apt-get install -y cpanminus
