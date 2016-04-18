@@ -1,9 +1,28 @@
-FROM registry.pcic.uvic.ca/apache-geospatial
+FROM debian:jessie
 MAINTAINER Basil Veerman <bveerman@uvic.ca>
 
-WORKDIR /
+## INSTALL APACHE AND DEPS ##
 
-## INSTALL GENIMAGE
+RUN sed -i 's/$/ contrib non-free/' /etc/apt/sources.list
+
+RUN apt-get update && apt-get install -yq \
+    curl \
+    build-essential \
+    ttf-mscorefonts-installer \
+    libhdf5-dev \
+    libnetcdf-dev \
+    libgd-dev \
+    libproj-dev \
+    libboost-dev \
+    libgdal-dev
+
+RUN apt-get install -yq \
+    apache2 \
+    libapache2-mod-perl2
+
+RUN a2enmod perl
+
+## INSTALL GENIMAGE ##
 
 RUN curl -L https://github.com/pacificclimate/genimage/archive/master.tar.gz -o genimage.tar.gz && tar xvf genimage.tar.gz
 RUN cd /genimage-master/core && make && make install
@@ -11,7 +30,7 @@ RUN cd /genimage-master/core && make && make install
 ENV GENIMAGE_BIN /usr/local/bin/genimage
 ENV GENIMAGE_CFG /usr/local/etc/genimage.cfg
 
-## Install Scenarios
+## INSTALL SCENARIOS ##
 
 RUN apt-get install -y cpanminus
 RUN cpanm File::Slurp Geo::Proj4 Language::Functional Text::CSV_XS
