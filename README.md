@@ -42,35 +42,37 @@ Deploying CMIP5 data on the RAT/P2A is a work in progress.
 * ~~Adapt existing data processing pipeline for CMIP5 data~~
 * ~~Create reproducible deployment guide~~ *Created README and Docker deployment guide*
 * Replace existing data processing pipeline to accomodate derived variable generation from daily data rather than monthly. This will involve writing scripts that accomplish:
-* * ~~Determine valid CMIP5 model sets~~ *PyClimate Filters module*
-* * ~~Convert CF1.6 CMIP5 metadata standards to PCIC CMIP3 metadata standard~~ *CFmeta python package*
-* * Generate derived variables based on daily data: ~~tas, gdd, hdd, fdd, pas~~ *PyClimate variables module*
-* * Create climatologies of all input variables: ~~tasmin~~, ~~tasmax~~, ~~pr~~, tas, gdd, hdd, fdd, pas
-* * Translate metadata into RAT/P2A format
-* * Assemble files into RAT/P2A compatible 'scenarios' files
-* * ~~Script generation of `gcminfo.csv` file from new data~~
+  * ~~Determine valid CMIP5 model sets~~ *PyClimate Filters module*
+  * ~~Convert CF1.6 CMIP5 metadata standards to PCIC CMIP3 metadata standard~~ *CFmeta python package*
+  * Generate derived variables based on daily data: ~~tas, gdd, hdd, fdd, pas~~ *PyClimate variables module*
+  * Create climatologies of all input variables: ~~tasmin~~, ~~tasmax~~, ~~pr~~, tas, gdd, hdd, fdd, pas
+  * Translate metadata into RAT/P2A format
+  * Assemble files into RAT/P2A compatible 'scenarios' files
+  * ~~Script generation of `gcminfo.csv` file from new data~~
 
 ### P2A map data prep
 
 The involves applying elevation adjustments to previously bias correted data. The general procedure involves:
 
+<pre>
 GCM (10k, daily)
   |
-devirve the vars
+  devirve tas, gdd, hdd, fdd, pas
   |
 Degree Days (10k, daily)
   |
-create climatologies
+  create climatologies
   |
 Degree Days (10k, p/f, climo)
   |
-Apply elevation adjustment:
-1. Interpolate DD(10k, 6190, climo) to 400m
-2. Subtract DD(400m, 6190, climo) from DD(10k, p/f, climo)
-3. Add DD ClimateBC(400m, 6190, climo)
+  Apply elevation adjustment:
+  1. Interpolate DD(10k, 6190, climo) to 400m
+  2. Subtract DD(400m, 6190, climo) from DD(10k, p/f, climo)
+  3. Add DD ClimateBC(400m, 6190, climo)
   |
 Degree Days (400m, p/f, climo)
   |
-subtract DD(400m, 6190, climo)
+  subtract DD(400m, 6190, climo)
   |
 Degree Days (400m, p/f, climo, anomalies)
+</pre>
