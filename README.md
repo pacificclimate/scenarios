@@ -49,3 +49,28 @@ Deploying CMIP5 data on the RAT/P2A is a work in progress.
 * * Translate metadata into RAT/P2A format
 * * Assemble files into RAT/P2A compatible 'scenarios' files
 * * ~~Script generation of `gcminfo.csv` file from new data~~
+
+### P2A map data prep
+
+The involves applying elevation adjustments to previously bias correted data. The general procedure involves:
+
+GCM (10k, daily)
+  |
+devirve the vars
+  |
+Degree Days (10k, daily)
+  |
+create climatologies
+  |
+Degree Days (10k, p/f, climo)
+  |
+Apply elevation adjustment:
+1. Interpolate DD(10k, 6190, climo) to 400m
+2. Subtract DD(400m, 6190, climo) from DD(10k, p/f, climo)
+3. Add DD ClimateBC(400m, 6190, climo)
+  |
+Degree Days (400m, p/f, climo)
+  |
+subtract DD(400m, 6190, climo)
+  |
+Degree Days (400m, p/f, climo, anomalies)
