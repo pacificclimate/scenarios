@@ -30,3 +30,22 @@ Or for development, override the code directory:
 ```bash
 -v /full/path/to/scenarios/code/dir:/usr/local/lib/scenarios
 ```
+
+## CMIP5 Data
+
+Deploying CMIP5 data on the RAT/P2A is a work in progress.
+
+### Genimage data preparation
+
+* ~~Determine data format requirements~~
+* ~~Sort through existing code directories, convert to Git and release on GitHub~~
+* ~~Adapt existing data processing pipeline for CMIP5 data~~
+* ~~Create reproducible deployment guide~~ *Created README and Docker deployment guide*
+* Replace existing data processing pipeline to accomodate derived variable generation from daily data rather than monthly. This will involve writing scripts that accomplish:
+* * ~~Determine valid CMIP5 model sets~~ *PyClimate Filters module*
+* * ~~Convert CF1.6 CMIP5 metadata standards to PCIC CMIP3 metadata standard~~ *CFmeta python package*
+* * Generate derived variables based on daily data: ~~tas, gdd, hdd, fdd, pas~~ *PyClimate variables module*
+* * Create climatologies of all input variables: ~~tasmin~~, ~~tasmax~~, ~~pr~~, tas, gdd, hdd, fdd, pas
+* * Translate metadata into RAT/P2A format
+* * Assemble files into RAT/P2A compatible 'scenarios' files
+* * ~~Script generation of `gcminfo.csv` file from new data~~
