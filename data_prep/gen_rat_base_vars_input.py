@@ -105,29 +105,35 @@ def main(args):
     with open(args.input, 'r') as f:
         file_list = f.read().splitlines()
 
+    model_sets = defaultdict(dict)
     for fp in file_list:
-        log.info(fp)
-
-        nc = Dataset(fp)
-        available_climo_periods = determine_climo_periods(nc)
-        nc.close()
         cf = Cmip5File(datanode_fp = fp)
-        cf3 = Cmip3File(**cf.__dict__)
-        variable = cf3.variable_name
+        key = '{}-{}-{}'.format(cf.model,cf.variable_name,cf.ensemble_member)
+        model_sets[key][cf.experiment] = fp
 
-        for _, t_range in available_climo_periods.items():
-            log.info('Generating climo period %s to %s', d2s(t_range[0]), d2s(t_range[1]))
+    for model_var_run, experiment in model_sets.items():
+        for experiment_name, fp in experiment.items():
+            log.info(fp)
 
-            climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
-            cf3.update(temporal_subset = climo_range)
-            out_fp = os.path.join(args.outdir, cf3.fname)
+            nc = Dataset(fp)
+            available_climo_periods = determine_climo_periods(nc)
+            nc.close()
+            cf = Cmip5File(datanode_fp = fp)
+            cf3 = Cmip3File(**cf.__dict__)
+            variable = cf3.variable_name
 
-            try:
-                create_climo_file(fp, out_fp, t_range[0], t_range[1], variable)
-            except KeyboardInterrupt:
-                exit(1)
-            except:
-                log.exception('Failed to create climatology file')
+            for _, t_range in available_climo_periods.items():
+                climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
+                cf3.update(temporal_subset = climo_range)
+                out_fp = os.path.join(args.outdir, cf3.fname)
+                log.info('Generating climo period %s to %s', climo_range, out_fp)
+
+                try:
+                    create_climo_file(fp, out_fp, t_range[0], t_range[1], variable)
+                except KeyboardInterrupt:
+                    exit(1)
+                except:
+                    log.exception('Failed to create climatology file')
 
 
 if __name__ == '__main__':
