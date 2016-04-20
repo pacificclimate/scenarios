@@ -63,16 +63,13 @@ Degree Days (10k, daily)
   |
   create climatologies
   |
-Degree Days (10k, p/f, climo)
+Degree Days (10k, past abs/future abs, climo)
   |
-  Apply elevation adjustment:
-  1. Interpolate DD(10k, 6190, climo) to 400m
-  2. Subtract DD(400m, 6190, climo) from DD(10k, p/f, climo)
-  3. Add DD ClimateBC(400m, 6190, climo)
+  calculate anomalies
   |
-Degree Days (400m, p/f, climo)
+Degree Days (10k, past abs/future delta, climo)
   |
-  subtract DD(400m, 6190, climo)
+  add future delta to ClimateBC 400m
   |
-Degree Days (400m, p/f, climo, anomalies)
+Degree Days (400m, past abs/future abs, climo)
 </pre>
