@@ -125,7 +125,7 @@ def main(args):
             for _, t_range in available_climo_periods.items():
                 climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
                 cf3.update(temporal_subset = climo_range)
-                out_fp = os.path.join(args.outdir, cf3.fname)
+                out_fp = os.path.join(args.outdir, cf3.fp)
                 log.info('Generating climo period %s to %s', climo_range, out_fp)
 
                 try:
