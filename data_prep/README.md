@@ -3,9 +3,10 @@
 ## Install requirements
 
 ```bash
-pyvenv
+module load cdo-bin
+pyvenv venv
 pip install numpy
-pip install netCDF4 cfmeta
+pip install -r requirements.txt
 ```
 
 ## Procedure
