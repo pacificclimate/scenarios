@@ -7,6 +7,7 @@ import argparse
 import multiprocessing
 import fnmatch
 import json
+import shutil
 
 from collections import defaultdict
 from datetime import datetime
@@ -113,27 +114,32 @@ def main(args):
 
     for model_var_run, experiment in model_sets.items():
         for experiment_name, fp in experiment.items():
-            log.info(fp)
 
-            nc = Dataset(fp)
-            available_climo_periods = determine_climo_periods(nc)
-            nc.close()
-            cf = Cmip5File(datanode_fp = fp)
-            cf3 = Cmip3File(**cf.__dict__)
-            variable = cf3.variable_name
+            # Copy file to local temp
+            with NamedTemporaryFile(suffix='.nc') as tempf:
+                shutil.copy2(fp, tempf.name)
 
-            for _, t_range in available_climo_periods.items():
-                climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
-                cf3.update(temporal_subset = climo_range)
-                out_fp = os.path.join(args.outdir, cf3.fp)
-                log.info('Generating climo period %s to %s', climo_range, out_fp)
+                log.info(fp)
 
-                try:
-                    create_climo_file(fp, out_fp, t_range[0], t_range[1], variable)
-                except KeyboardInterrupt:
-                    exit(1)
-                except:
-                    log.exception('Failed to create climatology file')
+                nc = Dataset(fp)
+                available_climo_periods = determine_climo_periods(nc)
+                nc.close()
+                cf = Cmip5File(datanode_fp = fp)
+                cf3 = Cmip3File(**cf.__dict__)
+                variable = cf3.variable_name
+
+                for _, t_range in available_climo_periods.items():
+                    climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
+                    cf3.update(temporal_subset = climo_range)
+                    out_fp = os.path.join(args.outdir, cf3.fp)
+                    log.info('Generating climo period %s to %s', climo_range, out_fp)
+
+                    try:
+                        create_climo_file(tempf.name, out_fp, t_range[0], t_range[1], variable)
+                    except KeyboardInterrupt:
+                        exit(1)
+                    except:
+                        log.exception('Failed to create climatology file')
 
 
 if __name__ == '__main__':
