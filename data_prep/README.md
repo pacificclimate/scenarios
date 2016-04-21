@@ -100,3 +100,31 @@ do
   done
 done
 ```
+
+### Rename the dimensions
+
+RAT/P2A dimensions need to be renamed as follows:
+
+|old name|new name|
+|---|---|
+|lon | columns |
+|lat | rows |
+|time | timesofyear |
+
+And variable dimensions:
+
+| old name | new name |
+|---|---|
+|lat|lats|
+|lon|longs|
+
+```bash
+module load nco-bin
+cd  $TMPDIR/rat_cmip5_rotated
+
+for F in $(find -type f -name "*.nc*");
+do
+  echo $F
+  ncrename -O -d lon,columns -d lat,rows -d time,timesofyear -v lat,lats -v lon,longs $F
+done
+```
