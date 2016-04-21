@@ -24,9 +24,11 @@ def get_cmip3_dir(meta):
     return os.path.join(meta['experiment'], meta['variable_name'], meta['model'], meta['ensemble_member'])
 
 def calc_anomaly(hist_fp, future_fp, out_fp, variable_name):
-    #TODO: calc percent for pr
     cdo = Cdo()
-    cdo.sub(input = '{} {}'.format(future_fp, hist_fp), output=out_fp)
+    if variable_name == 'pr': # Percentage anomaly
+        cdo.mulc(100, input='-div -sub {} {} {}'.format(future_fp, hist_fp, hist_fp), output=out_fp)
+    else:
+        cdo.sub(input = '{} {}'.format(future_fp, hist_fp), output=out_fp)
 
 def main(args):
     with open(args.input, 'r') as f:
