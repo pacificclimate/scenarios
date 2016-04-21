@@ -42,7 +42,7 @@ def main(args):
 
     for model_var_run, experiment in model_sets.items():
         if 'historical' not in experiment.keys():
-            log.warn('Model set does not contain historical values')
+            log.warn('Model set does not contain historical values: %s', experiment)
             continue
         hist_fp = experiment['historical']
         for experiment_name, fp in experiment.items():
