@@ -66,6 +66,15 @@ find $TMPDIR/rat_cmip5_climos -name "*.nc" > rat_climos.txt
 venv/bin/python gen_rat_anomalies.py -i rat_climos.txt -o $TMPDIR/rat_cmip5_anomalies
 ```
 
+### Find Land Mask
+
+The remaining transformations need to be applied to the land mask files as well, so we bring them in here.
+
+```bash
+find /storage/data/climate/CMIP5/CMIP5/output1/ -name "*fx*" -type f > tee fx_files.txt
+venv/bin/python copy_rat_landmasks.py -i rat_climos.txt -x fx_files.txt -o $TMPDIR/rat_cmip5_anomalies
+```
+
 ### Re-order dimensions
 
 The RAT/P2A expects lats ordered 90 to -90 and lons ordered -180 to 180. GCMS have lats in reverse order, and longs 0 to 360.
