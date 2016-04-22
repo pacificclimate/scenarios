@@ -19,14 +19,29 @@ def get_path_meta(fp):
         'ensemble_member': sp[-1]
     }
 
+def create_base_netcdf(base_fp, out_fp):
+    nc = Dataset(base_fp, 'r')
+    new_nc = Dataset(out_fp, 'w')
+
+    nc_copy_dim(nc, new_nc, 'rows') 
+    nc_copy_dim(nc, new_nc, 'columns') 
+    nc_copy_dim(nc, new_nc, 'timesofyear')
+
+    nc.close()
+    new_nc.close()
+
 def main(args):
     with open(args.input, 'r') as f:
         file_list = f.read().splitlines()
 
     model_sets = defaultdict(dict)
+    landmasks = {}
     for fp in file_list:
         meta = get_path_meta(fp)
-        key = '{}-{}-{}'.format(meta['model'], meta['variable_name'], meta['ensemble_member'])
+        key = '{}_{}_{}'.format(meta['model'], meta['variable_name'], meta['ensemble_member'])
+        if meta['variable_name'] == 'sftlf':
+            landmasks[meta['model']] = fp
+            continue
         model_sets[key][meta['experiment']] = fp
 
     from pprint import PrettyPrinter
@@ -53,11 +68,19 @@ def main(args):
 
     # All the 1961-1990 variables are the exact same
 
+    for model_var_run, experiment in model_sets.items():
+        model, variable, run = model_var_run.split('_')
 
-    #out_fp = os.path.join(args.outdir, model.lower() + '.dat')
-    #log.info(out_fp)
+        for experiment_name, fp in experiment.items():
+            # Make output if it doesn't exist
+            out_fp = os.path.join(args.outdir, model.lower() + '.dat')
+            if not os.path.exists(out_fp):
+                log.info('Creating output netCDF %s based on %s', out_fp, fp)
+                
+                create_base_netcdf(fp, out_fp)
 
-        # create output file if it doesn't exist yet
+            if experiment_name == 'fx':
+                log.info('Add slmask to %s', out_fp)
             
 
 if __name__ == '__main__':
