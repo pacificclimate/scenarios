@@ -98,7 +98,7 @@ done
 
 cd $TMPDIR/rat_cmip5_flipped
 
-for VAR in tasmin tasmax pr;
+for VAR in tasmin tasmax pr sftlf;
 do
   for F in $(find -type f -name "*$VAR*");
   do
