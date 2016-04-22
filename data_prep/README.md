@@ -105,7 +105,7 @@ do
     echo $F;
     mkdir -p `dirname $TMPDIR/rat_cmip5_rotated/$F`
     ncks -v $VAR,lon_bnds,lat_bnds --msa -d lon,180.,360. -d lon,0.,179.999999 $F $TMPDIR/rat_cmip5_rotated/$F;
-    ncap -O -s 'where(lon>=180) lon=lon-360' $TMPDIR/rat_cmip5_rotated/$F $TMPDIR/rat_cmip5_rotated/$F;
+    ncap2 -O -s 'where(lon>=180) lon=lon-360' $TMPDIR/rat_cmip5_rotated/$F $TMPDIR/rat_cmip5_rotated/$F;
   done
 done
 ```
