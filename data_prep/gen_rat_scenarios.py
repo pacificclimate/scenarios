@@ -32,8 +32,26 @@ def main(args):
     from pprint import PrettyPrinter
     pp = PrettyPrinter()
     pp.pprint(model_sets)
-#    log.info(model_sets)
 
+    # Each experiment (rcp26, 45, 85) needs it's own `historical` variable
+    # even if it may be the same thing
+
+    # For Example:
+
+    # double RCP26-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double RCP26-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double RCP26-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double RCP26-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+    # double RCP45-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double RCP45-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double RCP45-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double RCP45-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+    # double RCP85-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double RCP85-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double RCP85-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double RCP85-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+
+    # All the 1961-1990 variables are the exact same
 
 
     #out_fp = os.path.join(args.outdir, model.lower() + '.dat')
