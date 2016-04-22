@@ -137,3 +137,10 @@ do
   ncrename -O -d lon,columns -d lat,rows -d time,timesofyear -v lat,lats -v lon,longs $F
 done
 ```
+
+### Assemble into Scenarios files
+
+```bash
+find $TMPDIR/rat_cmip5_rotated -name "*.nc" > rat_scenarios_input.txt
+venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/rat_cmip5_scenarios
+```
