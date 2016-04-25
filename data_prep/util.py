@@ -27,7 +27,7 @@ def get_time_period(fp):
     rcp85/tasmin/MPI-ESM-LR/r3i1p1/MPI-ESM-LR-rcp85-tasmin-r3i1p1-2040-2069.nc
     '''
 
-    start_year = get_start_year(fp)
+    startyear = get_start_year(fp)
 
     if startyear == '1961':
         return '1961_1990'
