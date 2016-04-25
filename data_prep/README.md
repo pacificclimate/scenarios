@@ -79,6 +79,22 @@ venv/bin/python copy_rat_landmasks.py -i rat_climos.txt -x fx_files.txt -o $TMPD
 
 The RAT/P2A expects lats ordered 90 to -90 and lons ordered -180 to 180. GCMS have lats in reverse order, and longs 0 to 360.
 
+Furthermore, RAT/P2A dimensions need to be renamed as follows:
+
+|old name|new name|
+|---|---|
+|lon | columns |
+|lat | rows |
+|time | timesofyear |
+
+And variable dimensions:
+
+| old name | new name |
+|---|---|
+|lat|lats|
+|lon|longs|
+
+
 ```bash
 module load nco-bin
 
@@ -108,27 +124,10 @@ do
     ncap2 -O -s 'where(lon>=180) lon=lon-360' $TMPDIR/rat_cmip5_rotated/$F $TMPDIR/rat_cmip5_rotated/$F;
   done
 done
-```
 
-### Rename the dimensions
 
-RAT/P2A dimensions need to be renamed as follows:
+# Rename the dims
 
-|old name|new name|
-|---|---|
-|lon | columns |
-|lat | rows |
-|time | timesofyear |
-
-And variable dimensions:
-
-| old name | new name |
-|---|---|
-|lat|lats|
-|lon|longs|
-
-```bash
-module load nco-bin
 cd  $TMPDIR/rat_cmip5_rotated
 
 for F in $(find -type f -name "*.nc*");
