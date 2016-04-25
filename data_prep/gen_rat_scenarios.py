@@ -29,6 +29,9 @@ def create_base_netcdf(base_fp, out_fp):
     nc_copy_dim(nc, new_nc, 'columns') 
     nc_copy_dim(nc, new_nc, 'timesofyear')
 
+    nc_copy_var(nc, new_nc, 'lats', 'lats', copy_data=True)
+    nc_copy_var(nc, new_nc, 'longs', 'longs', copy_data=True)
+
     nc.close()
     new_nc.close()
 
