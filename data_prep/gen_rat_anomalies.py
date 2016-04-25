@@ -9,19 +9,9 @@ from collections import defaultdict
 from cdo import Cdo
 from cfmeta import Cmip3File
 
+from util import get_path_meta, get_cmip3_dir, get_start_year, ensure_dir
+
 log = logging.getLogger(__name__)
-
-def get_path_meta(fp):
-    sp = os.path.dirname(fp).split('/')
-    return {
-        'experiment': sp[-4],
-        'variable_name': sp[-3],
-        'model': sp[-2],
-        'ensemble_member': sp[-1]
-    }
-
-def get_cmip3_dir(meta):
-    return os.path.join(meta['experiment'], meta['variable_name'], meta['model'], meta['ensemble_member'])
 
 def calc_anomaly(hist_fp, future_fp, out_fp, variable_name):
     cdo = Cdo()
@@ -38,7 +28,10 @@ def main(args):
     for fp in file_list:
         meta = get_path_meta(fp)
         key = '{}-{}-{}'.format(meta['model'], meta['variable_name'], meta['ensemble_member'])
-        model_sets[key][meta['experiment']] = fp
+        if meta['experiment'] == 'historical':
+            model_sets[key][meta['experiment']] = fp
+        else:
+            model_sets[key]['{}_{}'.format(meta['experiment'], get_start_year(fp))] = fp
 
     log.info(model_sets)
 
@@ -50,8 +43,7 @@ def main(args):
         for experiment_name, fp in experiment.items():
             meta = get_path_meta(fp)
             out_fp = os.path.join(args.outdir, get_cmip3_dir(meta), os.path.basename(fp))
-            if not os.path.exists(os.path.dirname(out_fp)):
-                os.makedirs(os.path.dirname(out_fp))
+            ensure_dir(out_fp)
 
             if experiment_name == 'historical':
                 log.info('Copying historical file to %s', out_fp)
