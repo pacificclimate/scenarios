@@ -62,7 +62,11 @@ def add_landmask_to_base_nc(lm_fp, base_fp):
         raise Exception('Expected output dimensions do not exist')
 
     nc_var_out = base_nc.createVariable('slmask', 'i', nc_var_in.dimensions)
-    nc_var_out[:] = nc_var_in[:].astype(int)
+    a = nc_var_in[:]
+    
+    a[a < 50] = 0
+    a[a >= 50] = 1
+    nc_var_out[:] = a
 
     base_nc.close()
     lm_nc.close()
