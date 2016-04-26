@@ -5,6 +5,8 @@ import argparse
 
 from collections import defaultdict
 
+import numpy as np
+
 from netCDF4 import Dataset
 from pyclimate.nchelpers import nc_copy_atts, nc_copy_dim, nc_copy_var
 
@@ -41,7 +43,7 @@ def add_var_to_base_netcdf(fp, variable, base_fp, outvarname):
 
     nc_var_in = new_nc.variables[variable]
     if not all([x in base_nc.dimensions for x in nc_var_in.dimensions]):
-        raise Exception('Expected utput dimensions do not exist')
+        raise Exception('Expected output dimensions do not exist')
 
     nc_var_out = base_nc.createVariable(outvarname, 'd', nc_var_in.dimensions)
     
@@ -50,6 +52,21 @@ def add_var_to_base_netcdf(fp, variable, base_fp, outvarname):
     
     base_nc.close()
     new_nc.close()
+
+def add_landmask_to_base_nc(lm_fp, base_fp):
+    base_nc = Dataset(base_fp, 'a')
+    lm_nc = Dataset(lm_fp, 'r')
+
+    nc_var_in = lm_nc.variables['sftlf']
+
+    if not all([x in base_nc.dimensions for x in nc_var_in.dimensions]):
+        raise Exception('Expected output dimensions do not exist')
+
+    nc_var_out = base_nc.createVariable('slmask', 'i', nc_var_in.dimensions)
+    nc_var_out[:] = nc_var_in[:].astype(int)
+
+    base_nc.close()
+    lm_nc.close()
 
 def main(args):
     with open(args.input, 'r') as f:
@@ -124,11 +141,14 @@ def main(args):
                     outvarname = '{}-{}_{}_{}'.format(exp_name, run, tp, variable)
                     log.debug('Creating varialbe %s', outvarname)
                     add_var_to_base_netcdf(fp, variable, out_fp, outvarname)
+    
+    #Add landmask to model file
+    for model, lm_fp in landmasks.items():
+        out_fp = os.path.join(args.outdir, model.lower() + '.dat')
+        assert os.path.exists(out_fp)
 
-    for lm in landmasks:
-        pass
-        #Add landmask to model file
-
+        add_landmask_to_base_nc(lm_fp, out_fp)
+        
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', help='Input file list')
