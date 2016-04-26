@@ -45,7 +45,7 @@ def add_var_to_base_netcdf(fp, variable, base_fp, outvarname):
         raise Exception('Expected output dimensions do not exist')
 
     nc_var_out = base_nc.createVariable(outvarname, 'd', nc_var_in.dimensions)
-    
+
     for i in range(nc_var_in.shape[0]):
         nc_var_out[i,:,:] = nc_var_in[i,:,:]
     
@@ -66,6 +66,17 @@ def add_landmask_to_base_nc(lm_fp, base_fp):
 
     base_nc.close()
     lm_nc.close()
+
+def get_output_varname(exp_name, run, tp, variable):
+    varname = variable
+    if variable == 'pr':
+        varname = 'prec'
+    elif variable == 'tasmax':
+        varname = 'tmax'
+    elif variable == 'tasmin':
+        varname = 'tmin'
+
+    return '{}-{}_{}_{}'.format(exp_name.upper(), run, tp, varname)
 
 def main(args):
     with open(args.input, 'r') as f:
@@ -132,12 +143,12 @@ def main(args):
                     log.info(future_exprs)
 
                     for exp in future_exprs:
-                        outvarname = '{}-{}_{}_{}'.format(exp, run, tp, variable)
+                        outvarname = get_output_varname(exp, run, tp, variable)
                         log.debug('Creating historical variable %s', outvarname)
                         add_var_to_base_netcdf(fp, variable, out_fp, outvarname)
 
                 else:
-                    outvarname = '{}-{}_{}_{}'.format(exp_name, run, tp, variable)
+                    outvarname = get_output_varname(exp_name, run, tp, variable)
                     log.debug('Creating varialbe %s', outvarname)
                     add_var_to_base_netcdf(fp, variable, out_fp, outvarname)
     
