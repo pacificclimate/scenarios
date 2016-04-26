@@ -143,3 +143,9 @@ done
 find $TMPDIR/rat_cmip5_rotated -name "*.nc" > rat_scenarios_input.txt
 venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/rat_cmip5_scenarios
 ```
+
+### Create the new gcminfo file
+
+```bash
+venv/bin/python create_gcminfo_file.py $TMPDIR/rat_cmip5_scenarios gcminfo_new.csv
+```
