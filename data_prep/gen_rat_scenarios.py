@@ -8,9 +8,8 @@ from collections import defaultdict
 import numpy as np
 
 from netCDF4 import Dataset
-from pyclimate.nchelpers import nc_copy_atts, nc_copy_dim, nc_copy_var
 
-from util import get_time_period
+from util import get_time_period, nc_copy_var, nc_copy_dim
 
 log = logging.getLogger(__name__)
 
@@ -153,7 +152,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', help='Input file list')
     parser.add_argument('-o', '--outdir', help='Output directory')
-    parser.add_argument('-v', '--verbosity', action='count', help='Increase log level. -v = INFO, -vv = DEBUG')
+    parser.add_argument('-v', '--verbosity', default=0, action='count', help='Increase log level. -v = INFO, -vv = DEBUG')
     args = parser.parse_args()
 
     level = logging.ERROR
