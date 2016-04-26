@@ -156,6 +156,6 @@ venv/bin/python create_gcminfo_file.py $TMPDIR/rat_cmip5_scenarios gcminfo_new.c
 for F in $(ls $TMPDIR/rat_cmip5_scenarios/)
 do
   echo $F
-  nccopy -u -k 64-bit offset $TMPDIR/rat_cmip5_scenarios/$F /storage/data/projects/rat/data/nc/cmip5_new/$F
+  nccopy -u -k "64-bit offset" $TMPDIR/rat_cmip5_scenarios/$F /storage/data/projects/rat/data/nc/cmip5_new/$F
 done
 ```
