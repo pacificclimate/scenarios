@@ -30,8 +30,8 @@ def create_base_netcdf(base_fp, out_fp):
     nc_copy_dim(nc, new_nc, 'columns') 
     nc_copy_dim(nc, new_nc, 'timesofyear')
 
-    nc_copy_var(nc, new_nc, 'lats', 'lats', copy_data=True)
-    nc_copy_var(nc, new_nc, 'longs', 'longs', copy_data=True)
+    nc_copy_var(nc, new_nc, 'lats', 'lats', copy_data=True, copy_attrs=True)
+    nc_copy_var(nc, new_nc, 'longs', 'longs', copy_data=True, copy_attrs=True)
 
     nc.close()
     new_nc.close()
@@ -48,7 +48,7 @@ def add_var_to_base_netcdf(fp, variable, base_fp, outvarname):
 
     for i in range(nc_var_in.shape[0]):
         nc_var_out[i,:,:] = nc_var_in[i,:,:]
-    
+
     base_nc.close()
     new_nc.close()
 
@@ -134,22 +134,22 @@ def main(args):
 
         for exp_name, tp_dict in exprs.items():
             for tp, fp in tp_dict.items():
-                log.debug('Input file %s', fp)
+                log.info('Input file %s', fp)
 
                 if exp_name == 'historical':
                     # We have to add a historical period for each future experiment
                     future_exprs = list(exprs.keys())
                     future_exprs.remove('historical')
-                    log.info(future_exprs)
+                    log.debug(future_exprs)
 
                     for exp in future_exprs:
                         outvarname = get_output_varname(exp, run, tp, variable)
-                        log.debug('Creating historical variable %s', outvarname)
+                        log.info('Creating historical variable %s', outvarname)
                         add_var_to_base_netcdf(fp, variable, out_fp, outvarname)
 
                 else:
                     outvarname = get_output_varname(exp_name, run, tp, variable)
-                    log.debug('Creating varialbe %s', outvarname)
+                    log.info('Creating variable %s', outvarname)
                     add_var_to_base_netcdf(fp, variable, out_fp, outvarname)
     
     #Add landmask to model file
