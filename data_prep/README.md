@@ -141,11 +141,17 @@ done
 
 ```bash
 find $TMPDIR/rat_cmip5_rotated -name "*.nc" > rat_scenarios_input.txt
-venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/rat_cmip5_scenarios
+venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/rat_cmip5_scenarios -v
 ```
 
 ### Create the new gcminfo file
 
 ```bash
 venv/bin/python create_gcminfo_file.py $TMPDIR/rat_cmip5_scenarios gcminfo_new.csv
+```
+
+### Copy to the destination dir
+
+```bash
+for F in $(ls $TMPDIR/rat_cmip5_scenarios/); do nccopy -u -k classic $TMPDIR/rat_cmip5_scenarios/$F /storage/data/projects/rat/cmip_pcic12/$F; done
 ```
