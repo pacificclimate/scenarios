@@ -45,8 +45,7 @@ $dat[0]{'variable'} =
     "Degree-Days Above 5",     "Degree-Days Below 18",
     "Degree-Days Above 18",    "Number of Frost-Free Days",
     "Snowfall",                "Interannual SD of Temperature",
-    "Interannual SD of Precipitation", "T & P",
-    "All Variables"
+    "Interannual SD of Precipitation", "T & P"
   ];
 
 $dat[1]{'variable'} = 
@@ -64,8 +63,7 @@ $dat[1]{'variable'} =
     "Degree-Days Above 5",     "Degree-Days Below 18",
     "Degree-Days Above 18",    "Number of Frost-Free Days",
     "Snowfall",                "Interannual SD of Temperature",
-    "Interannual SD of Precipitation", "T & P",
-    "All Variables"
+    "Interannual SD of Precipitation", "T & P"
   ];
 
 # Filename stuff
@@ -73,7 +71,7 @@ $dat[2]{'variable'} =
   [ "temp", "prec", "tmax", "tmin", "shum", "irad", "tcld", "wind", 
     "evap", "soil", "mslp", "snow", "sice", "vapp", "rhum", "ditr", 
     "surt", "somm", "snod", "h500", "melt", "dl00", "dg05", "dl18",
-    "dg18", "nffd", "pass", "isdt", "isdp", [0..1], [0..29]
+    "dg18", "nffd", "pass", "isdt", "isdp", [0..1]
   ];
 
 # FIXME - LANG -- BIG!
