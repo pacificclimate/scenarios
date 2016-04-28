@@ -5,6 +5,7 @@ import argparse
 import shutil
 
 from collections import defaultdict
+from tempfile import NamedTemporaryFile
 
 from cdo import Cdo
 from cfmeta import Cmip3File
@@ -12,13 +13,27 @@ from cfmeta import Cmip3File
 from util import get_path_meta, get_cmip3_dir, get_start_year, ensure_dir
 
 log = logging.getLogger(__name__)
+cdo = Cdo()
 
 def calc_anomaly(hist_fp, future_fp, out_fp, variable_name):
-    cdo = Cdo()
     if variable_name == 'pr': # Percentage anomaly
         cdo.mulc(100, input='-div -sub {} {} {}'.format(future_fp, hist_fp, hist_fp), output=out_fp)
     else:
         cdo.sub(input = '{} {}'.format(future_fp, hist_fp), output=out_fp)
+
+def copy_historical(fp, out_fp, var_name):
+    # FIXME: this should be done when creating climos as well as any other var transforms
+    if var_name in ['tasmax', 'tasmin']:
+        log.info('Applying K -> C conversion to %s', fp)
+        with NamedTemporaryFile(suffix='.nc') as tempf:
+            cdo.subc(273.15, input=fp, output=tempf.name)
+
+            log.info('Copying historical file to %s', out_fp)
+            shutil.copy2(tempf.name, out_fp)
+
+    else:
+        log.info('Copying historical file to %s', out_fp)
+        shutil.copy2(fp, out_fp)
 
 def main(args):
     with open(args.input, 'r') as f:
@@ -46,8 +61,7 @@ def main(args):
             ensure_dir(out_fp)
 
             if experiment_name == 'historical':
-                log.info('Copying historical file to %s', out_fp)
-                shutil.copy2(fp, out_fp)
+                copy_historical(fp, out_fp, meta['variable_name'])
 
             else:
                 log.info('Generating anomaly to %s', out_fp)
