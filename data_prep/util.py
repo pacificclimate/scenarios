@@ -3,18 +3,6 @@ import logging
 
 log = logging.getLogger(__name__)
 
-def get_path_meta(fp):
-    sp = os.path.dirname(fp).split('/')
-    return {
-        'experiment': sp[-4],
-        'variable_name': sp[-3],
-        'model': sp[-2],
-        'ensemble_member': sp[-1]
-    }
-
-def get_cmip3_dir(meta):
-    return os.path.join(meta['experiment'], meta['variable_name'], meta['model'], meta['ensemble_member'])
-
 def ensure_dir(fp):
     if not os.path.exists(os.path.dirname(fp)):
         os.makedirs(os.path.dirname(fp))

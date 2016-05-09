@@ -14,12 +14,11 @@ from datetime import datetime
 from tempfile import NamedTemporaryFile
 
 import numpy as np
-from netCDF4 import Dataset
+from netCDF4 import Dataset, num2date
 from cfmeta import Cmip5File, Cmip3File
 from cdo import Cdo
 
-from pyclimate import Consumer
-from pyclimate.nchelpers import *
+from util import ensure_dir
 
 log = logging.getLogger(__name__)
 
@@ -103,6 +102,7 @@ def create_climo_file(fp_in, fp_out, t_start, t_end, variable):
         cdo.copy(input=cdo_cmd, output=fp_out)
 
 def main(args):
+    log.info('Reading input file list %s', args.input)
     with open(args.input, 'r') as f:
         file_list = f.read().splitlines()
 
@@ -116,31 +116,31 @@ def main(args):
         for experiment_name, fp in experiment.items():
 
             # Copy file to local temp
-            with NamedTemporaryFile(suffix='.nc') as tempf:
+            with NamedTemporaryFile(suffix='.nc') as tempf, NamedTemporaryFile(suffix='.nc') as temp_out:
+                log.info('Copying input fname %s to %s', fp, tempf.name)
                 shutil.copy2(fp, tempf.name)
 
-                log.info(fp)
-
-                nc = Dataset(fp)
+                nc = Dataset(tempf.name)
                 available_climo_periods = determine_climo_periods(nc)
                 nc.close()
                 cf = Cmip5File(datanode_fp = fp)
-                cf3 = Cmip3File(**cf.__dict__)
-                variable = cf3.variable_name
+                variable = cf.variable_name
 
                 for _, t_range in available_climo_periods.items():
                     climo_range = '{}-{}'.format(d2y(t_range[0]), d2y(t_range[1]))
-                    cf3.update(temporal_subset = climo_range)
-                    out_fp = os.path.join(args.outdir, cf3.fp)
-                    log.info('Generating climo period %s to %s', climo_range, out_fp)
+                    log.info('Generating climo period %s to %s', climo_range, temp_out.name)
 
                     try:
-                        create_climo_file(tempf.name, out_fp, t_range[0], t_range[1], variable)
+                        create_climo_file(tempf.name, temp_out.name, t_range[0], t_range[1], variable)
                     except KeyboardInterrupt:
                         exit(1)
                     except:
                         log.exception('Failed to create climatology file')
 
+                    log.info('Copying result to output directory')
+                    cf.update(temporal_subset = climo_range)
+                    out_fp = os.path.join(args.outdir, cf.cmor_fname)
+                    shutil.copy2(temp_out.name, out_fp)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
