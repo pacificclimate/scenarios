@@ -102,36 +102,36 @@ module load nco-bin
 
 # Flip the lats
 
-cd  $TMPDIR/rat_cmip5_anomalies
+cd  $TMPDIR/anomalies
 
 for F in $(find -type f -name "*.nc*");
 do
   echo $F
-  mkdir -p `dirname $TMPDIR/rat_cmip5_flipped/$F`
-  ncpdq -h -a -lat $F $TMPDIR/rat_cmip5_flipped/$F
+  mkdir -p `dirname $TMPDIR/flipped/$F`
+  ncpdq -h -a -lat $F $TMPDIR/flipped/$F
 done
 
 
 # Rotate the lons
 
-cd $TMPDIR/rat_cmip5_flipped
+cd $TMPDIR/flipped
 
 for VAR in tasmin tasmax pr sftlf;
 do
   for F in $(find -type f -name "*$VAR*");
   do
     echo $F;
-    mkdir -p `dirname $TMPDIR/rat_cmip5_rotated/$F`
-    ncks -v $VAR,lon_bnds,lat_bnds --msa -d lon,180.,360. -d lon,0.,179.999999 $F $TMPDIR/rat_cmip5_rotated/$F;
-    ncap2 -O -s 'where(lon>=180) lon=lon-360' $TMPDIR/rat_cmip5_rotated/$F $TMPDIR/rat_cmip5_rotated/$F;
-    ncap2 -O -s 'where(lon_bnds>=180) lon_bnds=lon_bnds-360' $TMPDIR/rat_cmip5_rotated/$F $TMPDIR/rat_cmip5_rotated/$F;
+    mkdir -p `dirname $TMPDIR/rotated/$F`
+    ncks -v $VAR,lon_bnds,lat_bnds --msa -d lon,180.,360. -d lon,0.,179.999999 $F $TMPDIR/rotated/$F;
+    ncap2 -O -s 'where(lon>=180) lon=lon-360' $TMPDIR/rotated/$F $TMPDIR/rotated/$F;
+    ncap2 -O -s 'where(lon_bnds>=180) lon_bnds=lon_bnds-360' $TMPDIR/rotated/$F $TMPDIR/rotated/$F;
   done
 done
 
 
 # Rename the dims
 
-cd  $TMPDIR/rat_cmip5_rotated
+cd  $TMPDIR/rotated
 
 for F in $(find -type f -name "*.nc*");
 do
@@ -143,22 +143,22 @@ done
 ### Assemble into Scenarios files
 
 ```bash
-find $TMPDIR/rat_cmip5_rotated -name "*.nc" > rat_scenarios_input.txt
-venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/rat_cmip5_scenarios -v
+find $TMPDIR/rotated -name "*.nc" > rat_scenarios_input.txt
+venv/bin/python gen_rat_scenarios.py -i rat_scenarios_input.txt -o $TMPDIR/scenarios -v
 ```
 
 ### Create the new gcminfo file
 
 ```bash
-venv/bin/python create_gcminfo_file.py $TMPDIR/rat_cmip5_scenarios gcminfo_new.csv
+venv/bin/python create_gcminfo_file.py $TMPDIR/scenarios gcminfo_new.csv
 ```
 
 ### Copy to the destination dir
 
 ```bash
-for F in $(ls $TMPDIR/rat_cmip5_scenarios/)
+for F in $(ls $TMPDIR/scenarios/)
 do
   echo $F
-  nccopy -u -k "classic" $TMPDIR/rat_cmip5_scenarios/$F /storage/data/projects/rat/data/nc/cmip5_new/$F
+  nccopy -u -k "classic" $TMPDIR/scenarios/$F /storage/data/projects/rat/data/nc/cmip5_new/$F
 done
 ```

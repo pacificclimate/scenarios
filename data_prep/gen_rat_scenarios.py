@@ -8,19 +8,11 @@ from collections import defaultdict
 import numpy as np
 
 from netCDF4 import Dataset
+from cfmeta import Cmip5File
 
 from util import get_time_period, nc_copy_var, nc_copy_dim
 
 log = logging.getLogger(__name__)
-
-def get_path_meta(fp):
-    sp = os.path.dirname(fp).split('/')
-    return {
-        'experiment': sp[-4],
-        'variable_name': sp[-3],
-        'model': sp[-2],
-        'ensemble_member': sp[-1]
-    }
 
 def create_base_netcdf(base_fp, out_fp):
     nc = Dataset(base_fp, 'r')
@@ -89,14 +81,14 @@ def main(args):
     model_sets = defaultdict(dict)
     landmasks = {}
     for fp in file_list:
-        meta = get_path_meta(fp)
-        key = '{}_{}_{}'.format(meta['model'], meta['variable_name'], meta['ensemble_member'])
-        if meta['variable_name'] == 'sftlf':
-            landmasks[meta['model']] = fp
+        cf = Cmip5File(cmor_fname = os.path.basename(fp))
+        key = '{}_{}_{}'.format(cf.model, cf.variable_name, cf.ensemble_member)
+        if cf.variable_name == 'sftlf':
+            landmasks[cf.model] = fp
             continue
         
-        exp = meta['experiment']
-        tp = get_time_period(fp)
+        exp = cf.experiment
+        tp = get_time_period(cf.temporal_subset)
         if exp not in model_sets[key]:
             model_sets[key][exp] = {}
         model_sets[key][exp][tp] = fp

@@ -7,26 +7,19 @@ def ensure_dir(fp):
     if not os.path.exists(os.path.dirname(fp)):
         os.makedirs(os.path.dirname(fp))
 
-def get_start_year(fp):
-    bfp = os.path.splitext(os.path.basename(fp))[0]
-    return bfp.split('-')[-2]
-    
-
-def get_time_period(fp):
+def get_time_period(trange):
     '''Returns time period of an file formatted as such:
 
     rcp85/tasmin/MPI-ESM-LR/r3i1p1/MPI-ESM-LR-rcp85-tasmin-r3i1p1-2040-2069.nc
     '''
 
-    startyear = get_start_year(fp)
-
-    if startyear == '1961':
+    if trange.startswith('1961'):
         return '1961_1990'
-    elif startyear == '2010':
+    elif trange.startswith('2010'):
         return '2020'
-    elif startyear == '2040':
+    elif trange.startswith('2040'):
         return '2050'
-    elif startyear == '2070':
+    elif trange.startswith('2070'):
         return '2080'
     else:
         raise Exception('Unexpected start year')

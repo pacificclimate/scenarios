@@ -43,7 +43,7 @@ def main(args):
             log.warning('Unable to find landmask for %s', model)
             continue
 
-        out_fp = os.path.join(args.outdir, '{}-fx-sftlf-r0i0p0.nc'.format(model))
+        out_fp = os.path.join(args.outdir, os.path.basename(landmask_fp))
         log.info(out_fp)
         shutil.copy2(landmask_fp, out_fp)
 
