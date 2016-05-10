@@ -60,6 +60,9 @@ def var_trans(variable):
     # Returns additional variable specific commands
     if variable == 'pr':
         return '-mulc,86400'
+    elif variable in ['tasmax', 'tasmin']:
+        return '-subc,273.15'
+
     return ''
 
 def create_climo_file(fp_in, fp_out, t_start, t_end, variable):
@@ -86,6 +89,7 @@ def create_climo_file(fp_in, fp_out, t_start, t_end, variable):
 
     if not os.path.exists(os.path.dirname(fp_out)):
         os.makedirs(os.path.dirname(fp_out))
+
 
     with NamedTemporaryFile(suffix='.nc') as tempf:
         cdo.seldate(date_range, input=fp_in, output=tempf.name)
@@ -138,7 +142,7 @@ def main(args):
                         log.exception('Failed to create climatology file')
 
                     log.info('Copying result to output directory')
-                    cf.update(temporal_subset = climo_range)
+                    cf.update(temporal_subset = climo_range, mip_table = 'Amon')
                     out_fp = os.path.join(args.outdir, cf.cmor_fname)
                     shutil.copy2(temp_out.name, out_fp)
 

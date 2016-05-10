@@ -56,14 +56,16 @@ Then manually remove any unwated files. Use this as input to the tool chain.
 ### Create base climatologies
 
 ```bash
-venv/bin/python gen_rat_base_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/rat_cmip5_climos
+venv/bin/python gen_rat_base_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
 ```
+
+Or set up partitioned jobs and submit them with qsub
 
 ### Generate the anomalies for all future periods
 
 ```bash
-find $TMPDIR/rat_cmip5_climos -name "*.nc" > rat_climos.txt
-venv/bin/python gen_rat_anomalies.py -i rat_climos.txt -o $TMPDIR/rat_cmip5_anomalies
+find $TMPDIR/climos -name "*.nc" > rat_climos.txt
+venv/bin/python gen_rat_anomalies.py -i rat_climos.txt -o $TMPDIR/anomalies
 ```
 
 ### Find Land Mask
