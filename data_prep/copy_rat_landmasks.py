@@ -6,18 +6,11 @@ import fnmatch
 
 from netCDF4 import Dataset
 
+from cfmeta import Cmip5File
+
 log = logging.getLogger(__name__)
 
 base_path = r'/storage/data/climate/CMIP5/CMIP5/output1/'
-
-def get_path_meta(fp):
-    sp = os.path.dirname(fp).split('/')
-    return {
-        'experiment': sp[-4],
-        'variable_name': sp[-3],
-        'model': sp[-2],
-        'ensemble_member': sp[-1]
-    }
 
 def iter_netcdf_files(base_dir, pattern="*.nc"):
     for root, dirnames, filenames in os.walk(base_dir):
@@ -33,8 +26,8 @@ def main(args):
 
     models = set()
     for fp in file_list:
-        meta = get_path_meta(fp)
-        models.add(meta['model'])
+        cf = Cmip5File(cmor_fname = os.path.basename(fp))
+        models.add(cf.model)
 
     for model in models:
         log.info(model)
@@ -50,11 +43,8 @@ def main(args):
             log.warning('Unable to find landmask for %s', model)
             continue
 
-        out_fp = os.path.join(args.outdir, 'fx', 'sftlf', model, 'r0i0p0', '{}-fx-sftlf-r0i0p0.nc'.format(model))
+        out_fp = os.path.join(args.outdir, '{}-fx-sftlf-r0i0p0.nc'.format(model))
         log.info(out_fp)
-        if not os.path.exists(os.path.dirname(out_fp)):
-            os.makedirs(os.path.dirname(out_fp))
-
         shutil.copy2(landmask_fp, out_fp)
 
 if __name__ == '__main__':
