@@ -1,7 +1,44 @@
 import os
 import logging
 
+from datetime import datetime
+from netCDF4 import num2date
+
 log = logging.getLogger(__name__)
+
+def s2d(s):
+    return datetime.strptime(s, '%Y-%m-%d')
+
+def ss2d(s):
+    return datetime.strptime(s, '%Y%m%d')
+
+def d2s(d):
+    return datetime.strftime(d, '%Y-%m-%d')
+
+def d2ss(d):
+    return datetime.strftime(d, '%Y%m%d')
+
+def d2y(d):
+    return datetime.strftime(d, '%Y')
+
+climo_periods = {
+    '6190': [s2d('1961-01-01'),s2d('1990-12-31')],
+    '2020': [s2d('2010-01-01'),s2d('2039-12-31')],
+    '2050': [s2d('2040-01-01'),s2d('2069-12-31')],
+    '2080': [s2d('2070-01-01'),s2d('2099-12-30')] # 360 day models end here
+}
+
+def determine_climo_periods(nc):
+    '''
+    Determine what climatological periods are available in a given netCDF file
+    '''
+
+    # Detect which climatological periods can be created
+    time_var = nc.variables['time']
+    s_date = num2date(time_var[0], units=time_var.units, calendar=time_var.calendar)
+    e_date = num2date(time_var[-1], units=time_var.units, calendar=time_var.calendar)
+
+    return dict([(k, v) for k, v in climo_periods.items() if v[0] > s_date and v[1] < e_date])
 
 def ensure_dir(fp):
     if not os.path.exists(os.path.dirname(fp)):
