@@ -1,18 +1,13 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import logging
 import argparse
-import multiprocessing
-import fnmatch
-import json
 import shutil
 
 from collections import defaultdict
 from tempfile import NamedTemporaryFile
 
-import numpy as np
 from netCDF4 import Dataset
 from cfmeta import Cmip5File
 
