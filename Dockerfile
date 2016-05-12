@@ -46,10 +46,9 @@ WORKDIR /usr/local/lib/scenarios
 ADD cfg/scenarios.conf /etc/apache2/misc/scenarios.conf
 ADD cfg/apache.conf /etc/apache2/sites-available/000-default.conf
 ADD cfg/genimage.cfg ${GENIMAGE_CFG}
-RUN mkdir /var/www/html/tools; \
-    ln -s /usr/local/lib/scenarios/css /var/www/html/tools/css; \
-    ln -s /usr/local/lib/scenarios/img /var/www/html/tools/img; \
-    ln -s /usr/local/lib/scenarios/lib /var/www/html/tools/lib
+RUN ln -s /usr/local/lib/scenarios/css /var/www/html/css; \
+    ln -s /usr/local/lib/scenarios/img /var/www/html/img; \
+    ln -s /usr/local/lib/scenarios/lib /var/www/html/lib
 
 RUN ./init.sh
 

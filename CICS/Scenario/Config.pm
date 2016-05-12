@@ -135,7 +135,7 @@ if ($host == 0) {  # uh maybe ignore this because it doesn't do anything sane
 
 } elsif ($host == 1) {
   my($pfd) = "/usr/local/lib/scenarios/";
-  my($pfw) = "/tools/";
+  my($pfw) = "/";
   $dat[2]{'gcminfofile'} = $pfd . "gcminfo.csv";
   $dat[2]{'regionfile'} = $pfd . "regions-new.csv";
   $dat[2]{'template'} = $pfd . 'explorer.tpl';
