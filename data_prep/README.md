@@ -156,6 +156,8 @@ venv/bin/python create_gcminfo_file.py $TMPDIR/scenarios gcminfo_new.csv
 ### Copy to the destination dir
 
 ```bash
+module load netcdf-bin
+
 for F in $(ls $TMPDIR/scenarios/)
 do
   echo $F

@@ -10,8 +10,6 @@ from tempfile import NamedTemporaryFile
 from cdo import Cdo
 from cfmeta import Cmip5File
 
-from util import get_start_year, ensure_dir
-
 log = logging.getLogger(__name__)
 cdo = Cdo()
 
@@ -32,7 +30,7 @@ def main(args):
         if cf.experiment == 'historical':
             model_sets[key][cf.experiment] = fp
         else:
-            model_sets[key]['{}_{}'.format(cf.experiment, get_start_year(fp))] = fp
+            model_sets[key]['{}_{}'.format(cf.experiment, cf.t_start)] = fp
 
     log.info(model_sets)
 
