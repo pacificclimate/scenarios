@@ -34,7 +34,7 @@ def get_output_netcdf_from_base(base_nc, base_varname, new_varname, new_atts, ou
     return new_nc
 
 def tas(invars, out_fp):
-    variable_name = 'tas'
+    variable_name = 'temp'
     required_vars = ['tasmax', 'tasmin']
     variable_atts = {
         'long_name': 'Near-Surface Air Temperature',
@@ -59,10 +59,8 @@ def tas(invars, out_fp):
     for nc in [nc_out, nc_tasmax, nc_tasmin]:
         nc.close()
 
-    return variable_name
-
 def gdd(invars, out_fp):
-    variable_name = 'gdd'
+    variable_name = 'dg05'
     required_vars = ['tasmax', 'tasmin']
     variable_atts = {
         'units': 'degree days',
@@ -85,10 +83,8 @@ def gdd(invars, out_fp):
     for nc in [nc_out, nc_tasmax, nc_tasmin]:
         nc.close()
 
-    return variable_name
-
 def hdd(invars, out_fp):
-    variable_name = 'hdd'
+    variable_name = 'dl18'
     required_vars = ['tasmax', 'tasmin']
     variable_atts = {
         'units': 'degree days',
@@ -111,10 +107,8 @@ def hdd(invars, out_fp):
     for nc in [nc_out, nc_tasmax, nc_tasmin]:
         nc.close()
 
-    return variable_name
-
 def ffd(invars, out_fp):
-    variable_name = 'ffd'
+    variable_name = 'nffd'
     required_vars = ['tasmin']
     variable_atts = {
         'units': 'days',
@@ -133,10 +127,8 @@ def ffd(invars, out_fp):
     for nc in [nc_out, nc_tasmin]:
         nc.close()
 
-    return variable_name
-
 def pas(invars, out_fp):
-    variable_name = 'pas'
+    variable_name = 'pass'
     required_vars = ['tasmax', 'pr']
     variable_atts = {
         'units': 'mm',
@@ -158,4 +150,10 @@ def pas(invars, out_fp):
     for nc in [nc_out, nc_tasmax]:
         nc.close()
 
-    return variable_name
+derived_vars = {
+    'temp': tas,
+    'dg05': gdd,
+    'dl18': hdd,
+    'nffd': ffd,
+    'pass': pas
+}

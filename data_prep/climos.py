@@ -10,7 +10,7 @@ def var_trans(variable):
     # Returns additional variable specific commands
     if variable == 'pr':
         return '-mulc,86400'
-    elif variable in ['tasmax', 'tasmin']:
+    elif variable in ['tasmax', 'tasmin', 'temp']:
         return '-subc,273.15'
 
     return ''
@@ -26,7 +26,7 @@ def create_climo_file(fp_in, fp_out, t_start, t_end, variable):
         variable (str): name of the variable which is being processed
     Requested date range MUST exist in the input file
     '''
-    supported_vars = {'tasmin', 'tasmax', 'pr'}
+    supported_vars = {'tasmin', 'tasmax', 'pr', 'temp', 'dg05', 'dl18', 'nffd', 'pass'}
 
     if variable not in supported_vars:
         raise Exception("Unsupported variable: cant't yet process {}".format(variable))
