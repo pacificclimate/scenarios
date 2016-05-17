@@ -72,7 +72,7 @@ def get_output_varname(exp_name, run, tp, variable):
     elif variable == 'tasmin':
         varname = 'tmin'
 
-    return '{}-{}_{}_{}'.format(exp_name.upper(), run, tp, varname)
+    return '{}-{}_{}_{}'.format(exp_name[-2:], run, tp, varname)
 
 def main(args):
     with open(args.input, 'r') as f:
@@ -97,23 +97,23 @@ def main(args):
     pp = PrettyPrinter()
     pp.pprint(model_sets)
 
-    # Each experiment (rcp26, 45, 85) needs it's own `historical` variable
+    # Each experiment rcp(26, 45, 85) needs it's own `historical` variable
     # even if it may be the same thing
 
-    # For Example:
+    # For Example (UPDATE TO JUST THE NUMBER AS PER TREVOR'S INPUT):
 
-    # double RCP26-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
-    # double RCP26-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
-    # double RCP26-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
-    # double RCP26-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
-    # double RCP45-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
-    # double RCP45-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
-    # double RCP45-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
-    # double RCP45-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
-    # double RCP85-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
-    # double RCP85-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
-    # double RCP85-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
-    # double RCP85-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+    # double 26-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double 26-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double 26-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double 26-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+    # double 45-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double 45-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double 45-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double 45-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
+    # double 85-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
+    # double 85-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
+    # double 85-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
+    # double 85-r1i1p1_2080_tmax(timesofyear, rows, columns) ;
 
     # All the 1961-1990 variables are the exact same
 
