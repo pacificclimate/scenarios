@@ -125,11 +125,11 @@ sub handler {
   # Images for each tab
   ## FIXME: Search for CRU instead of hard-coding location in list.
   my $planners_plots = [ [ {plot_type => TYPE_MAP, res => 3,         expt => 209, ts => 0, ts_d => 0, region => 5},
-			   {plot_type => TYPE_MAP, res => 3,         expt => 11, sset => 280, baseline_expt => 217 },
-			   {plot_type => TYPE_STICKPLOT,             expt => 11, sset => 280, baseline_expt => 217} ],
-			 {plot_type => TYPE_BANDS_TIMESLICE_HIST,  expt => 11, sset => 280, zoom => 0, baseline_expt => 217}    ];
+			   {plot_type => TYPE_MAP, res => 3,         expt => 11, sset => 327, baseline_expt => 217 },
+			   {plot_type => TYPE_STICKPLOT,             expt => 11, sset => 327, baseline_expt => 217} ],
+			 {plot_type => TYPE_BANDS_TIMESLICE_HIST,  expt => 11, sset => 327, zoom => 0, baseline_expt => 217}    ];
 
-  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCENARIO_SET_METADATA, expt => 11, sset => 280, baseline_expt => 217});
+  my($planners_plotdat_basedesc) = mod_desc_with_params($basedesc, { plot_type => TYPE_SCENARIO_SET_METADATA, expt => 11, sset => 327, baseline_expt => 217});
 
   # Plot data (and resulting formatted data) caching, containing things like mam_prec_50p (and consequently data:mam_prec_50p in $template_hash)
   my $planners_plotdat = {};  # This ends up containing things (keys) like mam_prec_50p, etc., containing values (as opposed to formatted text of those values)
@@ -174,7 +174,7 @@ sub handler {
 
     # Build content div -- conveniently all of these start out hidden.
     my $tab_template_hash = {%{$var_hash}, toy => $template_hash->{'var:toy'}, region => $template_hash->{'var:region'}, ts => $template_hash->{'var:ts'}, ts_period => $template_hash->{'var:ts_period'}, lc_varname => lc($var_hash->{'uc_varname'})};
-    $tab_template_hash->{'scatter_link'} = $displayer->make_url_from_desc(mod_desc_with_params($var_basedesc, { plot_type => TYPE_SCATTER_TIMESLICE_TEXT,  expt => 280, sset => 280, baseline_expt => 217, points => undef}));
+    $tab_template_hash->{'scatter_link'} = $displayer->make_url_from_desc(mod_desc_with_params($var_basedesc, { plot_type => TYPE_SCATTER_TIMESLICE_TEXT,  expt => 327, sset => 327, baseline_expt => 217, points => undef}));
 
     $template_hash->{'planners_vardivs'} .= parseTemplate($hash->{cfg}->[2]->{'planners_tab_template'}, $tab_template_hash, $planners_plotdat_cache);
   }
