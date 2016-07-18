@@ -88,10 +88,13 @@ def main(args):
 
         model_sets[key][cf.variable_name] = fp
 
+    i = 0
     for model_experiment_member, variable_set in model_sets.items():
         log.info('Using model set %s', model_experiment_member)
         log.debug(variable_set)
         derive_climos(variable_set, args.outdir)
+        log.info('Done %s model sets of %s', i, len(model_sets))
+        i += 1
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

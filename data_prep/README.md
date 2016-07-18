@@ -59,6 +59,12 @@ Then manually remove any unwated files. Use this as input to the tool chain.
 venv/bin/python gen_rat_base_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
 ```
 
+### Create derived climatologies
+
+```bash
+venv/bin/python gen_rat_derived_vars.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
+```
+
 Or set up partitioned jobs and submit them with qsub
 
 ### Generate the anomalies for all future periods
