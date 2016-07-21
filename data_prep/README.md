@@ -66,8 +66,10 @@ venv/bin/python gen_rat_base_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/cl
 This step can take a while. See the example job script and consider splitting the input file list and submit multiple jobs.
 
 ```bash
-venv/bin/python gen_rat_derived_vars.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
+venv/bin/python gen_rat_derived_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
 ```
+
+Alternatively, there is a multiprocessing enabled version of this script (`_multi.py`) which queue the job up on `os.sched_getaffinity(0)` number of workers.
 
 Or set up partitioned jobs and submit them with qsub
 
