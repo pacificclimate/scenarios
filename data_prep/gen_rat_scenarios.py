@@ -100,8 +100,6 @@ def main(args):
     # Each experiment rcp(26, 45, 85) needs it's own `historical` variable
     # even if it may be the same thing
 
-    # For Example (UPDATE TO JUST THE NUMBER AS PER TREVOR'S INPUT):
-
     # double 26-r1i1p1_1961_1990_tmax(timesofyear, rows, columns) ;
     # double 26-r1i1p1_2020_tmax(timesofyear, rows, columns) ;
     # double 26-r1i1p1_2050_tmax(timesofyear, rows, columns) ;
