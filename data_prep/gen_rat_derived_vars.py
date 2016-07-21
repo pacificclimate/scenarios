@@ -100,7 +100,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', help='Input file list')
     parser.add_argument('-o', '--outdir', help='Output directory')
-    parser.add_argument('-v', '--verbosity', default=0, action='count', help='Increase log level. -v = INFO, -vv = DEBUG')
+    parser.add_argument('-v', '--verbosity', default=1, action='count', help='Increase log level. -v = INFO, -vv = DEBUG. Default to INFO')
     args = parser.parse_args()
 
     level = logging.ERROR
