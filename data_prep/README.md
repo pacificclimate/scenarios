@@ -55,11 +55,15 @@ Then manually remove any unwated files. Use this as input to the tool chain.
 
 ### Create base climatologies
 
+This step can take a while. See the example job script and consider splitting the input file list and submit multiple jobs.
+
 ```bash
 venv/bin/python gen_rat_base_climos.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
 ```
 
 ### Create derived climatologies
+
+This step can take a while. See the example job script and consider splitting the input file list and submit multiple jobs.
 
 ```bash
 venv/bin/python gen_rat_derived_vars.py -i pcic12_flist_revised.txt -o $TMPDIR/climos
