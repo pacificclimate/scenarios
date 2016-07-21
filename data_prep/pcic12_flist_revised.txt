@@ -1,0 +1,12 @@
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp85/day/atmos/day/r1i1p1/v20160503/pr/pr_day_CanESM2_rcp85_r1i1p1_20060101-21001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp85/day/atmos/day/r1i1p1/v20160503/tasmin/tasmin_day_CanESM2_rcp85_r1i1p1_20060101-21001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp85/day/atmos/day/r1i1p1/v20160503/tasmax/tasmax_day_CanESM2_rcp85_r1i1p1_20060101-21001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp26/day/atmos/day/r1i1p1/v20160503/pr/pr_day_CanESM2_rcp26_r1i1p1_20060101-23001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp26/day/atmos/day/r1i1p1/v20160503/tasmin/tasmin_day_CanESM2_rcp26_r1i1p1_20060101-23001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp26/day/atmos/day/r1i1p1/v20160503/tasmax/tasmax_day_CanESM2_rcp26_r1i1p1_20060101-23001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/historical/day/atmos/day/r1i1p1/v20160503/pr/pr_day_CanESM2_historical_r1i1p1_18500101-20051231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/historical/day/atmos/day/r1i1p1/v20160503/tasmin/tasmin_day_CanESM2_historical_r1i1p1_18500101-20051231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/historical/day/atmos/day/r1i1p1/v20160503/tasmax/tasmax_day_CanESM2_historical_r1i1p1_18500101-20051231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp45/day/atmos/day/r1i1p1/v20160503/pr/pr_day_CanESM2_rcp45_r1i1p1_20060101-23001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp45/day/atmos/day/r1i1p1/v20160503/tasmin/tasmin_day_CanESM2_rcp45_r1i1p1_20060101-23001231.nc
+/storage/data/temp/CMIP5/symlink_tree/CCCMA/CanESM2/rcp45/day/atmos/day/r1i1p1/v20160503/tasmax/tasmax_day_CanESM2_rcp45_r1i1p1_20060101-23001231.nc
